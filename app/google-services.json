@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "568156960451",
+    "project_id": "vaccine-slot-notifier-33270",
+    "storage_bucket": "vaccine-slot-notifier-33270.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568156960451:android:f754a072cde8301f5f5476",
+        "android_client_info": {
+          "package_name": "com.vaccine.slot.notifier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "568156960451-2gq1bc2kfk1uul42f3va0bfoqeolumki.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vaccine.slot.notifier",
+            "certificate_hash": "2ecb499e4260a542f956655a23c5ed53de8e28c7"
+          }
+        },
+        {
+          "client_id": "568156960451-60er43m1cal59u882cfh2sp3tpuubidt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhPD813Kdoz5Q5NvjxnimnxDdhj_WSlc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "568156960451-60er43m1cal59u882cfh2sp3tpuubidt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
