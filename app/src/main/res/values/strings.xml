@@ -12,4 +12,29 @@
     <string name="covid_19_vaccine_slot_finder">COVID-19 Vaccine Slot Finder</string>
     <string name="share">Share</string>
     <string name="notification">Notification</string>
+    <string name="_1_check_vaccine_availability">1. Check vaccine availability</string>
+    <string name="_2_find_centers_near_you">2. Find centers near you</string>
+    <string name="_3_get_notified_when_slots_are_available">3. Get notified when slots are available</string>
+    <string name="_4_book_your_appointment">4. Book your appointment</string>
+    <string name="select_your_state">Select Your State</string>
+    <string name="select_your_district">Select Your District</string>
+    <string name="state">State</string>
+    <string name="district">District</string>
+    <string name="pincode">Pincode</string>
+    <string name="_18_44">18–44</string>
+    <string name="_45">45+</string>
+    <string name="age_group">Age Group</string>
+    <string name="check_availability">Check Availability</string>
+    <string name="notify_me_when_slots_are_available">Notify me when slots are available</string>
+    <string name="this_data_is_sourced_real_time_from_co_win">This data is sourced real time from <a href="https://www.cowin.gov.in/home">Co-WIN</a></string>
+    <string name="pleas_use_the_co_win_app_to_book_vaccination_appointment">Please use the Co-WIN app to book vaccination appointment</string>
+    <string-array name="states">
+        <item>Rajasthan</item>
+    </string-array>
+
+    <string-array name="districts">
+        <item>Jodhpur</item>
+        <item>Jaipur</item>
+        <item>Ajmer</item>
+    </string-array>
 </resources>

@@ -1,18 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.textview.MaterialTextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/covid_19_vaccine_slot_finder"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="10dp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            android:text="@string/covid_19_vaccine_slot_finder"
+            android:textAppearance="@style/Theme.Headline"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/instructionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginEnd="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/heading">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/purple_rounded_500_dark"
+                app:cardCornerRadius="5dp"
+                app:contentPadding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/instruction1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3sp"
+                        android:text="@string/_1_check_vaccine_availability"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/instruction2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3sp"
+                        android:text="@string/_2_find_centers_near_you"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        app:layout_constraintTop_toBottomOf="@id/instruction1" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/instruction3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3sp"
+                        android:text="@string/_3_get_notified_when_slots_are_available"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        app:layout_constraintTop_toBottomOf="@id/instruction2" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/instruction4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3sp"
+                        android:layout_marginBottom="3sp"
+                        android:text="@string/_4_book_your_appointment"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/instruction3" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/stateName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            app:layout_constraintTop_toBottomOf="@+id/instructionLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/stateNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/arrow_down"
+                android:focusable="false"
+                android:hint="@string/state"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/DistrictName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            app:layout_constraintTop_toBottomOf="@+id/stateName">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/districtEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/arrow_down"
+                android:focusable="false"
+                android:hint="@string/district"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/pincode"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            app:layout_constraintTop_toBottomOf="@+id/DistrictName">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pincodeEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pincode"
+                android:inputType="number"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/ageGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pincode">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/age_group"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/age1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="?attr/colorPrimary"
+                android:text="@string/_18_44"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/age2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="?attr/colorPrimary"
+                android:text="@string/_45"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        </RadioGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/checkAvailability"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="30sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            android:padding="10sp"
+            android:text="@string/check_availability"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:cornerRadius="5sp"
+            app:layout_constraintTop_toBottomOf="@+id/ageGroup" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/notifySlots"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            android:padding="10sp"
+            android:text="@string/notify_me_when_slots_are_available"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:cornerRadius="5sp"
+            app:layout_constraintTop_toBottomOf="@+id/checkAvailability"
+            app:strokeColor="?attr/colorPrimary" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/footerTextTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            android:autoLink="web"
+            android:text="@string/this_data_is_sourced_real_time_from_co_win"
+            android:textAlignment="center"
+            android:textAppearance="@style/Theme.Footer"
+            app:layout_constraintTop_toBottomOf="@id/notifySlots" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/footerTextContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="10sp"
+            android:text="@string/pleas_use_the_co_win_app_to_book_vaccination_appointment"
+            android:textAlignment="center"
+            android:textAppearance="@style/Theme.Footer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/footerTextTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

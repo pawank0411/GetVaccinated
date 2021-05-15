@@ -6,11 +6,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.work.Data
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.vaccine.slot.notifier.R
+import com.vaccine.slot.notifier.data.model.DistrictState
 import com.vaccine.slot.notifier.databinding.ActivityHomeBinding
 import java.util.concurrent.TimeUnit
 
@@ -19,6 +19,7 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var activityHomeBinding: ActivityHomeBinding
     private lateinit var worker: WorkManager
+    private lateinit var stateDistrictAdapter: BottomSheetAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,25 @@ class HomeActivity : AppCompatActivity() {
             it.setDisplayHomeAsUpEnabled(false)
             it.title = ""
         }
+
+        /*
+            FOR TESTING
+            ************************************************
+         */
+        val item1 = DistrictState("Rajasthan")
+        val item2 = DistrictState("Ajmer")
+        val item3 = DistrictState("Odisha")
+        //**************************************************
+
+        stateDistrictAdapter =
+                BottomSheetAdapter(
+                        this,
+                        listOf(item1, item2, item3),
+                        object : BottomSheetAdapter.OnItemClickListener {
+                            override fun onClick(name: String) {
+
+                            }
+                        })
 
         worker = WorkManager.getInstance()
 
@@ -81,7 +101,7 @@ class HomeActivity : AppCompatActivity() {
                 .setInputData(taskData).build()
         worker.enqueue(request)
 
-        worker.getWorkInfoByIdLiveData(request.id).observe(this, Observer { workInfo ->
+        worker.getWorkInfoByIdLiveData(request.id).observe(this, { workInfo ->
             workInfo.let {
                 if (it.state.isFinished) {
                     val outputData = it.outputData
