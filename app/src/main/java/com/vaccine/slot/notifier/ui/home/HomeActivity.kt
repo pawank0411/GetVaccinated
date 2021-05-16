@@ -6,40 +6,100 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.data.model.DistrictState
 import com.vaccine.slot.notifier.databinding.ActivityHomeBinding
+import com.vaccine.slot.notifier.databinding.BottomSheetLayoutBinding
+import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
 import java.util.concurrent.TimeUnit
 
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var activityHomeBinding: ActivityHomeBinding
+    private lateinit var bottomSheetLayoutBinding: BottomSheetLayoutBinding
     private lateinit var worker: WorkManager
     private lateinit var stateDistrictAdapter: BottomSheetAdapter
+    private lateinit var bottomSheetDialog: BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(activityHomeBinding.root)
 
-        supportActionBar?.let {
-            it.setDisplayShowHomeEnabled(false)
-            it.elevation = 0.0F
-            it.setDisplayHomeAsUpEnabled(false)
-            it.title = ""
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(false)
+            elevation = 0.0F
+            setDisplayHomeAsUpEnabled(false)
+            title = ""
         }
 
+        bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetLayoutBinding = BottomSheetLayoutBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(bottomSheetLayoutBinding.root)
+
+        activityHomeBinding.stateNameEditText.setOnClickListener {
+            // SHOWS STATE LIST
+            stateList()
+        }
+
+        activityHomeBinding.districtEditText.setOnClickListener {
+            // SHOWS STATE WISE DISTRICT LIST
+            stateWiseDistrictList()
+            bottomSheetDialog.show()
+        }
+
+        activityHomeBinding.checkAvailability.setOnClickListener {
+            startActivity(
+                    Intent(
+                            this,
+                            ShowSlots::class.java
+                    )
+            )
+        }
+
+        worker = WorkManager.getInstance()
+    }
+
+    private fun stateList() {
         /*
             FOR TESTING
             ************************************************
          */
         val item1 = DistrictState("Rajasthan")
-        val item2 = DistrictState("Ajmer")
-        val item3 = DistrictState("Odisha")
+        val item2 = DistrictState("Odisha")
+        //**************************************************
+
+        stateDistrictAdapter =
+                BottomSheetAdapter(
+                        this,
+                        listOf(item1, item2),
+                        object : BottomSheetAdapter.OnItemClickListener {
+                            override fun onClick(name: String) {
+                                bottomSheetDialog.dismiss()
+                                activityHomeBinding.stateNameEditText.setText(name)
+                            }
+                        })
+        bottomSheetLayoutBinding.dataList.adapter = stateDistrictAdapter
+        bottomSheetLayoutBinding.dataList.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        bottomSheetDialog.show()
+    }
+
+    private fun stateWiseDistrictList() {
+        /*
+            FOR TESTING
+            ************************************************
+         */
+        val item1 = DistrictState("Ajmer")
+        val item2 = DistrictState("Jodhpur")
+        val item3 = DistrictState("Nagaur")
         //**************************************************
 
         stateDistrictAdapter =
@@ -48,15 +108,15 @@ class HomeActivity : AppCompatActivity() {
                         listOf(item1, item2, item3),
                         object : BottomSheetAdapter.OnItemClickListener {
                             override fun onClick(name: String) {
-
+                                bottomSheetDialog.dismiss()
+                                activityHomeBinding.districtEditText.setText(name)
                             }
                         })
+        bottomSheetLayoutBinding.dataList.adapter = stateDistrictAdapter
+        bottomSheetLayoutBinding.dataList.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        worker = WorkManager.getInstance()
-
-//        activityHomeBinding.runButton.setOnClickListener {
-//            runBackgroundService()
-//        }
+        bottomSheetDialog.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -71,8 +131,8 @@ class HomeActivity : AppCompatActivity() {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
-                Intent.EXTRA_TEXT,
-                "SAMPLE TEXT"
+                    Intent.EXTRA_TEXT,
+                    "SAMPLE TEXT"
             )
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
@@ -92,13 +152,13 @@ class HomeActivity : AppCompatActivity() {
         val taskData = Data.Builder().putString(MESSAGE_STATUS, "Notify Done.").build()
 
         val request =
-            PeriodicWorkRequestBuilder<NotifyWorker>(
-                900000,
-                TimeUnit.MILLISECONDS,
-                300000,
-                TimeUnit.SECONDS
-            )
-                .setInputData(taskData).build()
+                PeriodicWorkRequestBuilder<NotifyWorker>(
+                        900000,
+                        TimeUnit.MILLISECONDS,
+                        300000,
+                        TimeUnit.SECONDS
+                )
+                        .setInputData(taskData).build()
         worker.enqueue(request)
 
         worker.getWorkInfoByIdLiveData(request.id).observe(this, { workInfo ->

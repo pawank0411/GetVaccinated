@@ -107,7 +107,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/DistrictName"
+            android:id="@+id/districtName"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -136,13 +136,14 @@
             android:layout_marginTop="25sp"
             android:layout_marginEnd="10sp"
             android:layout_marginBottom="10sp"
-            app:layout_constraintTop_toBottomOf="@+id/DistrictName">
+            app:layout_constraintTop_toBottomOf="@+id/districtName">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pincodeEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/pincode"
+                android:maxLength="6"
                 android:inputType="number"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
         </com.google.android.material.textfield.TextInputLayout>

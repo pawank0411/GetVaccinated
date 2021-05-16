@@ -24,7 +24,7 @@ class BottomSheetAdapter(
         holder.stateDistrictName.text = items[position].name
         holder.mainLayout.setOnClickListener {
             onClickListener?.onClick(
-                    holder.stateDistrictName.toString()
+                    holder.stateDistrictName.text.toString()
             )
         }
     }
