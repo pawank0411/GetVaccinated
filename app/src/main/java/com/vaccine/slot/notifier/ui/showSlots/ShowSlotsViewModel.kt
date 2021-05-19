@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vaccine.slot.notifier.data.Event
+import com.vaccine.slot.notifier.data.model.Date
 import com.vaccine.slot.notifier.data.model.Response
 import com.vaccine.slot.notifier.retrofit.ApiService
 import okhttp3.OkHttpClient
@@ -118,5 +119,18 @@ class ShowSlotsViewModel : ViewModel() {
             Log.d("ExceptionParse", e1.localizedMessage!!)
             _slotDetailsDistrict.value = listOf()
         }
+    }
+
+    fun getSevenDayDate(): List<Date> {
+        val sdf = SimpleDateFormat("EEE dd MMM", Locale.getDefault())
+        val list = ArrayList<Date>()
+        for (i in 0..6) {
+            val calendar: Calendar = GregorianCalendar()
+            calendar.add(Calendar.DATE, i)
+            val day = sdf.format(calendar.time)
+            val dateText = Date(date = day)
+            list.add(dateText)
+        }
+        return list
     }
 }

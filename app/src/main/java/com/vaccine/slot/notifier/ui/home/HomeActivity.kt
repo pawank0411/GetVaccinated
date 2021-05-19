@@ -55,12 +55,18 @@ class HomeActivity : AppCompatActivity() {
         }
 
         activityHomeBinding.checkAvailability.setOnClickListener {
-            startActivity(
-                    Intent(
-                            this,
-                            ShowSlots::class.java
-                    )
-            )
+            val intent = Intent(this, ShowSlots::class.java)
+            intent.putExtra("STATE", activityHomeBinding.stateNameEditText.text)
+            intent.putExtra("DISTRICT", activityHomeBinding.districtEditText.text)
+            if (activityHomeBinding.age1.isChecked)
+                intent.putExtra("AGE", activityHomeBinding.age1.text)
+            else
+                intent.putExtra("AGE", activityHomeBinding.age2.text)
+            if (activityHomeBinding.dose1.isChecked)
+                intent.putExtra("DOSE", activityHomeBinding.dose1.text)
+            else
+                intent.putExtra("DOSE", activityHomeBinding.dose2.text)
+            startActivity(intent)
         }
 
         worker = WorkManager.getInstance()

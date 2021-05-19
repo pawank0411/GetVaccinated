@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vaccineName"
+            type="String" />
+
+        <variable
+            name="vaccineNo"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5sp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/vaccineNoTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="5sp"
+            android:paddingTop="2sp"
+            android:paddingEnd="5sp"
+            android:paddingBottom="2sp"
+            android:text="@{vaccineNo}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="50" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/vaccineNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{vaccineName}"
+            android:textAppearance="@style/Theme.Vaccine.Name"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vaccineNoTV"
+            app:textAllCaps="true"
+            tools:text="covidshield" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

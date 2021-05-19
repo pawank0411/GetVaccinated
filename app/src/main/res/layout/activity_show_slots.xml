@@ -20,6 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
-        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+    <com.airbnb.epoxy.EpoxyRecyclerView
+        android:id="@+id/epoxy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        app:layout_constraintTop_toBottomOf="@id/datesList" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

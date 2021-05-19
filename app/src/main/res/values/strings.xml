@@ -28,6 +28,9 @@
     <string name="notify_me_when_slots_are_available">Notify me when slots are available</string>
     <string name="this_data_is_sourced_real_time_from_co_win">This data is sourced real time from <a href="https://www.cowin.gov.in/home">Co-WIN</a></string>
     <string name="pleas_use_the_co_win_app_to_book_vaccination_appointment">Please use the Co-WIN app to book vaccination appointment</string>
+    <string name="dose">Dose</string>
+    <string name="dose_1">Dose 1</string>
+    <string name="dose_2">Dose 2</string>
     <string-array name="states">
         <item>Rajasthan</item>
     </string-array>

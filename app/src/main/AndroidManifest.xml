@@ -23,9 +23,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.showSlots.ShowSlots" />
+
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
-            android:value="DISABLE"/>
+            android:value="DISABLE" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
