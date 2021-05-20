@@ -8,7 +8,7 @@ data class Session(
         @SerializedName("date")
         val date: String?,
         @SerializedName("available_capacity")
-        val availableCapacity: Double?,
+        var availableCapacity: Double?,
         @SerializedName("min_age_limit")
         val minAgeLimit: Int?,
         @SerializedName("vaccine")

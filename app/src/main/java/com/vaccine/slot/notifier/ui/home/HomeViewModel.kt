@@ -62,11 +62,10 @@ class HomeViewModel @Inject constructor(
                         val districtArray = jsonArray.getJSONObject(i).getJSONArray("districts")
                         for (j in 0 until districtArray.length()) {
                             districtList.add(
-                                DistrictState(
-                                    code = districtArray.getJSONObject(j).getInt("district_id")
-                                        .toString(),
-                                    name = districtArray.getJSONObject(j).getString("district_name")
-                                )
+                                    DistrictState(
+                                            code = districtArray.getJSONObject(j).getInt("district_id"),
+                                            name = districtArray.getJSONObject(j).getString("district_name")
+                                    )
                             )
                         }
                     }

@@ -2,7 +2,6 @@ package com.vaccine.slot.notifier.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -42,20 +41,23 @@ class HomeActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(HomeViewModel(this)::class.java)
         viewModel.getStateList()
 
-
         bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetLayoutBinding = BottomSheetLayoutBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(bottomSheetLayoutBinding.root)
 
-        populateStateList()
+        val intent = Intent(this, ShowSlots::class.java)
 
+        populateStateList()
 
         activityHomeBinding.stateNameEditText.setOnClickListener {
             // populates state list
+            bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_state)
+            populateStateList()
             bottomSheetDialog.show()
         }
 
         activityHomeBinding.districtEditText.setOnClickListener {
+            bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_district)
             populateStateDistrictList() // populates stateDistrict list
             bottomSheetDialog.show()
         }
@@ -65,46 +67,50 @@ class HomeActivity : AppCompatActivity() {
         })
 
         viewModel.districtList.observe(this, {
-            Log.d("DISTRICT", it.toString())
             bottomSheetLayoutBinding.dataList.requestModelBuild()
         })
 
         activityHomeBinding.checkAvailability.setOnClickListener {
-            val intent = Intent(this, ShowSlots::class.java)
-            intent.putExtra("STATE", activityHomeBinding.stateNameEditText.text)
-            intent.putExtra("DISTRICT", activityHomeBinding.districtEditText.text)
-            if (activityHomeBinding.age1.isChecked)
-                intent.putExtra("AGE", activityHomeBinding.age1.text)
-            else
-                intent.putExtra("AGE", activityHomeBinding.age2.text)
-            if (activityHomeBinding.dose1.isChecked)
-                intent.putExtra("DOSE", activityHomeBinding.dose1.text)
-            else
-                intent.putExtra("DOSE", activityHomeBinding.dose2.text)
-            startActivity(intent)
+            state = activityHomeBinding.stateNameEditText.text.toString()
+            district = activityHomeBinding.districtEditText.text.toString()
+
+            when (activityHomeBinding.ageGroup.checkedRadioButtonId) {
+                R.id.age1 ->
+                    age = activityHomeBinding.age1.text.toString()
+                R.id.age2 ->
+                    age = activityHomeBinding.age2.text.toString()
+            }
+
+            when (activityHomeBinding.doseGroup.checkedRadioButtonId) {
+                R.id.dose1 ->
+                    dose = activityHomeBinding.dose1.text.toString()
+                R.id.dose2 ->
+                    dose = activityHomeBinding.dose2.text.toString()
+            }
+            startActivity(Intent(this, ShowSlots::class.java))
         }
     }
 
     private fun populateStateList() {
         bottomSheetLayoutBinding.dataList.layoutManager = LinearLayoutManager(this)
         bottomSheetLayoutBinding.dataList.buildModelsWith(object :
-            EpoxyRecyclerView.ModelBuilderCallback {
+                EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
                 val dataList = viewModel.stateList.value
                 if (dataList != null) {
                     for (i in dataList) {
                         BottomSheetBindingModel_()
-                            .id(i)
-                            .name(i)
-                            .onBind { _, view, _ ->
-                                val binding = view.dataBinding as ViewholderBottomSheetBinding
-                                binding.parentLayout.setOnClickListener {
-                                    activityHomeBinding.stateNameEditText.setText(i)
-                                    viewModel.getPreferredStateDistrict(i) // FETCHES DISTRICT OF PARTICULAR STATE
-                                    bottomSheetDialog.dismiss()
+                                .id(i)
+                                .name(i)
+                                .onBind { _, view, _ ->
+                                    val binding = view.dataBinding as ViewholderBottomSheetBinding
+                                    binding.parentLayout.setOnClickListener {
+                                        activityHomeBinding.stateNameEditText.setText(i)
+                                        viewModel.getPreferredStateDistrict(i) // FETCHES DISTRICT OF PARTICULAR STATE
+                                        bottomSheetDialog.dismiss()
+                                    }
                                 }
-                            }
-                            .addTo(controller)
+                                .addTo(controller)
                     }
                 }
             }
@@ -114,22 +120,23 @@ class HomeActivity : AppCompatActivity() {
     private fun populateStateDistrictList() {
         bottomSheetLayoutBinding.dataList.layoutManager = LinearLayoutManager(this)
         bottomSheetLayoutBinding.dataList.buildModelsWith(object :
-            EpoxyRecyclerView.ModelBuilderCallback {
+                EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
                 val dataList = viewModel.districtList.value
                 if (dataList != null) {
                     for (i in dataList) {
                         BottomSheetBindingModel_()
-                            .id(i.code)
-                            .name(i.name)
-                            .onBind { _, view, _ ->
-                                val binding = view.dataBinding as ViewholderBottomSheetBinding
-                                binding.parentLayout.setOnClickListener {
-                                    activityHomeBinding.districtEditText.setText(i.name)
-                                    bottomSheetDialog.dismiss()
+                                .id(i.code)
+                                .name(i.name)
+                                .onBind { _, view, _ ->
+                                    val binding = view.dataBinding as ViewholderBottomSheetBinding
+                                    binding.parentLayout.setOnClickListener {
+                                        activityHomeBinding.districtEditText.setText(i.name)
+                                        districtCode = i.code.toString()
+                                        bottomSheetDialog.dismiss()
+                                    }
                                 }
-                            }
-                            .addTo(controller)
+                                .addTo(controller)
                     }
                 }
             }
@@ -148,8 +155,8 @@ class HomeActivity : AppCompatActivity() {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
-                Intent.EXTRA_TEXT,
-                "SAMPLE TEXT"
+                    Intent.EXTRA_TEXT,
+                    "SAMPLE TEXT"
             )
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
@@ -159,5 +166,14 @@ class HomeActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        var state: String = String()
+        var district: String = String()
+        var pincode: String = String()
+        var age: String = String()
+        var dose: String = String()
+        var districtCode: String = String()
     }
 }

@@ -31,13 +31,5 @@
     <string name="dose">Dose</string>
     <string name="dose_1">Dose 1</string>
     <string name="dose_2">Dose 2</string>
-    <string-array name="states">
-        <item>Rajasthan</item>
-    </string-array>
-
-    <string-array name="districts">
-        <item>Jodhpur</item>
-        <item>Jaipur</item>
-        <item>Ajmer</item>
-    </string-array>
+    <string name="heading_slots">%1$s slots in %2$s for age %3$s</string>
 </resources>

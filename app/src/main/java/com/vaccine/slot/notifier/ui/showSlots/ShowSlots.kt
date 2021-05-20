@@ -1,6 +1,5 @@
 package com.vaccine.slot.notifier.ui.showSlots
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -13,12 +12,11 @@ import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.EpoxyRecyclerView
-import com.vaccine.slot.notifier.HorizontalGridSpan7Model_
-import com.vaccine.slot.notifier.ItemLayoutCenterHeaderBindingModel_
-import com.vaccine.slot.notifier.ItemLayoutSlotsBindingModel_
-import com.vaccine.slot.notifier.R
+import com.vaccine.slot.notifier.*
+import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Session
 import com.vaccine.slot.notifier.databinding.ActivityShowSlotsBinding
+import com.vaccine.slot.notifier.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,22 +41,33 @@ class ShowSlots : AppCompatActivity() {
             title = "COVID-19 Vaccine Availability"
         }
 
-        val intent = Intent().extras // DATA FROM INTENT
-
         viewModel = ViewModelProvider(this).get(ShowSlotsViewModel::class.java)
+        viewModel.getSlotDetailsDistrictWise(HomeActivity.districtCode.toInt())
 
-        viewModel.getSlotDetailsDistrictWise(111)
-
-        viewModel.toast.observe(this, { event ->
-            event.getContentIfNotHandled()?.let {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            }
-        })
+        activityShowSlotsBinding.heading.text = resources.getString(
+                R.string.heading_slots,
+                HomeActivity.dose,
+                HomeActivity.district,
+                HomeActivity.age)
 
         slotDateAdapter = SlotDateAdapter(this, viewModel.getSevenDayDate())
         activityShowSlotsBinding.datesList.adapter = slotDateAdapter
         activityShowSlotsBinding.datesList.layoutManager =
                 GridLayoutManager(this, 7, LinearLayoutManager.VERTICAL, false)
+
+        activityShowSlotsBinding.epoxyFilter.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        activityShowSlotsBinding.epoxyFilter.buildModelsWith(object :
+                EpoxyRecyclerView.ModelBuilderCallback {
+            override fun buildModels(controller: EpoxyController) {
+                val filterList = listOf("Free", "Paid", "Covaxin", "Covishield")
+                filterList.forEach { filter ->
+                    ItemLayoutFilterBindingModel_()
+                            .id(filter)
+                            .filterName(filter)
+                            .addTo(controller)
+                }
+            }
+        })
 
         activityShowSlotsBinding.epoxy.layoutManager = LinearLayoutManager(this)
         activityShowSlotsBinding.epoxy.buildModelsWith(object :
@@ -66,8 +75,38 @@ class ShowSlots : AppCompatActivity() {
             override fun buildModels(controller: EpoxyController) {
 
                 val districtResponse = viewModel.slotDetailsDistrict.value?.data
+                val preferredList = mutableListOf<Center>()
+
                 districtResponse?.centers?.forEach { center ->
-                    // This is a header..
+                    val preferredSessionList = mutableListOf<Session>()
+                    center.sessions?.forEach { session ->
+                        var prefDose: Double? = session.availableCapacityDose1
+                        if (HomeActivity.dose == "Dose 2") {
+                            prefDose = session.availableCapacityDose2
+                        }
+                        if (prefDose != null) {
+                            if (prefDose > 0) {
+                                val prefAge = HomeActivity.age.split("[–+]".toRegex()).map { it.trim() }
+                                if (session.minAgeLimit == prefAge[0].toInt()) {
+                                    session.availableCapacity = prefDose
+                                    preferredSessionList.add(session)
+
+                                }
+                            }
+                        }
+                    }
+                    if (!preferredSessionList.isNullOrEmpty()) {
+                        center.sessions = preferredSessionList
+                        preferredList.add(center)
+                    }
+                }
+
+                if (preferredList.isNullOrEmpty()) {
+                    println("No slots available")
+                    return
+                }
+
+                preferredList.forEach { center ->
                     ItemLayoutCenterHeaderBindingModel_()
                             .id(center.pincode)
                             .centerName(center.name)
@@ -75,7 +114,6 @@ class ShowSlots : AppCompatActivity() {
                             .price(center.feeType)
                             .addTo(controller)
 
-                    // This is a inner list which shows vaccines nos
                     val subItems = mutableListOf<EpoxyModel<*>>()
                     for (i in 0..6) {
                         val currentDate = viewModel.getSevenDayDate()[i].date
@@ -93,19 +131,31 @@ class ShowSlots : AppCompatActivity() {
 
                         var currentSession: Session? = null
                         center.sessions?.forEach { session ->
-                            println("CurrentDate: $currentDateStr")
-                            println("SessionDate: ${session.date}")
                             if (session.date!! == currentDateStr) {
                                 currentSession = session
                             }
                         }
 
                         if (currentSession != null) {
+                            var colorTint: Int
+                            when {
+                                currentSession!!.availableCapacity?.toInt() ?: 0 >= 30 -> {
+                                    colorTint = resources.getColor(R.color.green, applicationContext.theme)
+                                }
+                                currentSession!!.availableCapacity?.toInt() ?: 0 in 11..29 -> {
+                                    colorTint = resources.getColor(R.color.yellow, applicationContext.theme)
+                                }
+                                else -> {
+                                    colorTint = resources.getColor(R.color.red, applicationContext.theme)
+                                }
+                            }
                             subItems.add(
                                     ItemLayoutSlotsBindingModel_()
                                             .id(currentSession.hashCode())
                                             .vaccineName(currentSession!!.vaccine)
                                             .vaccineNo(currentSession!!.availableCapacity?.toInt().toString())
+                                            .isEnabled(true)
+                                            .backgroundTint(colorTint)
                             )
                         } else {
                             subItems.add(
@@ -113,6 +163,8 @@ class ShowSlots : AppCompatActivity() {
                                             .id(Random().nextInt())
                                             .vaccineName("")
                                             .vaccineNo("NA")
+                                            .isEnabled(false)
+                                            .backgroundTint(resources.getColor(R.color.grey, applicationContext.theme))
                             )
                         }
                     }
@@ -126,12 +178,12 @@ class ShowSlots : AppCompatActivity() {
                             .addTo(controller)
                 }
             }
-            // for binding
-            /*
-            .onBind { _, view, _ ->
-             val binding = view.dataBinding as ViewholderItemLayoutCenterHeaderBinding
-             }
-             */
+        })
+
+        viewModel.toast.observe(this, { event ->
+            event.getContentIfNotHandled()?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
         })
 
         viewModel.slotDetailsDistrict.observe(this, {

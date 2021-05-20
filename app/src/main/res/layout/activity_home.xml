@@ -172,29 +172,35 @@
                 android:text="@string/age_group"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/age1"
-                android:layout_width="wrap_content"
+
+            <RadioGroup
+                android:id="@+id/ageGroup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_row="1"
                 android:layout_column="0"
-                android:layout_marginStart="10sp"
-                android:layout_marginEnd="10sp"
-                android:buttonTint="?attr/colorPrimary"
-                android:text="@string/_18_44"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                android:orientation="horizontal">
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/age2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="1"
-                android:layout_marginStart="10sp"
-                android:layout_marginEnd="10sp"
-                android:buttonTint="?attr/colorPrimary"
-                android:text="@string/_45"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/age1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:layout_marginEnd="10sp"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:text="@string/_18_44"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/age2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:layout_marginEnd="10sp"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:text="@string/_45"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+            </RadioGroup>
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
@@ -206,29 +212,34 @@
                 android:text="@string/dose"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/dose1"
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/doseGroup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_row="3"
                 android:layout_column="0"
-                android:layout_marginStart="10sp"
-                android:layout_marginEnd="10sp"
-                android:buttonTint="?attr/colorPrimary"
-                android:text="@string/dose_1"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                android:orientation="horizontal">
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/dose2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="1"
-                android:layout_marginStart="10sp"
-                android:layout_marginEnd="10sp"
-                android:buttonTint="?attr/colorPrimary"
-                android:text="@string/dose_2"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/dose1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:layout_marginEnd="10sp"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:text="@string/dose_1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/dose2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10sp"
+                    android:layout_marginEnd="10sp"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:text="@string/dose_2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+            </RadioGroup>
         </GridLayout>
 
         <com.google.android.material.button.MaterialButton

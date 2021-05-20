@@ -12,6 +12,14 @@
         <variable
             name="vaccineNo"
             type="String" />
+
+        <variable
+            name="isEnabled"
+            type="Boolean" />
+
+        <variable
+            name="backgroundTint"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,10 +36,15 @@
             android:paddingTop="6sp"
             android:paddingEnd="10sp"
             android:paddingBottom="6sp"
+            android:backgroundTint="@{backgroundTint}"
             android:text="@{vaccineNo}"
+            android:clickable="false"
+            android:enabled="@{isEnabled}"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"
             tools:text="50" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -41,11 +54,13 @@
             android:text="@{vaccineName}"
             android:textAppearance="@style/Theme.Vaccine.Name"
             android:textStyle="normal"
+            android:typeface="monospace"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/vaccineNoTV"
             app:textAllCaps="true"
-            tools:text="covidshield" />
+            tools:text="covishield" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
