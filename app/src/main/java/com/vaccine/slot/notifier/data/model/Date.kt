@@ -1,6 +1,5 @@
 package com.vaccine.slot.notifier.data.model
 
-data class RequestDistrict(
-        val district_id: String,
+data class Date(
         val date: String
 )

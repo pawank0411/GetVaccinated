@@ -1,4 +1,4 @@
-package com.vaccine.slot.notifier.data
+package com.vaccine.slot.notifier.other
 
 open class Event<out T>(private val content: T) {
 

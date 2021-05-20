@@ -1,25 +1,18 @@
-buildscript {
-    repositories {
-        maven { url 'https://plugins.gradle.org/m2/' }
-    }
-    dependencies {
-        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.8'
-    }
-}
-
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-kapt'
-kapt {
-    correctErrorTypes = true
-}
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+apply plugin: 'com.google.gms.google-services'
 
+/*
 repositories {
     maven { url 'https://maven.google.com' }
     mavenCentral()
 }
+*/
 
 android {
     compileSdkVersion 30
@@ -54,6 +47,11 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
+
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -70,9 +68,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    // work manager
-    implementation "android.arch.work:work-runtime-ktx:1.0.1"
-
     // oneSignal
     implementation 'com.onesignal:OneSignal:4.3.4'
 
@@ -88,10 +83,13 @@ dependencies {
     implementation 'com.airbnb.android:epoxy-databinding:4.6.1'
     kapt 'com.airbnb.android:epoxy-processor:4.6.1'
 
+    // Dagger Hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
     // firebase
     implementation platform('com.google.firebase:firebase-bom:28.0.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
 }
-apply plugin: 'com.google.gms.google-services'

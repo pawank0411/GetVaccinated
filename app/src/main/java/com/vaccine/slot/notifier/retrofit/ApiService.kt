@@ -1,16 +1,17 @@
 package com.vaccine.slot.notifier.retrofit
 
-import okhttp3.ResponseBody
-import retrofit2.Call
+import com.vaccine.slot.notifier.data.model.Center
+import com.vaccine.slot.notifier.data.model.DistrictResponse
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
     @GET("calendarByDistrict")
-    fun getSlotsDistrictWise(@Query("district_id") district_id: Int,
-                             @Query("date") date: String): Call<ResponseBody>
+    suspend fun getSlotsDistrictWise(@Query("district_id") district_id: Int,
+                                     @Query("date") date: String): Response<DistrictResponse>
 
     @GET("calendarByPin")
-    fun getSlotsPincodeWise(@Query("pincode") pincode: Int,
-                            @Query("date") date: String): Call<String>
+    suspend fun getSlotsPinCodeWise(@Query("pincode") pincode: Int,
+                                    @Query("date") date: String): Response<Center>
 }
