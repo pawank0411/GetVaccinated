@@ -16,6 +16,7 @@ import com.vaccine.slot.notifier.*
 import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Session
 import com.vaccine.slot.notifier.databinding.ActivityShowSlotsBinding
+import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutFilterBinding
 import com.vaccine.slot.notifier.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -64,6 +65,31 @@ class ShowSlots : AppCompatActivity() {
                     ItemLayoutFilterBindingModel_()
                             .id(filter)
                             .filterName(filter)
+                            .onBind { _, view, _ ->
+                                val binding = view.dataBinding as ViewholderItemLayoutFilterBinding
+                                binding.filter.setOnClickListener {
+                                    when (filter) {
+                                        "Free" -> {
+                                            isFreeClicked = !isFreeClicked
+                                            println(isFreeClicked)
+                                        }
+                                        "Paid" -> {
+                                            isPaidClicked = !isPaidClicked
+                                            println(isPaidClicked)
+                                        }
+                                        "Covaxin" -> {
+                                            isCovaxinClicked = !isCovaxinClicked
+                                            println(isCovaxinClicked)
+                                        }
+                                        "Covishield" -> {
+                                            isCovishieldClicked = !isCovishieldClicked
+                                            println(isCovishieldClicked)
+                                        }
+                                    }
+
+                                    activityShowSlotsBinding.epoxy.requestModelBuild()
+                                }
+                            }
                             .addTo(controller)
                 }
             }
@@ -79,18 +105,38 @@ class ShowSlots : AppCompatActivity() {
 
                 districtResponse?.centers?.forEach { center ->
                     val preferredSessionList = mutableListOf<Session>()
+                    val prefFeeType = center.feeType
                     center.sessions?.forEach { session ->
+
                         var prefDose: Double? = session.availableCapacityDose1
                         if (HomeActivity.dose == "Dose 2") {
                             prefDose = session.availableCapacityDose2
                         }
+
                         if (prefDose != null) {
                             if (prefDose > 0) {
                                 val prefAge = HomeActivity.age.split("[–+]".toRegex()).map { it.trim() }
                                 if (session.minAgeLimit == prefAge[0].toInt()) {
                                     session.availableCapacity = prefDose
-                                    preferredSessionList.add(session)
+                                    if (isFreeClicked || isPaidClicked || isCovaxinClicked || isCovishieldClicked) {
+                                        if (isFreeClicked && prefFeeType.toString().toLowerCase(Locale.getDefault()) == "free") {
+                                            preferredSessionList.add(session)
+                                        }
 
+                                        if (isPaidClicked && prefFeeType.toString().toLowerCase(Locale.getDefault()) == "paid") {
+                                            preferredSessionList.add(session)
+                                        }
+
+                                        if (isCovaxinClicked && session.vaccine.toString().toLowerCase(Locale.getDefault()) == "covaxin") {
+                                            preferredSessionList.add(session)
+                                        }
+
+                                        if (isCovishieldClicked && session.vaccine.toString().toLowerCase(Locale.getDefault()) == "covishield") {
+                                            preferredSessionList.add(session)
+                                        }
+                                    } else {
+                                        preferredSessionList.add(session)
+                                    }
                                 }
                             }
                         }
@@ -137,16 +183,15 @@ class ShowSlots : AppCompatActivity() {
                         }
 
                         if (currentSession != null) {
-                            var colorTint: Int
-                            when {
+                            val colorTint: Int = when {
                                 currentSession!!.availableCapacity?.toInt() ?: 0 >= 30 -> {
-                                    colorTint = resources.getColor(R.color.green, applicationContext.theme)
+                                    resources.getColor(R.color.green, applicationContext.theme)
                                 }
                                 currentSession!!.availableCapacity?.toInt() ?: 0 in 11..29 -> {
-                                    colorTint = resources.getColor(R.color.yellow, applicationContext.theme)
+                                    resources.getColor(R.color.yellow, applicationContext.theme)
                                 }
                                 else -> {
-                                    colorTint = resources.getColor(R.color.red, applicationContext.theme)
+                                    resources.getColor(R.color.red, applicationContext.theme)
                                 }
                             }
                             subItems.add(
@@ -173,8 +218,12 @@ class ShowSlots : AppCompatActivity() {
                             .id(subItems.hashCode())
                             .models(subItems)
                             .padding(
-                                    Carousel.Padding(0, 0, 0, 0, 20)
+                                    Carousel.Padding(0, 0, 0, 0, 15)
                             )
+                            .addTo(controller)
+
+                    ItemLayoutDividerBindingModel_()
+                            .id(Random().nextInt())
                             .addTo(controller)
                 }
             }
@@ -190,7 +239,6 @@ class ShowSlots : AppCompatActivity() {
             Log.d("ObservedResponse", it.toString())
             activityShowSlotsBinding.epoxy.requestModelBuild()
         })
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -199,5 +247,12 @@ class ShowSlots : AppCompatActivity() {
             finish()
         }
         return true
+    }
+
+    companion object {
+        var isFreeClicked: Boolean = false
+        var isPaidClicked: Boolean = false
+        var isCovaxinClicked: Boolean = false
+        var isCovishieldClicked: Boolean = false
     }
 }

@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.vaccine.slot.notifier.BottomSheetBindingModel_
+import com.vaccine.slot.notifier.ItemLayoutBottomSheetBindingModel_
 import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.databinding.ActivityHomeBinding
 import com.vaccine.slot.notifier.databinding.BottomSheetLayoutBinding
-import com.vaccine.slot.notifier.databinding.ViewholderBottomSheetBinding
+import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutBottomSheetBinding
 import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,8 +44,6 @@ class HomeActivity : AppCompatActivity() {
         bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetLayoutBinding = BottomSheetLayoutBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(bottomSheetLayoutBinding.root)
-
-        val intent = Intent(this, ShowSlots::class.java)
 
         populateStateList()
 
@@ -99,11 +97,11 @@ class HomeActivity : AppCompatActivity() {
                 val dataList = viewModel.stateList.value
                 if (dataList != null) {
                     for (i in dataList) {
-                        BottomSheetBindingModel_()
+                        ItemLayoutBottomSheetBindingModel_()
                                 .id(i)
                                 .name(i)
                                 .onBind { _, view, _ ->
-                                    val binding = view.dataBinding as ViewholderBottomSheetBinding
+                                    val binding = view.dataBinding as ViewholderItemLayoutBottomSheetBinding
                                     binding.parentLayout.setOnClickListener {
                                         activityHomeBinding.stateNameEditText.setText(i)
                                         viewModel.getPreferredStateDistrict(i) // FETCHES DISTRICT OF PARTICULAR STATE
@@ -125,11 +123,11 @@ class HomeActivity : AppCompatActivity() {
                 val dataList = viewModel.districtList.value
                 if (dataList != null) {
                     for (i in dataList) {
-                        BottomSheetBindingModel_()
+                        ItemLayoutBottomSheetBindingModel_()
                                 .id(i.code)
                                 .name(i.name)
                                 .onBind { _, view, _ ->
-                                    val binding = view.dataBinding as ViewholderBottomSheetBinding
+                                    val binding = view.dataBinding as ViewholderItemLayoutBottomSheetBinding
                                     binding.parentLayout.setOnClickListener {
                                         activityHomeBinding.districtEditText.setText(i.name)
                                         districtCode = i.code.toString()
