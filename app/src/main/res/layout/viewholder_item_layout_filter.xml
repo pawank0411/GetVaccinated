@@ -8,6 +8,10 @@
         <variable
             name="filterName"
             type="String" />
+
+        <variable
+            name="onClick"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,9 +25,9 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginEnd="15dp"
-            android:backgroundTint="@android:color/transparent"
             android:minWidth="0dp"
             android:minHeight="0dp"
+            android:onClick="@{onClick}"
             android:padding="8dp"
             android:text="@{filterName}"
             android:textAllCaps="false"

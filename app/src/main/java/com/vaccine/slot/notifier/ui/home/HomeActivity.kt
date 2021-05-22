@@ -18,6 +18,7 @@ import com.vaccine.slot.notifier.databinding.ActivityHomeBinding
 import com.vaccine.slot.notifier.databinding.BottomSheetLayoutBinding
 import com.vaccine.slot.notifier.databinding.MessageDialogLayoutBinding
 import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutBottomSheetBinding
+import com.vaccine.slot.notifier.ui.notification.NotificationMessage
 import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -61,7 +62,7 @@ class HomeActivity : AppCompatActivity() {
         activityHomeBinding.epoxyCarousel.buildModelsWith(object :
                 EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
-
+                // TODO Carousel
             }
 
         })
@@ -185,7 +186,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // TODO SAMPLE TEXT
         val id = item.itemId
         if (id == R.id.action_share) {
             val sendIntent = Intent()
@@ -198,7 +198,7 @@ class HomeActivity : AppCompatActivity() {
             startActivity(sendIntent)
             return true
         } else if (id == R.id.action_notification) {
-            //TODO OPEN NOTIFICATION PAGE
+            startActivity(Intent(this@HomeActivity, NotificationMessage::class.java))
             return true
         }
         return super.onOptionsItemSelected(item)

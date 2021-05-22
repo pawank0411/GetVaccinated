@@ -23,13 +23,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.showSlots.ShowSlots" />
+        <activity android:name=".ui.notification.NotificationMessage" />
 
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
             android:value="DISABLE" />
         <meta-data
             android:name="com.onesignal.NotificationServiceExtension"
-            android:value="com.vaccine.slot.notifier.NotificationHandler" />
+            android:value="com.vaccine.slot.notifier.NotificationServiceExtension" />
     </application>
 
 </manifest>

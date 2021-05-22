@@ -20,12 +20,17 @@
         <variable
             name="backgroundTint"
             type="Integer" />
+
+        <variable
+            name="onClick"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/parentLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="@{onClick}"
         android:layout_marginTop="5sp">
 
         <com.google.android.material.button.MaterialButton

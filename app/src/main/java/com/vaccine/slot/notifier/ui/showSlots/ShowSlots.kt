@@ -21,8 +21,6 @@ import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Session
 import com.vaccine.slot.notifier.databinding.ActivityShowSlotsBinding
 import com.vaccine.slot.notifier.databinding.BookAppointmentDialogLayoutBinding
-import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutFilterBinding
-import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutSlotsBinding
 import com.vaccine.slot.notifier.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -83,26 +81,22 @@ class ShowSlots : AppCompatActivity() {
                     ItemLayoutFilterBindingModel_()
                             .id(filter)
                             .filterName(filter)
-                            .onBind { _, view, _ ->
-                                val binding = view.dataBinding as ViewholderItemLayoutFilterBinding
-                                binding.filter.setOnClickListener {
-                                    when (filter) {
-                                        "Free" -> {
-                                            isFreeClicked = !isFreeClicked
-                                        }
-                                        "Paid" -> {
-                                            isPaidClicked = !isPaidClicked
-                                        }
-                                        "Covaxin" -> {
-                                            isCovaxinClicked = !isCovaxinClicked
-                                        }
-                                        "Covishield" -> {
-                                            isCovishieldClicked = !isCovishieldClicked
-                                        }
+                            .onClick { _ ->
+                                when (filter) {
+                                    "Free" -> {
+                                        isFreeClicked = !isFreeClicked
                                     }
-
-                                    activityShowSlotsBinding.epoxy.requestModelBuild()
+                                    "Paid" -> {
+                                        isPaidClicked = !isPaidClicked
+                                    }
+                                    "Covaxin" -> {
+                                        isCovaxinClicked = !isCovaxinClicked
+                                    }
+                                    "Covishield" -> {
+                                        isCovishieldClicked = !isCovishieldClicked
+                                    }
                                 }
+                                activityShowSlotsBinding.epoxy.requestModelBuild()
                             }
                             .addTo(controller)
                 }
@@ -221,18 +215,15 @@ class ShowSlots : AppCompatActivity() {
                                             .vaccineNo(currentSession!!.availableCapacity?.toInt().toString())
                                             .isEnabled(true)
                                             .backgroundTint(colorTint)
-                                            .onBind { _, view, _ ->
-                                                val binding = view.dataBinding as ViewholderItemLayoutSlotsBinding
-                                                binding.parentLayout.setOnClickListener {
-                                                    bookAppointmentDialogLayoutBinding.centerName.text = resources.getString(R.string.book_address, center.name, center.pincode.toString())
-                                                    bookAppointmentDialogLayoutBinding.bookAppointment.setOnClickListener {
-                                                        openCoWinWebsite()
-                                                    }
-                                                    bookAppointmentDialogLayoutBinding.close.setOnClickListener {
-                                                        bottomSheetDialog.dismiss()
-                                                    }
-                                                    bottomSheetDialog.show()
+                                            .onClick { _ ->
+                                                bookAppointmentDialogLayoutBinding.centerName.text = resources.getString(R.string.book_address, center.name, center.pincode.toString())
+                                                bookAppointmentDialogLayoutBinding.bookAppointment.setOnClickListener {
+                                                    openCoWinWebsite()
                                                 }
+                                                bookAppointmentDialogLayoutBinding.close.setOnClickListener {
+                                                    bottomSheetDialog.dismiss()
+                                                }
+                                                bottomSheetDialog.show()
                                             }
                             )
                         } else {
@@ -275,7 +266,7 @@ class ShowSlots : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == R.id.home) {
+        if (id == android.R.id.home) {
             finish()
         }
         return true

@@ -14,4 +14,5 @@
     <color name="red">#EF867F</color>
     <color name="grey">#aaa</color>
     <color name="blueF">#03A9F4</color>
+    <color name="trans">#0000ffff</color>
 </resources>

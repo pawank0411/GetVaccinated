@@ -10,7 +10,8 @@ import java.util.*
 import javax.inject.Inject
 
 class Repository @Inject constructor(
-        private val apiService: ApiService
+        private val apiService: ApiService,
+//    private val notificationDao: NotificationDao
 ) {
     suspend fun getDataDetailsDistrictWise(code: Int) = withContext(Dispatchers.IO) {
         val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
@@ -45,4 +46,15 @@ class Repository @Inject constructor(
             Resource.error("Something went wrong. Please try again", null)
         }
     }
+
+    /* suspend fun addNotificationResponse(response: String?) {
+         try {
+             val notificationResponse = NotificationResponse(content = response)
+             notificationDao.insert(notificationResponse)
+         } catch (e: Exception) {
+             println(e.localizedMessage)
+         }
+     }
+
+     fun getAllNotificationResponse() = notificationDao.getAll()*/
 }
