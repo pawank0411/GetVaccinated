@@ -28,4 +28,21 @@ class Repository @Inject constructor(
             Resource.error("Something went wrong. Please try again", null)
         }
     }
+
+    suspend fun getDataDetailsPinCodeWise(code: Int) = withContext(Dispatchers.IO) {
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val currentDate = sdf.format(Date())
+
+        try {
+            val response = apiService.getSlotsPinCodeWise(code, currentDate)
+            if (response.isSuccessful) {
+                Resource.success((response.body()))
+            } else {
+                Resource.error("Something went wrong. Please try again", null)
+            }
+        } catch (e: Exception) {
+            Log.d("Exception", e.toString())
+            Resource.error("Something went wrong. Please try again", null)
+        }
+    }
 }

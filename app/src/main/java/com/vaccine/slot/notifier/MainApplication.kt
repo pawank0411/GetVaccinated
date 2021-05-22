@@ -11,7 +11,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // THEME FOLLOW SYSTEM -> DEVICE THEME
+        // THEME DARK
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         // Logging set to help debug issues, remove before releasing your app.

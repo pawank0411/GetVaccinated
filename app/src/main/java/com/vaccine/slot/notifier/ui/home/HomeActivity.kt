@@ -2,9 +2,11 @@ package com.vaccine.slot.notifier.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
@@ -14,6 +16,7 @@ import com.vaccine.slot.notifier.ItemLayoutBottomSheetBindingModel_
 import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.databinding.ActivityHomeBinding
 import com.vaccine.slot.notifier.databinding.BottomSheetLayoutBinding
+import com.vaccine.slot.notifier.databinding.MessageDialogLayoutBinding
 import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutBottomSheetBinding
 import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +41,14 @@ class HomeActivity : AppCompatActivity() {
             title = ""
         }
 
+        activityHomeBinding.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
+        activityHomeBinding.footerTextTitle.setLinkTextColor(
+                ContextCompat.getColor(
+                        this,
+                        R.color.blueF
+                )
+        )
+
         viewModel = ViewModelProvider(this).get(HomeViewModel(this)::class.java)
         viewModel.getStateList()
 
@@ -47,17 +58,26 @@ class HomeActivity : AppCompatActivity() {
 
         populateStateList()
 
+        activityHomeBinding.epoxyCarousel.buildModelsWith(object :
+                EpoxyRecyclerView.ModelBuilderCallback {
+            override fun buildModels(controller: EpoxyController) {
+
+            }
+
+        })
+
         activityHomeBinding.stateNameEditText.setOnClickListener {
             // populates state list
-            bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_state)
+            bottomSheetLayoutBinding.bottomSheetTitle.text =
+                    resources.getString(R.string.select_your_state)
             populateStateList()
             bottomSheetDialog.show()
         }
 
         activityHomeBinding.districtEditText.setOnClickListener {
-            bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_district)
+            bottomSheetLayoutBinding.bottomSheetTitle.text =
+                    resources.getString(R.string.select_your_district)
             populateStateDistrictList() // populates stateDistrict list
-            bottomSheetDialog.show()
         }
 
         viewModel.stateList.observe(this, {
@@ -69,6 +89,7 @@ class HomeActivity : AppCompatActivity() {
         })
 
         activityHomeBinding.checkAvailability.setOnClickListener {
+            pincode = activityHomeBinding.pincodeEditText.text.toString()
             state = activityHomeBinding.stateNameEditText.text.toString()
             district = activityHomeBinding.districtEditText.text.toString()
 
@@ -85,7 +106,19 @@ class HomeActivity : AppCompatActivity() {
                 R.id.dose2 ->
                     dose = activityHomeBinding.dose2.text.toString()
             }
-            startActivity(Intent(this, ShowSlots::class.java))
+
+            if ((state.isEmpty() || district.isEmpty() || age.isEmpty() || dose.isEmpty()) && pincode.isEmpty()) {
+                val bottomSheetDialog = BottomSheetDialog(this)
+                val messageDialogLayoutBinding = MessageDialogLayoutBinding.inflate(layoutInflater)
+                bottomSheetDialog.setContentView(messageDialogLayoutBinding.root)
+
+                messageDialogLayoutBinding.message.text = resources.getString(R.string.select_error)
+                messageDialogLayoutBinding.close.setOnClickListener {
+                    bottomSheetDialog.dismiss()
+                }
+                bottomSheetDialog.show()
+            } else
+                startActivity(Intent(this, ShowSlots::class.java))
         }
     }
 
@@ -101,10 +134,13 @@ class HomeActivity : AppCompatActivity() {
                                 .id(i)
                                 .name(i)
                                 .onBind { _, view, _ ->
-                                    val binding = view.dataBinding as ViewholderItemLayoutBottomSheetBinding
+                                    val binding =
+                                            view.dataBinding as ViewholderItemLayoutBottomSheetBinding
                                     binding.parentLayout.setOnClickListener {
                                         activityHomeBinding.stateNameEditText.setText(i)
                                         viewModel.getPreferredStateDistrict(i) // FETCHES DISTRICT OF PARTICULAR STATE
+                                        if (activityHomeBinding.districtEditText.text?.isNotBlank() == true)
+                                            activityHomeBinding.districtEditText.text = null
                                         bottomSheetDialog.dismiss()
                                     }
                                 }
@@ -127,7 +163,8 @@ class HomeActivity : AppCompatActivity() {
                                 .id(i.code)
                                 .name(i.name)
                                 .onBind { _, view, _ ->
-                                    val binding = view.dataBinding as ViewholderItemLayoutBottomSheetBinding
+                                    val binding =
+                                            view.dataBinding as ViewholderItemLayoutBottomSheetBinding
                                     binding.parentLayout.setOnClickListener {
                                         activityHomeBinding.districtEditText.setText(i.name)
                                         districtCode = i.code.toString()
@@ -136,6 +173,7 @@ class HomeActivity : AppCompatActivity() {
                                 }
                                 .addTo(controller)
                     }
+                    bottomSheetDialog.show()
                 }
             }
         })

@@ -20,17 +20,25 @@ import kotlin.collections.ArrayList
 class ShowSlotsViewModel @Inject constructor(
         private val repository: Repository
 ) : ViewModel() {
-    private val _slotDetailsDistrict = MutableLiveData<Resource<DistrictResponse>>()
-    val slotDetailsDistrict: LiveData<Resource<DistrictResponse>> get() = _slotDetailsDistrict
+    private val _slotDetails = MutableLiveData<Resource<DistrictResponse>>()
+    val slotDetails: LiveData<Resource<DistrictResponse>> get() = _slotDetails
 
     private val _toast = MutableLiveData<Event<String>>()
     val toast: LiveData<Event<String>> get() = _toast
 
     fun getSlotDetailsDistrictWise(code: Int) {
-        _slotDetailsDistrict.postValue(Resource.loading(null))
+        _slotDetails.postValue(Resource.loading(null))
         viewModelScope.launch {
             val response = repository.getDataDetailsDistrictWise(code)
-            _slotDetailsDistrict.postValue(response)
+            _slotDetails.postValue(response)
+        }
+    }
+
+    fun getSlotDetailsPinCodeWise(code: Int) {
+        _slotDetails.postValue(Resource.loading(null))
+        viewModelScope.launch {
+            val response = repository.getDataDetailsPinCodeWise(code)
+            _slotDetails.postValue(response)
         }
     }
 

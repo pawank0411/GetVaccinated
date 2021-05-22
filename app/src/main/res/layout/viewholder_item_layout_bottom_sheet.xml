@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:padding="8sp"
             android:text='@{name}'
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textAppearance="@style/Theme.BottomSheetItemColor"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Rajasthan" />
 

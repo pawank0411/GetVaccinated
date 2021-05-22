@@ -1,10 +1,13 @@
 package com.vaccine.slot.notifier.ui.showSlots
 
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,11 +15,14 @@ import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.EpoxyRecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.vaccine.slot.notifier.*
 import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Session
 import com.vaccine.slot.notifier.databinding.ActivityShowSlotsBinding
+import com.vaccine.slot.notifier.databinding.BookAppointmentDialogLayoutBinding
 import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutFilterBinding
+import com.vaccine.slot.notifier.databinding.ViewholderItemLayoutSlotsBinding
 import com.vaccine.slot.notifier.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -43,18 +49,30 @@ class ShowSlots : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(this).get(ShowSlotsViewModel::class.java)
-        viewModel.getSlotDetailsDistrictWise(HomeActivity.districtCode.toInt())
-
-        activityShowSlotsBinding.heading.text = resources.getString(
-                R.string.heading_slots,
-                HomeActivity.dose,
-                HomeActivity.district,
-                HomeActivity.age)
+        if (HomeActivity.pincode.isEmpty()) {
+            viewModel.getSlotDetailsDistrictWise(HomeActivity.districtCode.toInt())
+            activityShowSlotsBinding.heading.text = resources.getString(
+                    R.string.heading_slots,
+                    HomeActivity.dose,
+                    HomeActivity.district,
+                    HomeActivity.age)
+        } else {
+            viewModel.getSlotDetailsPinCodeWise(HomeActivity.pincode.toInt())
+            activityShowSlotsBinding.heading.text = resources.getString(
+                    R.string.heading_slots,
+                    HomeActivity.dose,
+                    HomeActivity.pincode,
+                    HomeActivity.age)
+        }
 
         slotDateAdapter = SlotDateAdapter(this, viewModel.getSevenDayDate())
         activityShowSlotsBinding.datesList.adapter = slotDateAdapter
         activityShowSlotsBinding.datesList.layoutManager =
                 GridLayoutManager(this, 7, LinearLayoutManager.VERTICAL, false)
+
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val bookAppointmentDialogLayoutBinding = BookAppointmentDialogLayoutBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(bookAppointmentDialogLayoutBinding.root)
 
         activityShowSlotsBinding.epoxyFilter.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         activityShowSlotsBinding.epoxyFilter.buildModelsWith(object :
@@ -71,19 +89,15 @@ class ShowSlots : AppCompatActivity() {
                                     when (filter) {
                                         "Free" -> {
                                             isFreeClicked = !isFreeClicked
-                                            println(isFreeClicked)
                                         }
                                         "Paid" -> {
                                             isPaidClicked = !isPaidClicked
-                                            println(isPaidClicked)
                                         }
                                         "Covaxin" -> {
                                             isCovaxinClicked = !isCovaxinClicked
-                                            println(isCovaxinClicked)
                                         }
                                         "Covishield" -> {
                                             isCovishieldClicked = !isCovishieldClicked
-                                            println(isCovishieldClicked)
                                         }
                                     }
 
@@ -100,8 +114,10 @@ class ShowSlots : AppCompatActivity() {
                 EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
 
-                val districtResponse = viewModel.slotDetailsDistrict.value?.data
+                val districtResponse = viewModel.slotDetails.value?.data
                 val preferredList = mutableListOf<Center>()
+
+                // TODO show message if center is null or empty
 
                 districtResponse?.centers?.forEach { center ->
                     val preferredSessionList = mutableListOf<Session>()
@@ -145,11 +161,15 @@ class ShowSlots : AppCompatActivity() {
                         center.sessions = preferredSessionList
                         preferredList.add(center)
                     }
-                }
 
-                if (preferredList.isNullOrEmpty()) {
-                    println("No slots available")
-                    return
+                    if (preferredList.isNullOrEmpty()) {
+                        println("No slots available")
+                        activityShowSlotsBinding.noSlotsMessage.visibility = VISIBLE
+                        activityShowSlotsBinding.noSlotsMessage.text = "No slots available"
+                        return
+                    } else {
+                        activityShowSlotsBinding.noSlotsMessage.visibility = GONE
+                    }
                 }
 
                 preferredList.forEach { center ->
@@ -201,6 +221,19 @@ class ShowSlots : AppCompatActivity() {
                                             .vaccineNo(currentSession!!.availableCapacity?.toInt().toString())
                                             .isEnabled(true)
                                             .backgroundTint(colorTint)
+                                            .onBind { _, view, _ ->
+                                                val binding = view.dataBinding as ViewholderItemLayoutSlotsBinding
+                                                binding.parentLayout.setOnClickListener {
+                                                    bookAppointmentDialogLayoutBinding.centerName.text = resources.getString(R.string.book_address, center.name, center.pincode.toString())
+                                                    bookAppointmentDialogLayoutBinding.bookAppointment.setOnClickListener {
+                                                        openCoWinWebsite()
+                                                    }
+                                                    bookAppointmentDialogLayoutBinding.close.setOnClickListener {
+                                                        bottomSheetDialog.dismiss()
+                                                    }
+                                                    bottomSheetDialog.show()
+                                                }
+                                            }
                             )
                         } else {
                             subItems.add(
@@ -235,8 +268,7 @@ class ShowSlots : AppCompatActivity() {
             }
         })
 
-        viewModel.slotDetailsDistrict.observe(this, {
-            Log.d("ObservedResponse", it.toString())
+        viewModel.slotDetails.observe(this, {
             activityShowSlotsBinding.epoxy.requestModelBuild()
         })
     }
@@ -247,6 +279,12 @@ class ShowSlots : AppCompatActivity() {
             finish()
         }
         return true
+    }
+
+    private fun openCoWinWebsite() {
+        val builder = CustomTabsIntent.Builder()
+        builder.setShowTitle(true)
+        builder.build().launchUrl(this, Uri.parse("https://selfregistration.cowin.gov.in/"))
     }
 
     companion object {

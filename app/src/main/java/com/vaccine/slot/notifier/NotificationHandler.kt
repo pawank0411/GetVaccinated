@@ -1,25 +1,31 @@
 package com.vaccine.slot.notifier
 
 import android.app.Application
-import android.content.Context
+import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
+import com.onesignal.OSNotificationAction
 import com.onesignal.OSNotificationOpenedResult
-import com.onesignal.OSNotificationReceivedEvent
 import com.onesignal.OneSignal
 
-
-class NotificationHandler(private val application: Application) :
-    OneSignal.OSRemoteNotificationReceivedHandler, OneSignal.OSNotificationOpenedHandler {
+class NotificationHandler(private val application: Application) : OneSignal.OSNotificationOpenedHandler {
     /*
       HANDLE THE PUSH NOTIFICATION
    */
-    override fun remoteNotificationReceived(
-        context: Context?,
-        notificationReceivedEvent: OSNotificationReceivedEvent?
-    ) {
-        TODO("Not yet implemented")
-    }
-
     override fun notificationOpened(result: OSNotificationOpenedResult?) {
-        TODO("Not yet implemented")
+        val actionType = result?.action?.type
+
+        val builder = CustomTabsIntent.Builder()
+        builder.setShowTitle(true)
+
+        if (actionType == OSNotificationAction.ActionType.ActionTaken) {
+            when (result.action?.actionId) {
+                "id1" ->
+                    // BOOK NOW
+                    builder.build().launchUrl(application, Uri.parse("https://selfregistration.cowin.gov.in/"))
+                "id2" ->
+                    // DONATE US
+                    builder.build().launchUrl(application, Uri.parse("https://www.instamojo.com/dashboard"))
+            }
+        }
     }
 }

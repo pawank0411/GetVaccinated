@@ -1,6 +1,5 @@
 package com.vaccine.slot.notifier.retrofit
 
-import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.DistrictResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -13,5 +12,5 @@ interface ApiService {
 
     @GET("calendarByPin")
     suspend fun getSlotsPinCodeWise(@Query("pincode") pincode: Int,
-                                    @Query("date") date: String): Response<Center>
+                                    @Query("date") date: String): Response<DistrictResponse>
 }
