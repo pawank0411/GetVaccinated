@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vaccine.slot.notifier.data.model.ApiResponse
 import com.vaccine.slot.notifier.data.model.Date
-import com.vaccine.slot.notifier.data.model.DistrictResponse
 import com.vaccine.slot.notifier.other.Event
 import com.vaccine.slot.notifier.other.Resource
 import com.vaccine.slot.notifier.repository.Repository
@@ -20,8 +20,8 @@ import kotlin.collections.ArrayList
 class ShowSlotsViewModel @Inject constructor(
         private val repository: Repository
 ) : ViewModel() {
-    private val _slotDetails = MutableLiveData<Resource<DistrictResponse>>()
-    val slotDetails: LiveData<Resource<DistrictResponse>> get() = _slotDetails
+    private val _slotDetails = MutableLiveData<Resource<ApiResponse>>()
+    val slotDetails: LiveData<Resource<ApiResponse>> get() = _slotDetails
 
     private val _toast = MutableLiveData<Event<String>>()
     val toast: LiveData<Event<String>> get() = _toast

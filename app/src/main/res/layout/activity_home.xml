@@ -37,144 +37,28 @@
             android:layout_margin="10dp"
             app:layout_constraintTop_toBottomOf="@id/quote" />
 
-        <!--        <androidx.constraintlaywrout.widget.ConstraintLayout-->
-        <!--            android:id="@+id/instructionLayout"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="10sp"-->
-        <!--            android:layout_marginTop="25sp"-->
-        <!--            android:layout_marginEnd="10sp"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/heading">-->
-
-        <!--            <com.google.android.material.card.MaterialCardView-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="match_parent"-->
-        <!--                app:cardBackgroundColor="@color/purple_rounded_500_dark"-->
-        <!--                app:cardCornerRadius="5dp"-->
-        <!--                app:contentPadding="8dp"-->
-        <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--                app:layout_constraintTop_toTopOf="parent">-->
-
-        <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="wrap_content">-->
-
-        <!--                    <com.google.android.material.textview.MaterialTextView-->
-        <!--                        android:id="@+id/instruction1"-->
-        <!--                        android:layout_width="match_parent"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="3sp"-->
-        <!--                        android:text="@string/_1_check_vaccine_availability"-->
-        <!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"-->
-        <!--                        app:layout_constraintTop_toTopOf="parent" />-->
-
-        <!--                    <com.google.android.material.textview.MaterialTextView-->
-        <!--                        android:id="@+id/instruction2"-->
-        <!--                        android:layout_width="match_parent"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="3sp"-->
-        <!--                        android:text="@string/_2_find_centers_near_you"-->
-        <!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"-->
-        <!--                        app:layout_constraintTop_toBottomOf="@id/instruction1" />-->
-
-        <!--                    <com.google.android.material.textview.MaterialTextView-->
-        <!--                        android:id="@+id/instruction3"-->
-        <!--                        android:layout_width="match_parent"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="3sp"-->
-        <!--                        android:text="@string/_3_get_notified_when_slots_are_available"-->
-        <!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"-->
-        <!--                        app:layout_constraintTop_toBottomOf="@id/instruction2" />-->
-
-        <!--                    <com.google.android.material.textview.MaterialTextView-->
-        <!--                        android:id="@+id/instruction4"-->
-        <!--                        android:layout_width="match_parent"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="3sp"-->
-        <!--                        android:layout_marginBottom="3sp"-->
-        <!--                        android:text="@string/_4_book_your_appointment"-->
-        <!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"-->
-        <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--                        app:layout_constraintTop_toBottomOf="@id/instruction3" />-->
-        <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
-        <!--            </com.google.android.material.card.MaterialCardView>-->
-        <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/stateName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10sp"
-            android:layout_marginTop="25sp"
-            android:layout_marginEnd="10sp"
-            android:layout_marginBottom="10sp"
-            app:layout_constraintTop_toBottomOf="@+id/epoxyCarousel">
+            android:layout_margin="10dp"
+            android:elevation="0dp"
+            app:layout_constraintTop_toBottomOf="@id/epoxyCarousel"
+            app:tabBackground="@android:color/transparent"
+            app:tabGravity="fill"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="fixed"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabSelectedTextColor="@color/purple_200"
+            app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            app:tabTextColor="?android:attr/textColorPrimary" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/stateNameEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow_down"
-                android:focusable="false"
-                android:hint="@string/state"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/districtName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10sp"
-            android:layout_marginTop="20sp"
-            android:layout_marginEnd="10sp"
-            android:layout_marginBottom="10sp"
-            app:layout_constraintTop_toBottomOf="@+id/stateName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/districtEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow_down"
-                android:focusable="false"
-                android:hint="@string/district"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/districtName" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/pincode"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10sp"
-            android:layout_marginTop="20sp"
-            android:layout_marginEnd="10sp"
-            android:layout_marginBottom="10sp"
-            app:layout_constraintTop_toBottomOf="@+id/divider">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/pincodeEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/pincode"
-                android:inputType="number"
-                android:maxLength="6"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@id/tabs" />
 
         <GridLayout
             android:id="@+id/ageDose"
@@ -188,7 +72,7 @@
             android:rowCount="4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pincode">
+            app:layout_constraintTop_toBottomOf="@id/view_pager">
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
@@ -216,8 +100,8 @@
                     android:layout_marginStart="10sp"
                     android:layout_marginEnd="10sp"
                     android:buttonTint="?attr/colorPrimary"
-                    android:text="@string/_18_44"
                     android:checked="true"
+                    android:text="@string/_18_44"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -256,8 +140,8 @@
                     android:layout_marginStart="10sp"
                     android:layout_marginEnd="10sp"
                     android:buttonTint="?attr/colorPrimary"
-                    android:text="@string/dose_1"
                     android:checked="true"
+                    android:text="@string/dose_1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
@@ -281,10 +165,10 @@
             android:layout_marginEnd="10sp"
             android:layout_marginBottom="10sp"
             android:padding="10sp"
-            android:textColor="@color/white"
             android:text="@string/check_availability"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="@color/white"
             app:cornerRadius="5sp"
             app:layout_constraintTop_toBottomOf="@+id/ageDose" />
 
@@ -314,8 +198,8 @@
             android:layout_marginBottom="10sp"
             android:text="@string/this_data_is_sourced_real_time_from_co_win"
             android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:textAppearance="@style/Theme.Footer"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/notifySlots" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

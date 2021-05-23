@@ -29,7 +29,7 @@ class NotificationMessage : AppCompatActivity() {
             setDisplayShowHomeEnabled(false)
             elevation = 0.0F
             setDisplayHomeAsUpEnabled(true)
-            title = "Notifications"
+            title = "Messages"
         }
 
         activityNotificationMessageBinding.epoxy.layoutManager = LinearLayoutManager(this@NotificationMessage)

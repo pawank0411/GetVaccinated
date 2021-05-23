@@ -21,7 +21,11 @@ import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Session
 import com.vaccine.slot.notifier.databinding.ActivityShowSlotsBinding
 import com.vaccine.slot.notifier.databinding.BookAppointmentDialogLayoutBinding
-import com.vaccine.slot.notifier.ui.home.HomeActivity
+import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedAge
+import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDose
+import com.vaccine.slot.notifier.ui.home.fragment.SearchByDistrictFragment.Companion.selectedDistrictName
+import com.vaccine.slot.notifier.ui.home.fragment.SearchByDistrictFragment.Companion.selectedPinCodeId
+import com.vaccine.slot.notifier.ui.home.fragment.SearchByPinFragment.Companion.selectedPinCode
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,20 +51,20 @@ class ShowSlots : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(this).get(ShowSlotsViewModel::class.java)
-        if (HomeActivity.pincode.isEmpty()) {
-            viewModel.getSlotDetailsDistrictWise(HomeActivity.districtCode.toInt())
+        if (selectedPinCode.isEmpty()) {
+            viewModel.getSlotDetailsDistrictWise(selectedPinCodeId)
             activityShowSlotsBinding.heading.text = resources.getString(
                     R.string.heading_slots,
-                    HomeActivity.dose,
-                    HomeActivity.district,
-                    HomeActivity.age)
+                    selectedDose,
+                    selectedDistrictName,
+                    selectedAge)
         } else {
-            viewModel.getSlotDetailsPinCodeWise(HomeActivity.pincode.toInt())
+            viewModel.getSlotDetailsPinCodeWise(selectedPinCode.toInt())
             activityShowSlotsBinding.heading.text = resources.getString(
                     R.string.heading_slots,
-                    HomeActivity.dose,
-                    HomeActivity.pincode,
-                    HomeActivity.age)
+                    selectedDose,
+                    selectedPinCode,
+                    selectedAge)
         }
 
         slotDateAdapter = SlotDateAdapter(this, viewModel.getSevenDayDate())
@@ -119,13 +123,13 @@ class ShowSlots : AppCompatActivity() {
                     center.sessions?.forEach { session ->
 
                         var prefDose: Double? = session.availableCapacityDose1
-                        if (HomeActivity.dose == "Dose 2") {
+                        if (selectedDose == "Dose 2") {
                             prefDose = session.availableCapacityDose2
                         }
 
                         if (prefDose != null) {
                             if (prefDose > 0) {
-                                val prefAge = HomeActivity.age.split("[–+]".toRegex()).map { it.trim() }
+                                val prefAge = selectedAge.split("[–+]".toRegex()).map { it.trim() }
                                 if (session.minAgeLimit == prefAge[0].toInt()) {
                                     session.availableCapacity = prefDose
                                     if (isFreeClicked || isPaidClicked || isCovaxinClicked || isCovishieldClicked) {
