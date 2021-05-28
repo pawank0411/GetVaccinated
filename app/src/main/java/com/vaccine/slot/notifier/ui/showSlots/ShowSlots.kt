@@ -3,7 +3,6 @@ package com.vaccine.slot.notifier.ui.showSlots
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,10 +21,11 @@ import com.vaccine.slot.notifier.data.model.Session
 import com.vaccine.slot.notifier.databinding.ActivityShowSlotsBinding
 import com.vaccine.slot.notifier.databinding.BookAppointmentDialogLayoutBinding
 import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedAge
+import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDistrictCodeId
+import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDistrictName
 import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDose
-import com.vaccine.slot.notifier.ui.home.fragment.SearchByDistrictFragment.Companion.selectedDistrictName
-import com.vaccine.slot.notifier.ui.home.fragment.SearchByDistrictFragment.Companion.selectedPinCodeId
-import com.vaccine.slot.notifier.ui.home.fragment.SearchByPinFragment.Companion.selectedPinCode
+import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedPinCode
+import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedTab
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,20 +51,22 @@ class ShowSlots : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(this).get(ShowSlotsViewModel::class.java)
-        if (selectedPinCode.isEmpty()) {
-            viewModel.getSlotDetailsDistrictWise(selectedPinCodeId)
-            activityShowSlotsBinding.heading.text = resources.getString(
-                    R.string.heading_slots,
-                    selectedDose,
-                    selectedDistrictName,
-                    selectedAge)
+        if (selectedTab == "0") {
+            viewModel.getSlotDetailsDistrictWise(selectedDistrictCodeId)
+            activityShowSlotsBinding.heading.text = this.resources.getString(
+                R.string.heading_slots,
+                selectedDose,
+                selectedDistrictName,
+                selectedAge
+            )
         } else {
             viewModel.getSlotDetailsPinCodeWise(selectedPinCode.toInt())
             activityShowSlotsBinding.heading.text = resources.getString(
-                    R.string.heading_slots,
-                    selectedDose,
-                    selectedPinCode,
-                    selectedAge)
+                R.string.heading_slots,
+                selectedDose,
+                selectedPinCode,
+                selectedAge
+            )
         }
 
         slotDateAdapter = SlotDateAdapter(this, viewModel.getSevenDayDate())
@@ -109,74 +111,106 @@ class ShowSlots : AppCompatActivity() {
 
         activityShowSlotsBinding.epoxy.layoutManager = LinearLayoutManager(this)
         activityShowSlotsBinding.epoxy.buildModelsWith(object :
-                EpoxyRecyclerView.ModelBuilderCallback {
+            EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
 
-                val districtResponse = viewModel.slotDetails.value?.data
-                val preferredList = mutableListOf<Center>()
+                val apiResponse = viewModel.slotDetails.value?.data
+                var preferredList = listOf<Center>()
 
-                // TODO show message if center is null or empty
-
-                districtResponse?.centers?.forEach { center ->
-                    val preferredSessionList = mutableListOf<Session>()
-                    val prefFeeType = center.feeType
-                    center.sessions?.forEach { session ->
-
-                        var prefDose: Double? = session.availableCapacityDose1
-                        if (selectedDose == "Dose 2") {
-                            prefDose = session.availableCapacityDose2
-                        }
-
-                        if (prefDose != null) {
-                            if (prefDose > 0) {
-                                val prefAge = selectedAge.split("[–+]".toRegex()).map { it.trim() }
-                                if (session.minAgeLimit == prefAge[0].toInt()) {
-                                    session.availableCapacity = prefDose
-                                    if (isFreeClicked || isPaidClicked || isCovaxinClicked || isCovishieldClicked) {
-                                        if (isFreeClicked && prefFeeType.toString().toLowerCase(Locale.getDefault()) == "free") {
-                                            preferredSessionList.add(session)
-                                        }
-
-                                        if (isPaidClicked && prefFeeType.toString().toLowerCase(Locale.getDefault()) == "paid") {
-                                            preferredSessionList.add(session)
-                                        }
-
-                                        if (isCovaxinClicked && session.vaccine.toString().toLowerCase(Locale.getDefault()) == "covaxin") {
-                                            preferredSessionList.add(session)
-                                        }
-
-                                        if (isCovishieldClicked && session.vaccine.toString().toLowerCase(Locale.getDefault()) == "covishield") {
-                                            preferredSessionList.add(session)
-                                        }
-                                    } else {
-                                        preferredSessionList.add(session)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!preferredSessionList.isNullOrEmpty()) {
-                        center.sessions = preferredSessionList
-                        preferredList.add(center)
-                    }
-
-                    if (preferredList.isNullOrEmpty()) {
-                        println("No slots available")
-                        activityShowSlotsBinding.noSlotsMessage.visibility = VISIBLE
-                        activityShowSlotsBinding.noSlotsMessage.text = "No slots available"
-                        return
-                    } else {
-                        activityShowSlotsBinding.noSlotsMessage.visibility = GONE
-                    }
+                if (isFreeClicked) {
+                    preferredList = if (preferredList.isNullOrEmpty()) filterList(
+                        "free",
+                        "free",
+                        apiResponse?.centers
+                    )
+                    else filterList("free", "free", preferredList)
                 }
 
+                if (isPaidClicked) {
+                    preferredList = if (preferredList.isNullOrEmpty()) filterList(
+                        "paid",
+                        "free",
+                        apiResponse?.centers
+                    )
+                    else filterList("paid", "free", preferredList)
+                }
+
+                if (isCovaxinClicked) {
+                    preferredList = if (preferredList.isNullOrEmpty()) filterList(
+                        "covaxin",
+                        "vaccine",
+                        apiResponse?.centers
+                    )
+                    else filterList("covaxin", "vaccine", preferredList)
+                }
+
+                if (isCovishieldClicked) {
+                    preferredList = if (preferredList.isNullOrEmpty()) filterList(
+                        "covishield",
+                        "vaccine",
+                        apiResponse?.centers
+                    )
+                    else filterList("covishield", "vaccine", preferredList)
+                }
+
+//                apiResponse?.centers?.forEach { center ->
+//                    val preferredSessionList = mutableListOf<Session>()
+//                    val prefFeeType = center.feeType
+//                    center.sessions?.forEach { session ->
+//
+//                        var prefDose: Double? = session.availableCapacityDose1
+//                        if (selectedDose == "Dose 2") {
+//                            prefDose = session.availableCapacityDose2
+//                        }
+//
+//                        if (prefDose != null) {
+//                            if (prefDose > 0) {
+//                                val prefAge = selectedAge.split("[–+]".toRegex()).map { it.trim() }
+//                                if (session.minAgeLimit == prefAge[0].toInt()) {
+//                                    session.availableCapacity = prefDose
+//                                    if (isFreeClicked || isPaidClicked || isCovaxinClicked || isCovishieldClicked) {
+//                                        if (isFreeClicked && prefFeeType.toString().toLowerCase(Locale.getDefault()) == "free") {
+//                                            preferredSessionList.add(session)
+//                                        }
+//
+//                                        if (isPaidClicked && prefFeeType.toString().toLowerCase(Locale.getDefault()) == "paid") {
+//                                            preferredSessionList.add(session)
+//                                        }
+//
+//                                        if (isCovaxinClicked && session.vaccine.toString().toLowerCase(Locale.getDefault()) == "covaxin") {
+//                                            preferredSessionList.add(session)
+//                                        }
+//
+//                                        if (isCovishieldClicked && session.vaccine.toString().toLowerCase(Locale.getDefault()) == "covishield") {
+//                                            preferredSessionList.add(session)
+//                                        }
+//                                    } else {
+//                                        preferredSessionList.add(session)
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    } ?: noSlotsAvailable()
+//
+//                    if (!preferredSessionList.isNullOrEmpty()) {
+//                        activityShowSlotsBinding.noSlotsMessage.visibility = GONE
+//                        center.sessions = preferredSessionList
+//                        preferredList.add(center)
+//                    }
+//
+//                    if (preferredList.isNullOrEmpty())
+//                        noSlotsAvailable()
+//
+//                } ?: noSlotsAvailable()
+
+                println(preferredList)
                 preferredList.forEach { center ->
                     ItemLayoutCenterHeaderBindingModel_()
-                            .id(center.pincode)
-                            .centerName(center.name)
-                            .pinCode(center.pincode.toString() + " \u2022 " + center.address)
-                            .price(center.feeType)
-                            .addTo(controller)
+                        .id(center.pincode)
+                        .centerName(center.name)
+                        .pinCode(center.pincode.toString() + " \u2022 " + center.address)
+                        .price(center.feeType)
+                        .addTo(controller)
 
                     val subItems = mutableListOf<EpoxyModel<*>>()
                     for (i in 0..6) {
@@ -198,7 +232,7 @@ class ShowSlots : AppCompatActivity() {
                             if (session.date!! == currentDateStr) {
                                 currentSession = session
                             }
-                        }
+                        } ?: noSlotsAvailable()
 
                         if (currentSession != null) {
                             val colorTint: Int = when {
@@ -213,46 +247,58 @@ class ShowSlots : AppCompatActivity() {
                                 }
                             }
                             subItems.add(
-                                    ItemLayoutSlotsBindingModel_()
-                                            .id(currentSession.hashCode())
-                                            .vaccineName(currentSession!!.vaccine)
-                                            .vaccineNo(currentSession!!.availableCapacity?.toInt().toString())
-                                            .isEnabled(true)
-                                            .backgroundTint(colorTint)
-                                            .onClick { _ ->
-                                                bookAppointmentDialogLayoutBinding.centerName.text = resources.getString(R.string.book_address, center.name, center.pincode.toString())
-                                                bookAppointmentDialogLayoutBinding.bookAppointment.setOnClickListener {
-                                                    openCoWinWebsite()
-                                                }
-                                                bookAppointmentDialogLayoutBinding.close.setOnClickListener {
-                                                    bottomSheetDialog.dismiss()
-                                                }
-                                                bottomSheetDialog.show()
-                                            }
+                                ItemLayoutSlotsBindingModel_()
+                                    .id(currentSession.hashCode())
+                                    .vaccineName(currentSession!!.vaccine)
+                                    .vaccineNo(
+                                        currentSession!!.availableCapacity?.toInt().toString()
+                                    )
+                                    .isEnabled(true)
+                                    .backgroundTint(colorTint)
+                                    .onClick { _ ->
+                                        bookAppointmentDialogLayoutBinding.centerName.text =
+                                            resources.getString(
+                                                R.string.book_address,
+                                                center.name,
+                                                center.pincode.toString()
+                                            )
+                                        bookAppointmentDialogLayoutBinding.bookAppointment.setOnClickListener {
+                                            openCoWinWebsite()
+                                        }
+                                        bookAppointmentDialogLayoutBinding.close.setOnClickListener {
+                                            bottomSheetDialog.dismiss()
+                                        }
+                                        bottomSheetDialog.show()
+                                    }
                             )
                         } else {
                             subItems.add(
-                                    ItemLayoutSlotsBindingModel_()
-                                            .id(Random().nextInt())
-                                            .vaccineName("")
-                                            .vaccineNo("NA")
-                                            .isEnabled(false)
-                                            .backgroundTint(resources.getColor(R.color.grey, applicationContext.theme))
+                                ItemLayoutSlotsBindingModel_()
+                                    .id(Random().nextInt())
+                                    .vaccineName("")
+                                    .vaccineNo("NA")
+                                    .isEnabled(false)
+                                    .backgroundTint(
+                                        resources.getColor(
+                                            R.color.grey,
+                                            applicationContext.theme
+                                        )
+                                    )
                             )
                         }
                     }
 
                     HorizontalGridSpan7Model_()
-                            .id(subItems.hashCode())
-                            .models(subItems)
-                            .padding(
-                                    Carousel.Padding(0, 0, 0, 0, 15)
-                            )
-                            .addTo(controller)
+                        .id(subItems.hashCode())
+                        .models(subItems)
+                        .padding(
+                            Carousel.Padding(0, 0, 0, 0, 15)
+                        )
+                        .addTo(controller)
 
                     ItemLayoutDividerBindingModel_()
-                            .id(Random().nextInt())
-                            .addTo(controller)
+                        .id(Random().nextInt())
+                        .addTo(controller)
                 }
             }
         })
@@ -266,6 +312,32 @@ class ShowSlots : AppCompatActivity() {
         viewModel.slotDetails.observe(this, {
             activityShowSlotsBinding.epoxy.requestModelBuild()
         })
+    }
+
+    private fun filterList(
+        filterString: String,
+        filterType: String,
+        originalList: List<Center>?
+    ): List<Center> {
+        val filteredList = mutableListOf<Center>()
+        if (filterType == "free") {
+            originalList?.filterTo(filteredList) { center ->
+                center.feeType.equals(filterString, ignoreCase = true)
+            }
+        } else {
+            originalList?.filterTo(filteredList) { center ->
+                center.sessions?.forEach { session ->
+                    session.vaccine.equals(filterString, ignoreCase = true)
+                }
+                true
+            }
+        }
+        return filteredList
+    }
+
+    private fun noSlotsAvailable() {
+        activityShowSlotsBinding.noSlotsMessage.visibility = VISIBLE
+        activityShowSlotsBinding.noSlotsMessage.text = resources.getString(R.string.no_slots)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

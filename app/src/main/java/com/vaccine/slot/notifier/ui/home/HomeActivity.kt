@@ -7,26 +7,32 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.vaccine.slot.notifier.ItemLayoutBottomSheetBindingModel_
+import com.vaccine.slot.notifier.ItemLayoutTabBindingModel_
+import com.vaccine.slot.notifier.ItemLayoutTabContentBindingModel_
 import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.databinding.ActivityHomeBinding
+import com.vaccine.slot.notifier.databinding.BottomSheetLayoutBinding
 import com.vaccine.slot.notifier.databinding.MessageDialogLayoutBinding
-import com.vaccine.slot.notifier.ui.home.fragment.SearchByDistrictFragment.Companion.selectedDistrictName
-import com.vaccine.slot.notifier.ui.home.fragment.SearchByDistrictFragment.Companion.selectedStateName
-import com.vaccine.slot.notifier.ui.home.fragment.SearchByPinFragment.Companion.selectedPinCode
 import com.vaccine.slot.notifier.ui.notification.NotificationMessage
 import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_home.*
+import java.util.*
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var activityHomeBinding: ActivityHomeBinding
-    private val titles = arrayOf("Search By District", "Search By PIN")
+    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var bottomSheetDialog: BottomSheetDialog
+    private lateinit var bottomSheetLayoutBinding: BottomSheetLayoutBinding
+    private val titles = listOf("Search By District", "Search By PIN")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,20 +46,68 @@ class HomeActivity : AppCompatActivity() {
             title = ""
         }
 
-        activityHomeBinding.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
-        activityHomeBinding.footerTextTitle.setLinkTextColor(
-                ContextCompat.getColor(
-                        this,
-                        R.color.blueF
-                )
-        )
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        activityHomeBinding.viewPager.adapter = TabAdapter(this)
-        TabLayoutMediator(
-                activityHomeBinding.tabs, activityHomeBinding.viewPager
-        ) { tab: TabLayout.Tab, position: Int ->
-            tab.text = titles[position]
-        }.attach()
+        bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetLayoutBinding = BottomSheetLayoutBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(bottomSheetLayoutBinding.root)
+        bottomSheetLayoutBinding.dataList.layoutManager = LinearLayoutManager(this)
+
+        homeViewModel.getStateList() // pre-fetch state list
+        populateStateList()
+
+        buildTabContent(false) // default selected tab
+        activityHomeBinding.epoxyTabs.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        activityHomeBinding.epoxyTabs.buildModelsWith(object :
+                EpoxyRecyclerView.ModelBuilderCallback {
+            override fun buildModels(controller: EpoxyController) {
+                titles.forEach { title ->
+                    val background = when (homeViewModel.tabSelection.value) {
+                        0 -> {
+                            if (title.contains("District")) {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.rounded_corners
+                                )
+                            } else {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.transparent_background
+                                )
+                            }
+                        }
+                        1 -> {
+                            if (title.contains("PIN")) {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.rounded_corners
+                                )
+                            } else {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.transparent_background
+                                )
+                            }
+                        }
+                        else -> ContextCompat.getDrawable(
+                                this@HomeActivity,
+                                R.drawable.transparent_background
+                        )
+                    }
+                    ItemLayoutTabBindingModel_()
+                            .id(Random().nextInt())
+                            .text(title)
+                            .background(background)
+                            .onClick { _ ->
+                                homeViewModel.setTabSelected(if (title.contains("District")) 0 else 1)
+                                homeViewModel.getContentList(title)
+                                buildTabContent(true)
+                            }
+                            .addTo(controller)
+                }
+            }
+        })
 
         activityHomeBinding.epoxyCarousel.buildModelsWith(object :
                 EpoxyRecyclerView.ModelBuilderCallback {
@@ -64,6 +118,7 @@ class HomeActivity : AppCompatActivity() {
         })
 
         activityHomeBinding.checkAvailability.setOnClickListener {
+//            selectedPinCode = pincodeBinding?.pincodeEditText?.text.toString()
             when (activityHomeBinding.ageGroup.checkedRadioButtonId) {
                 R.id.age1 ->
                     selectedAge = activityHomeBinding.age1.text.toString()
@@ -78,19 +133,117 @@ class HomeActivity : AppCompatActivity() {
                     selectedDose = activityHomeBinding.dose2.text.toString()
             }
 
-            if ((selectedStateName.isEmpty() || selectedDistrictName.isEmpty() || selectedAge.isEmpty() || selectedDose.isEmpty()) && selectedPinCode.isEmpty()) {
-                val bottomSheetDialog = BottomSheetDialog(this)
-                val messageDialogLayoutBinding = MessageDialogLayoutBinding.inflate(layoutInflater)
-                bottomSheetDialog.setContentView(messageDialogLayoutBinding.root)
+            val bottomSheetDialog = BottomSheetDialog(this)
+            val messageDialogLayoutBinding = MessageDialogLayoutBinding.inflate(layoutInflater)
+            bottomSheetDialog.setContentView(messageDialogLayoutBinding.root)
 
+            if (homeViewModel.tabSelection.value == 0 && (selectedStateName.isEmpty() || selectedDistrictName.isEmpty())) {
                 messageDialogLayoutBinding.message.text = resources.getString(R.string.select_error)
                 messageDialogLayoutBinding.close.setOnClickListener {
                     bottomSheetDialog.dismiss()
                 }
                 bottomSheetDialog.show()
-            } else
+            } else if (homeViewModel.tabSelection.value == 1 && (selectedPinCode.isEmpty())) {
+                messageDialogLayoutBinding.message.text =
+                        resources.getString(R.string.pincode_error)
+                messageDialogLayoutBinding.close.setOnClickListener {
+                    bottomSheetDialog.dismiss()
+                }
+                bottomSheetDialog.show()
+            } else {
                 startActivity(Intent(this, ShowSlots::class.java))
+            }
         }
+
+        homeViewModel.stateList.observe(this, {
+            bottomSheetLayoutBinding.dataList.requestModelBuild()
+        })
+
+        homeViewModel.districtList.observe(this, {
+            bottomSheetLayoutBinding.dataList.requestModelBuild()
+        })
+
+        activityHomeBinding.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
+        activityHomeBinding.footerTextTitle.setLinkTextColor(
+                ContextCompat.getColor(
+                        this,
+                        R.color.blueF
+                )
+        )
+    }
+
+    private fun buildTabContent(requestRebuild: Boolean) {
+        activityHomeBinding.epoxyTabContent.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        activityHomeBinding.epoxyTabContent.buildModelsWith(object :
+                EpoxyRecyclerView.ModelBuilderCallback {
+            override fun buildModels(controller: EpoxyController) {
+                val contentItems = homeViewModel.contentTab.value
+                contentItems?.forEach { content ->
+                    ItemLayoutTabContentBindingModel_()
+                            .id(contentItems.hashCode())
+                            .content(content)
+                            .onClick { _ ->
+                                when (content.text) {
+                                    "State" -> {
+                                        bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_state)
+                                        populateStateList()
+                                        bottomSheetDialog.show()
+                                    }
+                                    "District" -> {
+                                        bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_district)
+                                        populateStateDistrictList()
+                                        bottomSheetDialog.show()
+                                    }
+                                }
+                            }
+                            .addTo(controller)
+                }
+            }
+        })
+        if (requestRebuild)
+            activityHomeBinding.epoxyTabs.requestModelBuild()
+    }
+
+    private fun populateStateList() {
+        bottomSheetLayoutBinding.dataList.buildModelsWith(object :
+                EpoxyRecyclerView.ModelBuilderCallback {
+            override fun buildModels(controller: EpoxyController) {
+                val dataList = homeViewModel.stateList.value
+                dataList?.forEach { state ->
+                    ItemLayoutBottomSheetBindingModel_()
+                            .id(state.stateId)
+                            .name(state.stateName)
+                            .onClick { _ ->
+                                selectedStateName = state.stateName
+                                homeViewModel.getDistrictList(state.stateId) // pre-fetch all districts of state
+                                selectedDistrictName = ""
+                                bottomSheetDialog.dismiss()
+                            }
+                            .addTo(controller)
+                } ?: bottomSheetDialog.dismiss()
+            }
+        })
+    }
+
+    private fun populateStateDistrictList() {
+        bottomSheetLayoutBinding.dataList.buildModelsWith(object :
+                EpoxyRecyclerView.ModelBuilderCallback {
+            override fun buildModels(controller: EpoxyController) {
+                val dataList = homeViewModel.districtList.value
+                dataList?.forEach { district ->
+                    ItemLayoutBottomSheetBindingModel_()
+                            .id(district.districtId)
+                            .name(district.districtName)
+                            .onClick { _ ->
+                                selectedDistrictName = district.districtName
+                                selectedDistrictCodeId = district.districtId
+                                bottomSheetDialog.dismiss()
+                            }
+                            .addTo(controller)
+                } ?: bottomSheetDialog.dismiss()
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -120,5 +273,10 @@ class HomeActivity : AppCompatActivity() {
     companion object {
         var selectedAge: String = String()
         var selectedDose: String = String()
+        var selectedTab: String = String()
+        var selectedPinCode: String = String()
+        var selectedStateName: String = String()
+        var selectedDistrictName: String = String()
+        var selectedDistrictCodeId: Int = 0
     }
 }

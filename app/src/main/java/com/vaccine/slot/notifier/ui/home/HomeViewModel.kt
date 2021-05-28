@@ -1,79 +1,91 @@
 package com.vaccine.slot.notifier.ui.home
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.vaccine.slot.notifier.data.model.ContentTab
+import com.vaccine.slot.notifier.data.model.District
 import com.vaccine.slot.notifier.data.model.State
+import com.vaccine.slot.notifier.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import org.json.JSONObject
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    @ApplicationContext
-    context: Context
+    private val repository: Repository
 ) : ViewModel() {
-    private val _stateList = MutableLiveData<List<String>>()
-    val stateList: LiveData<List<String>> get() = _stateList
+    private val _stateList = MutableLiveData<List<State>>()
+    val stateList: LiveData<List<State>> get() = _stateList
 
-    private val _districtList = MutableLiveData<List<State>>()
-    val list: LiveData<List<State>> get() = _districtList
+    private val _districtList = MutableLiveData<List<District>>()
+    val districtList: LiveData<List<District>> get() = _districtList
 
-    private var jsonString: String? = null
+    private val _currentTabSelection = MutableLiveData<Int>()
+    val tabSelection: LiveData<Int> get() = _currentTabSelection
+
+    private val _contentTab = MutableLiveData<List<ContentTab>>()
+    val contentTab: LiveData<List<ContentTab>> get() = _contentTab
 
     init {
-        try {
-            jsonString =
-                    context.assets.open("state_district.json").bufferedReader().use { it.readText() }
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
-        }
+        _currentTabSelection.value = 0
+        _contentTab.value = listOf(
+            ContentTab(
+                "State",
+                false,
+                focusTouch = false,
+                showImage = true
+            ),
+            ContentTab(
+                "District",
+                false,
+                focusTouch = false,
+                showImage = true
+            )
+        )
+    }
+
+    fun setTabSelected(pos: Int) {
+        _currentTabSelection.value = pos
     }
 
     fun getStateList() {
-        try {
-            // TODO switch to Gson()
-            val stateList = ArrayList<String>()
-            if (jsonString != null) {
-                val jsonState = JSONObject(jsonString!!)
-                val jsonArray = jsonState.getJSONArray("states")
-                for (i in 0 until jsonArray.length()) {
-                    stateList.add(jsonArray.getJSONObject(i).getString("state_name"))
-                }
-            }
-            _stateList.value = stateList
-        } catch (e: Exception) {
-            _stateList.value = listOf()
-        }
+        _stateList.value = repository.getStateListFromJSON()
     }
 
-    fun getPreferredStateDistrict(state: String) {
-//        try {
-//            // TODO switch to Gson()
-//            val districtList = ArrayList<State>()
-//            if (jsonString != null) {
-//                val jsonState = JSONObject(jsonString!!)
-//                val jsonArray = jsonState.getJSONArray("states")
-//                for (i in 0 until jsonArray.length()) {
-//                    if (jsonArray.getJSONObject(i).getString("state_name").equals(state)) {
-//                        val districtArray = jsonArray.getJSONObject(i).getJSONArray("districts")
-//                        for (j in 0 until districtArray.length()) {
-//                            districtList.add(
-//                                    State(
-//                                            code = districtArray.getJSONObject(j).getInt("district_id"),
-//                                            name = districtArray.getJSONObject(j).getString("district_name")
-//                                    )
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//            _districtList.value = districtList
-//        } catch (e: Exception) {
-//            _districtList.value = listOf()
-//        }
+    fun getDistrictList(stateId: Int) {
+        _districtList.value = repository.getDistrictList(stateId)
+    }
+
+    fun getContentList(title: String) {
+        val contentItems = ArrayList<ContentTab>()
+        if (title.contains("District")) {
+            contentItems.add(
+                ContentTab(
+                    "State",
+                    false,
+                    focusTouch = false,
+                    showImage = true
+                )
+            )
+            contentItems.add(
+                ContentTab(
+                    "District",
+                    false,
+                    focusTouch = false,
+                    showImage = true
+                )
+            )
+        } else {
+            contentItems.add(
+                ContentTab(
+                    "Pincode",
+                    true,
+                    focusTouch = true,
+                    showImage = false
+                )
+            )
+        }
+
+        _contentTab.value = contentItems
     }
 }
