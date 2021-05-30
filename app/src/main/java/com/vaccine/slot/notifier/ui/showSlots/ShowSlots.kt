@@ -36,6 +36,10 @@ class ShowSlots : AppCompatActivity() {
 
     private lateinit var activityShowSlotsBinding: ActivityShowSlotsBinding
     private lateinit var slotsViewModel: ShowSlotsViewModel
+    private var feeList: List<Center>? = listOf()
+    private var vaccineList: List<Center>? = listOf()
+    private var responseList: List<Center>? = listOf()
+    private var originalList: List<Center>? = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +109,13 @@ class ShowSlots : AppCompatActivity() {
                 val predicate: (Center) -> Boolean = { center ->
                     center.feeType.equals(it.text.toString(), ignoreCase = true)
                 }
-                val filter = responseList?.filter(predicate)
+
+                val filter = if (vaccineList.isNullOrEmpty()) originalList?.filter(predicate) else vaccineList?.filter(predicate)
                 responseList = filter
+                feeList = originalList?.filter(predicate)
             } ?: kotlin.run {
-                // TODO elvis operator
-                responseList = if (responseList.isNullOrEmpty()) originalList else responseList
+                feeList = listOf()
+                responseList = if (vaccineList.isNullOrEmpty()) originalList else vaccineList
             }
             activityShowSlotsBinding.epoxy.requestModelBuild()
         }
@@ -120,12 +126,19 @@ class ShowSlots : AppCompatActivity() {
                 val predicate: (Session) -> Boolean = { session ->
                     session.vaccine.equals(it.text.toString(), ignoreCase = true)
                 }
-                val filter = responseList?.filter { center ->
+
+                val filter = if (feeList.isNullOrEmpty()) originalList?.filter { center ->
+                    center.sessions?.any(predicate) == true
+                } else feeList?.filter { center ->
                     center.sessions?.any(predicate) == true
                 }
                 responseList = filter
+                vaccineList = originalList?.filter { center ->
+                    center.sessions?.any(predicate) == true
+                }
             } ?: kotlin.run {
-                responseList = if (responseList.isNullOrEmpty()) originalList else responseList
+                vaccineList = listOf()
+                responseList = if (feeList.isNullOrEmpty()) originalList else feeList
             }
             activityShowSlotsBinding.epoxy.requestModelBuild()
         }
@@ -144,7 +157,8 @@ class ShowSlots : AppCompatActivity() {
                         bottomProgressDialog.dismiss()
                     }
                     Status.SUCCESS -> {
-                        responseList?.forEachIndexed { index, center ->
+                        val sortedList = responseList?.sortedBy { center -> center.name }
+                        sortedList?.forEachIndexed { index, center ->
                             ItemLayoutCenterHeaderBindingModel_()
                                     .id(index)
                                     .centerName(center.name)
@@ -175,17 +189,32 @@ class ShowSlots : AppCompatActivity() {
                                 } ?: noSlotsAvailable()
 
                                 if (currentSession != null) {
-                                    val colorTint: Int = when {
-                                        currentSession!!.availableCapacityDose?.toInt() ?: 0 >= 30 -> {
-                                            resources.getColor(R.color.green, applicationContext.theme)
+                                    val colorTint: Int
+                                    if (selectedDose == "1")
+                                        colorTint = when {
+                                            currentSession!!.availableCapacityDose1?.toInt() ?: 0 >= 30 -> {
+                                                resources.getColor(R.color.green, applicationContext.theme)
+                                            }
+                                            currentSession!!.availableCapacityDose1?.toInt() ?: 0 in 11..29 -> {
+                                                resources.getColor(R.color.yellow, applicationContext.theme)
+                                            }
+                                            else -> {
+                                                resources.getColor(R.color.red, applicationContext.theme)
+                                            }
                                         }
-                                        currentSession!!.availableCapacityDose?.toInt() ?: 0 in 11..29 -> {
-                                            resources.getColor(R.color.yellow, applicationContext.theme)
+                                    else
+                                        colorTint = when {
+                                            currentSession!!.availableCapacityDose2?.toInt() ?: 0 >= 30 -> {
+                                                resources.getColor(R.color.green, applicationContext.theme)
+                                            }
+                                            currentSession!!.availableCapacityDose2?.toInt() ?: 0 in 11..29 -> {
+                                                resources.getColor(R.color.yellow, applicationContext.theme)
+                                            }
+                                            else -> {
+                                                resources.getColor(R.color.red, applicationContext.theme)
+                                            }
                                         }
-                                        else -> {
-                                            resources.getColor(R.color.red, applicationContext.theme)
-                                        }
-                                    }
+
                                     subItems.add(
                                             ItemLayoutSlotsBindingModel_()
                                                     .id(i)
@@ -252,23 +281,20 @@ class ShowSlots : AppCompatActivity() {
             val chipSet = mutableSetOf<String>()
             val prefAge = selectedAge.split("[–+]".toRegex()).map { it.trim() }
             val predicate: (Session) -> Boolean = { session ->
-                session.minAgeLimit == prefAge[0].toInt()
+                session.minAgeLimit == prefAge[0].toInt() && if (selectedDose == "1") session.availableCapacityDose1!! > 0
+                else session.availableCapacityDose2!! > 0
             }
             originalList = it.data?.centers?.filter { center ->
-                center.sessions?.any(predicate) == true
-            }
-            val predicateC: (Session) -> Boolean = { session ->
-                if (selectedDose == "1") session.availableCapacityDose1?.let { dose -> dose > 0 } == true
-                else session.availableCapacityDose2?.let { dose -> dose > 0 } == true
-            }
-            originalList = originalList?.filter { center ->
-                center.sessions?.any(predicateC) == true
+                center.sessions?.any { session ->
+                    session.minAgeLimit == prefAge[0].toInt() && if (selectedDose == "1") session.availableCapacityDose1!! > 0
+                    else session.availableCapacityDose2!! > 0
+                } == true
             }
 
             originalList?.forEach { center ->
-                center.feeType?.let { it1 -> chipSet.add(it1) }
+                center.feeType?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
                 center.sessions?.forEach { session ->
-                    session.vaccine?.let { it1 -> chipSet.add(it1) }
+                    session.vaccine?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
                 }
             }
             addChips(chipSet)
@@ -278,6 +304,7 @@ class ShowSlots : AppCompatActivity() {
     }
 
     private fun addChips(chipSet: MutableSet<String>) {
+        // TODO configuration changes
         chipSet.forEach { filter ->
             val chip = Chip(this)
             chip.text = filter
@@ -309,14 +336,13 @@ class ShowSlots : AppCompatActivity() {
         return true
     }
 
+    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
+        it.capitalize(Locale.ROOT)
+    }
+
     private fun openCoWinWebsite() {
         val builder = CustomTabsIntent.Builder()
         builder.setShowTitle(true)
         builder.build().launchUrl(this, Uri.parse("https://selfregistration.cowin.gov.in/"))
-    }
-
-    companion object {
-        var responseList: List<Center>? = listOf()
-        var originalList: List<Center>? = listOf()
     }
 }

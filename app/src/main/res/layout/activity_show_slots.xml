@@ -15,17 +15,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:singleSelection="true">
 
-        <!--        <com.google.android.material.chip.Chip-->
-        <!--            style="@style/Theme.Chips"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/free" />-->
-
-        <!--        <com.google.android.material.chip.Chip-->
-        <!--            style="@style/Theme.Chips"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/paid" />-->
     </com.google.android.material.chip.ChipGroup>
 
     <com.google.android.material.chip.ChipGroup
@@ -37,24 +26,6 @@
         app:layout_constraintStart_toEndOf="@+id/chipGroupFee"
         app:layout_constraintTop_toTopOf="parent"
         app:singleSelection="true">
-
-        <!--        <com.google.android.material.chip.Chip-->
-        <!--            style="@style/Theme.Chips"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/covaxin" />-->
-
-        <!--        <com.google.android.material.chip.Chip-->
-        <!--            style="@style/Theme.Chips"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/covishield" />-->
-
-        <!--        <com.google.android.material.chip.Chip-->
-        <!--            style="@style/Theme.Chips"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/sputnik" />-->
 
     </com.google.android.material.chip.ChipGroup>
 
