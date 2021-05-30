@@ -12,7 +12,9 @@
     <color name="green">#5FD865</color>
     <color name="yellow">#FBC16C</color>
     <color name="red">#EF867F</color>
-    <color name="grey">#aaa</color>
+    <color name="grey">#C1C0C0</color>
+    <color name="lightGrey">#51C3C1C1</color>
+    <color name="darkerGrey">#ADC6C4C4</color>
     <color name="blueF">#03A9F4</color>
     <color name="trans">#0000ffff</color>
 </resources>

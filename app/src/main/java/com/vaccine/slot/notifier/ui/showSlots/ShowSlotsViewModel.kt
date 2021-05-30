@@ -1,12 +1,13 @@
 package com.vaccine.slot.notifier.ui.showSlots
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vaccine.slot.notifier.data.model.ApiResponse
 import com.vaccine.slot.notifier.data.model.Date
-import com.vaccine.slot.notifier.other.Event
 import com.vaccine.slot.notifier.other.Resource
 import com.vaccine.slot.notifier.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +24,6 @@ class ShowSlotsViewModel @Inject constructor(
     private val _slotDetails = MutableLiveData<Resource<ApiResponse>>()
     val slotDetails: LiveData<Resource<ApiResponse>> get() = _slotDetails
 
-    private val _toast = MutableLiveData<Event<String>>()
-    val toast: LiveData<Event<String>> get() = _toast
-
     fun getSlotDetailsDistrictWise(code: Int) {
         _slotDetails.postValue(Resource.loading(null))
         viewModelScope.launch {
@@ -34,10 +32,10 @@ class ShowSlotsViewModel @Inject constructor(
         }
     }
 
-    fun getSlotDetailsPinCodeWise(code: Int) {
+    fun getSlotDetailsPinCodeWise(code: String) {
         _slotDetails.postValue(Resource.loading(null))
         viewModelScope.launch {
-            val response = repository.getDataDetailsPinCodeWise(code)
+            val response = repository.getDataDetailsPinCodeWise(code.toInt())
             _slotDetails.postValue(response)
         }
     }
@@ -53,5 +51,35 @@ class ShowSlotsViewModel @Inject constructor(
             list.add(dateText)
         }
         return list
+    }
+
+    fun backgroundColorStateList(
+            checkedColor: Int = Color.parseColor("#FFBB86FC"),
+            uncheckedColor: Int = Color.parseColor("#51C3C1C1"),
+    ): ColorStateList {
+        val states = arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(-android.R.attr.state_checked)
+        )
+        val colors = intArrayOf(
+                checkedColor,
+                uncheckedColor
+        )
+        return ColorStateList(states, colors)
+    }
+
+    fun textColorStateList(
+            checkedColor: Int = Color.parseColor("#FFFFFFFF"),
+            uncheckedColor: Int = Color.parseColor("#ADC6C4C4"),
+    ): ColorStateList {
+        val states = arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(-android.R.attr.state_checked)
+        )
+        val colors = intArrayOf(
+                checkedColor,
+                uncheckedColor
+        )
+        return ColorStateList(states, colors)
     }
 }

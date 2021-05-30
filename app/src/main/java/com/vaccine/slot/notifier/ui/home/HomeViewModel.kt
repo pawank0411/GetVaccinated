@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: Repository
+        private val repository: Repository
 ) : ViewModel() {
     private val _stateList = MutableLiveData<List<State>>()
     val stateList: LiveData<List<State>> get() = _stateList
@@ -26,21 +26,23 @@ class HomeViewModel @Inject constructor(
     private val _contentTab = MutableLiveData<List<ContentTab>>()
     val contentTab: LiveData<List<ContentTab>> get() = _contentTab
 
+    val userText = MutableLiveData<String>()
+
     init {
         _currentTabSelection.value = 0
         _contentTab.value = listOf(
-            ContentTab(
-                "State",
-                false,
-                focusTouch = false,
-                showImage = true
-            ),
-            ContentTab(
-                "District",
-                false,
-                focusTouch = false,
-                showImage = true
-            )
+                ContentTab(
+                        "State",
+                        false,
+                        focusTouch = false,
+                        showImage = true
+                ),
+                ContentTab(
+                        "District",
+                        false,
+                        focusTouch = false,
+                        showImage = true
+                )
         )
     }
 
@@ -60,29 +62,29 @@ class HomeViewModel @Inject constructor(
         val contentItems = ArrayList<ContentTab>()
         if (title.contains("District")) {
             contentItems.add(
-                ContentTab(
-                    "State",
-                    false,
-                    focusTouch = false,
-                    showImage = true
-                )
+                    ContentTab(
+                            "State",
+                            false,
+                            focusTouch = false,
+                            showImage = true
+                    )
             )
             contentItems.add(
-                ContentTab(
-                    "District",
-                    false,
-                    focusTouch = false,
-                    showImage = true
-                )
+                    ContentTab(
+                            "District",
+                            false,
+                            focusTouch = false,
+                            showImage = true
+                    )
             )
         } else {
             contentItems.add(
-                ContentTab(
-                    "Pincode",
-                    true,
-                    focusTouch = true,
-                    showImage = false
-                )
+                    ContentTab(
+                            "Pincode",
+                            true,
+                            focusTouch = true,
+                            showImage = false
+                    )
             )
         }
 

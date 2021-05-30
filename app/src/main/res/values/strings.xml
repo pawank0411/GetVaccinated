@@ -31,7 +31,7 @@
     <string name="dose">Dose</string>
     <string name="dose_1">Dose 1</string>
     <string name="dose_2">Dose 2</string>
-    <string name="heading_slots">%1$s slots in %2$s for age %3$s</string>
+    <string name="heading_slots">Dose %1$s slots in %2$s for age %3$s</string>
     <string name="select_error">Please select your state and district</string>
     <string name="pincode_error">Please enter valid pincode</string>
     <string name="cowin_webite">You will be taken to the Co-Win website to book your appointment</string>
@@ -43,4 +43,10 @@
     <string name="book_now">Book Now</string>
     <string name="stop_alert">Stop Alert</string>
     <string name="no_slots">No slots available</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="free">Free</string>
+    <string name="paid">Paid</string>
+    <string name="covaxin">Covaxin</string>
+    <string name="covishield">Covishield</string>
+    <string name="sputnik">Sputnik</string>
 </resources>

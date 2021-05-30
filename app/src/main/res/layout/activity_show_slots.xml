@@ -5,12 +5,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.airbnb.epoxy.EpoxyRecyclerView
-        android:id="@+id/epoxyFilter"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupFee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true">
+
+        <!--        <com.google.android.material.chip.Chip-->
+        <!--            style="@style/Theme.Chips"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/free" />-->
+
+        <!--        <com.google.android.material.chip.Chip-->
+        <!--            style="@style/Theme.Chips"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/paid" />-->
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupVaccine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/chipGroupFee"
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true">
+
+        <!--        <com.google.android.material.chip.Chip-->
+        <!--            style="@style/Theme.Chips"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/covaxin" />-->
+
+        <!--        <com.google.android.material.chip.Chip-->
+        <!--            style="@style/Theme.Chips"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/covishield" />-->
+
+        <!--        <com.google.android.material.chip.Chip-->
+        <!--            style="@style/Theme.Chips"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/sputnik" />-->
+
+    </com.google.android.material.chip.ChipGroup>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/heading"
@@ -19,10 +65,10 @@
         android:layout_margin="10sp"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintTop_toBottomOf="@id/epoxyFilter"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupFee"
         tools:text="Slots in Baran for age 18-44" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.airbnb.epoxy.EpoxyRecyclerView
         android:id="@+id/datesList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

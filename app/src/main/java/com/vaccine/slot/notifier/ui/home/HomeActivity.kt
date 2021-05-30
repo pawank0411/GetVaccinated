@@ -16,9 +16,7 @@ import com.vaccine.slot.notifier.ItemLayoutBottomSheetBindingModel_
 import com.vaccine.slot.notifier.ItemLayoutTabBindingModel_
 import com.vaccine.slot.notifier.ItemLayoutTabContentBindingModel_
 import com.vaccine.slot.notifier.R
-import com.vaccine.slot.notifier.databinding.ActivityHomeBinding
-import com.vaccine.slot.notifier.databinding.BottomSheetLayoutBinding
-import com.vaccine.slot.notifier.databinding.MessageDialogLayoutBinding
+import com.vaccine.slot.notifier.databinding.*
 import com.vaccine.slot.notifier.ui.notification.NotificationMessage
 import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +29,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var activityHomeBinding: ActivityHomeBinding
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var bottomSheetDialog: BottomSheetDialog
-    private lateinit var bottomSheetLayoutBinding: BottomSheetLayoutBinding
+    private lateinit var bottomSheetLayoutBinding: LayoutStatedistrcitListBinding
     private val titles = listOf("Search By District", "Search By PIN")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetLayoutBinding = BottomSheetLayoutBinding.inflate(layoutInflater)
+        bottomSheetLayoutBinding = LayoutStatedistrcitListBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(bottomSheetLayoutBinding.root)
         bottomSheetLayoutBinding.dataList.layoutManager = LinearLayoutManager(this)
 
@@ -118,7 +116,6 @@ class HomeActivity : AppCompatActivity() {
         })
 
         activityHomeBinding.checkAvailability.setOnClickListener {
-//            selectedPinCode = pincodeBinding?.pincodeEditText?.text.toString()
             when (activityHomeBinding.ageGroup.checkedRadioButtonId) {
                 R.id.age1 ->
                     selectedAge = activityHomeBinding.age1.text.toString()
@@ -128,13 +125,13 @@ class HomeActivity : AppCompatActivity() {
 
             when (activityHomeBinding.doseGroup.checkedRadioButtonId) {
                 R.id.dose1 ->
-                    selectedDose = activityHomeBinding.dose1.text.toString()
+                    selectedDose = activityHomeBinding.dose1.text.toString().split(" ")[1]
                 R.id.dose2 ->
-                    selectedDose = activityHomeBinding.dose2.text.toString()
+                    selectedDose = activityHomeBinding.dose2.text.toString().split(" ")[1]
             }
 
             val bottomSheetDialog = BottomSheetDialog(this)
-            val messageDialogLayoutBinding = MessageDialogLayoutBinding.inflate(layoutInflater)
+            val messageDialogLayoutBinding = LayoutMessageDialogBinding.inflate(layoutInflater)
             bottomSheetDialog.setContentView(messageDialogLayoutBinding.root)
 
             if (homeViewModel.tabSelection.value == 0 && (selectedStateName.isEmpty() || selectedDistrictName.isEmpty())) {
@@ -154,6 +151,10 @@ class HomeActivity : AppCompatActivity() {
                 startActivity(Intent(this, ShowSlots::class.java))
             }
         }
+
+        homeViewModel.userText.observe(this, {
+            selectedPinCode = it
+        })
 
         homeViewModel.stateList.observe(this, {
             bottomSheetLayoutBinding.dataList.requestModelBuild()
@@ -183,6 +184,7 @@ class HomeActivity : AppCompatActivity() {
                     ItemLayoutTabContentBindingModel_()
                             .id(contentItems.hashCode())
                             .content(content)
+                            .homeViewModel(homeViewModel)
                             .onClick { _ ->
                                 when (content.text) {
                                     "State" -> {

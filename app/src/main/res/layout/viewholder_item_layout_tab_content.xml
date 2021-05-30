@@ -16,8 +16,8 @@
             type="OnClickListener" />
 
         <variable
-            name="text"
-            type="String" />
+            name="homeViewModel"
+            type="com.vaccine.slot.notifier.ui.home.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -45,7 +45,7 @@
                 android:focusableInTouchMode="@{content.component3()}"
                 android:hint="@{content.component1()}"
                 android:onClick="@{onClick}"
-                android:text="@={text}"
+                android:text="@={homeViewModel.userText}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
