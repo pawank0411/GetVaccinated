@@ -36,8 +36,8 @@ class NotificationMessage : AppCompatActivity() {
         notificationDao.getAll()?.observe(this@NotificationMessage, { response ->
             activityNotificationMessageBinding.epoxy.buildModelsWith(object : EpoxyRecyclerView.ModelBuilderCallback {
                 override fun buildModels(controller: EpoxyController) {
-
-                    response?.forEach { message ->
+                    val sortedResponse = response?.reversed()
+                    sortedResponse?.forEach { message ->
                         ItemLayoutMessageBindingModel_()
                                 .id(message.id)
                                 .content(message.content)

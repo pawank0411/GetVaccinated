@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.Carousel
@@ -27,6 +26,7 @@ import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDistrict
 import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDistrictName
 import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDose
 import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedPinCode
+import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedTab
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -84,8 +84,8 @@ class ShowSlots : AppCompatActivity() {
                         .addTo(controller)
             }
         })
-
-        if (selectedPinCode.isDigitsOnly() && selectedPinCode.length == 6) {
+        println(selectedTab)
+        if (selectedTab == "1") {
             slotsViewModel.getSlotDetailsPinCodeWise(selectedPinCode)
             activityShowSlotsBinding.heading.text = resources.getString(
                     R.string.heading_slots,

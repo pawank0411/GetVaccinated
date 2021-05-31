@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
-        <import type="android.view.View.OnClickListener" />
-
-        <import type="android.graphics.drawable.Drawable" />
+        <variable
+            name="hintText"
+            type="String" />
 
         <variable
-            name="content"
-            type="com.vaccine.slot.notifier.data.model.ContentTab" />
-
-        <variable
-            name="onClick"
-            type="OnClickListener" />
-
-        <variable
-            name="homeViewModel"
+            name="viewModel"
             type="com.vaccine.slot.notifier.ui.home.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -33,6 +24,7 @@
             android:layout_marginStart="10sp"
             android:layout_marginTop="10sp"
             android:layout_marginEnd="10sp"
+            android:hint="@{hintText}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -40,12 +32,9 @@
                 android:id="@+id/inputNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@{content.component4() ? @drawable/arrow_down: @drawable/transparent}"
-                android:focusable="@{content.component2()}"
-                android:focusableInTouchMode="@{content.component3()}"
-                android:hint="@{content.component1()}"
-                android:onClick="@{onClick}"
-                android:text="@={homeViewModel.userText}"
+                android:inputType="phone"
+                android:maxLength="6"
+                android:text="@={viewModel.userText}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
