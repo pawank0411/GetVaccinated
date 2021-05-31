@@ -3,6 +3,7 @@ package com.vaccine.slot.notifier.ui.showSlots
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
@@ -84,7 +85,7 @@ class ShowSlots : AppCompatActivity() {
                         .addTo(controller)
             }
         })
-        println(selectedTab)
+
         if (selectedTab == "1") {
             slotsViewModel.getSlotDetailsPinCodeWise(selectedPinCode)
             activityShowSlotsBinding.heading.text = resources.getString(
@@ -158,6 +159,7 @@ class ShowSlots : AppCompatActivity() {
                     }
                     Status.SUCCESS -> {
                         val sortedList = responseList?.sortedBy { center -> center.name }
+                        if (sortedList.isNullOrEmpty()) noSlotsAvailable() else activityShowSlotsBinding.noSlotsMessage.visibility = GONE
                         sortedList?.forEachIndexed { index, center ->
                             ItemLayoutCenterHeaderBindingModel_()
                                     .id(index)
@@ -270,7 +272,7 @@ class ShowSlots : AppCompatActivity() {
                                     .id(Random().nextInt())
                                     .addTo(controller)
 
-                        } ?: noSlotsAvailable()
+                        }
                         bottomProgressDialog.dismiss()
                     }
                 }
@@ -278,12 +280,9 @@ class ShowSlots : AppCompatActivity() {
         })
 
         slotsViewModel.slotDetails.observe(this, {
-            val chipSet = mutableSetOf<String>()
+            slotsViewModel.setChipFilterList(it?.data?.centers) // fetch unique fee type and vaccine type
+
             val prefAge = selectedAge.split("[–+]".toRegex()).map { it.trim() }
-            val predicate: (Session) -> Boolean = { session ->
-                session.minAgeLimit == prefAge[0].toInt() && if (selectedDose == "1") session.availableCapacityDose1!! > 0
-                else session.availableCapacityDose2!! > 0
-            }
             originalList = it.data?.centers?.filter { center ->
                 center.sessions?.any { session ->
                     session.minAgeLimit == prefAge[0].toInt() && if (selectedDose == "1") session.availableCapacityDose1!! > 0
@@ -291,20 +290,19 @@ class ShowSlots : AppCompatActivity() {
                 } == true
             }
 
-            originalList?.forEach { center ->
-                center.feeType?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
-                center.sessions?.forEach { session ->
-                    session.vaccine?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
-                }
-            }
-            addChips(chipSet)
+            originalList = it?.data?.centers
             responseList = originalList
             activityShowSlotsBinding.epoxy.requestModelBuild()
         })
+
+        slotsViewModel.chipFilterList.observe(this, {
+            addChips(it)
+        })
     }
 
-    private fun addChips(chipSet: MutableSet<String>) {
-        // TODO configuration changes
+    private fun addChips(chipSet: Set<String>) {
+        activityShowSlotsBinding.chipGroupFee.removeAllViews()
+        activityShowSlotsBinding.chipGroupVaccine.removeAllViews()
         chipSet.forEach { filter ->
             val chip = Chip(this)
             chip.text = filter
@@ -334,10 +332,6 @@ class ShowSlots : AppCompatActivity() {
             finish()
         }
         return true
-    }
-
-    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
-        it.capitalize(Locale.ROOT)
     }
 
     private fun openCoWinWebsite() {

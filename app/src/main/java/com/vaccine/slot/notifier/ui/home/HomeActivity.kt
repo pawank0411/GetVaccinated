@@ -137,7 +137,7 @@ class HomeActivity : AppCompatActivity() {
                     bottomSheetDialog.dismiss()
                 }
                 bottomSheetDialog.show()
-            } else if (homeViewModel.tabSelection.value == 1 && (selectedPinCode.isEmpty())) {
+            } else if (homeViewModel.tabSelection.value == 1 && (selectedPinCode.isEmpty() || selectedPinCode.length < 6)) {
                 messageDialogLayoutBinding.message.text =
                         resources.getString(R.string.pincode_error)
                 messageDialogLayoutBinding.close.setOnClickListener {

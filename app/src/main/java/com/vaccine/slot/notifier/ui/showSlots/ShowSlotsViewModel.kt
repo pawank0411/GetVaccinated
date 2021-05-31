@@ -1,5 +1,6 @@
 package com.vaccine.slot.notifier.ui.showSlots
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.lifecycle.LiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vaccine.slot.notifier.data.model.ApiResponse
+import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Date
 import com.vaccine.slot.notifier.other.Resource
 import com.vaccine.slot.notifier.repository.Repository
@@ -23,6 +25,9 @@ class ShowSlotsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _slotDetails = MutableLiveData<Resource<ApiResponse>>()
     val slotDetails: LiveData<Resource<ApiResponse>> get() = _slotDetails
+
+    private val _chipFilterList = MutableLiveData<Set<String>>()
+    val chipFilterList: LiveData<Set<String>> get() = _chipFilterList
 
     fun getSlotDetailsDistrictWise(code: Int) {
         _slotDetails.postValue(Resource.loading(null))
@@ -82,4 +87,19 @@ class ShowSlotsViewModel @Inject constructor(
         )
         return ColorStateList(states, colors)
     }
+
+    fun setChipFilterList(center: List<Center>?) {
+        val chipSet = mutableSetOf<String>()
+        center?.forEach { item ->
+            item.feeType?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
+            item.sessions?.forEach { session ->
+                session.vaccine?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
+            }
+        }
+        _chipFilterList.value = chipSet
+    }
+
+    @SuppressLint("DefaultLocale")
+    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.toLowerCase().capitalize() }
+
 }
