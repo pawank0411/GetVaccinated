@@ -14,6 +14,8 @@ import com.airbnb.epoxy.EpoxyRecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.vaccine.slot.notifier.*
 import com.vaccine.slot.notifier.databinding.*
+import com.vaccine.slot.notifier.ui.dialogs.DistrictDialog
+import com.vaccine.slot.notifier.ui.dialogs.StateDialog
 import com.vaccine.slot.notifier.ui.notification.NotificationMessage
 import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,8 +27,6 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var activityHomeBinding: ActivityHomeBinding
     private lateinit var homeViewModel: HomeViewModel
-    private lateinit var bottomSheetDialog: BottomSheetDialog
-    private lateinit var bottomSheetLayoutBinding: LayoutStatedistrcitListBinding
     private val titles = listOf("Search By District", "Search By PIN")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,14 +42,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
-        bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetLayoutBinding = LayoutStatedistrcitListBinding.inflate(layoutInflater)
-        bottomSheetDialog.setContentView(bottomSheetLayoutBinding.root)
-        bottomSheetLayoutBinding.dataList.layoutManager = LinearLayoutManager(this)
-
         homeViewModel.getStateList() // pre-fetch state list
-        populateStateList()
 
         if (selectedTab.isEmpty()) buildTabContent("District", false) // default selected tab
         activityHomeBinding.epoxyTabs.layoutManager =
@@ -153,14 +146,6 @@ class HomeActivity : AppCompatActivity() {
             selectedPinCode = it
         })
 
-        homeViewModel.stateList.observe(this, {
-            bottomSheetLayoutBinding.dataList.requestModelBuild()
-        })
-
-        homeViewModel.districtList.observe(this, {
-            bottomSheetLayoutBinding.dataList.requestModelBuild()
-        })
-
         homeViewModel.tabSelection.observe(this, {
             selectedTab = it.toString()
             if (selectedTab == "0") buildTabContent("District", true) else buildTabContent("PIN", true)
@@ -172,6 +157,17 @@ class HomeActivity : AppCompatActivity() {
                         R.color.blueF
                 )
         )
+
+        if (savedInstanceState != null) {
+            val stateDialog = supportFragmentManager.findFragmentByTag(StateDialog.TAG) as StateDialog?
+            stateDialog?.setOnClickListener { s, i ->
+                setStateInputLayout(s, i)
+            }
+            val districtDialog = supportFragmentManager.findFragmentByTag(DistrictDialog.TAG) as DistrictDialog?
+            districtDialog?.setOnClickListener { s, i ->
+                setDistrictInputLayout(s, i)
+            }
+        }
     }
 
     private fun buildTabContent(title: String, requestRebuild: Boolean) {
@@ -190,21 +186,24 @@ class HomeActivity : AppCompatActivity() {
                                     .onClick { _ ->
                                         when (i) {
                                             0 -> {
-                                                bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_state)
-                                                populateStateList()
-                                                bottomSheetDialog.show()
+                                                StateDialog().apply {
+                                                    setOnClickListener { state, id ->
+                                                        setStateInputLayout(state, id)
+                                                    }
+                                                }.show(supportFragmentManager, StateDialog.TAG)
                                             }
                                             1 -> {
-                                                bottomSheetLayoutBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_district)
-                                                populateStateDistrictList()
-                                                bottomSheetDialog.show()
+                                                DistrictDialog().apply {
+                                                    setOnClickListener { district, id ->
+                                                        setDistrictInputLayout(district, id)
+                                                    }
+                                                }.show(supportFragmentManager, DistrictDialog.TAG)
                                             }
                                         }
                                     }
                                     .addTo(controller)
                         }
                     }
-
                 })
             }
             title.contains("PIN") -> {
@@ -228,47 +227,17 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun populateStateList() {
-        bottomSheetLayoutBinding.dataList.buildModelsWith(object :
-                EpoxyRecyclerView.ModelBuilderCallback {
-            override fun buildModels(controller: EpoxyController) {
-                val dataList = homeViewModel.stateList.value
-                dataList?.forEach { state ->
-                    ItemLayoutBottomSheetBindingModel_()
-                            .id(state.stateId)
-                            .name(state.stateName)
-                            .onClick { _ ->
-                                selectedStateName = state.stateName
-                                homeViewModel.getDistrictList(state.stateId) // pre-fetch all districts of state
-                                selectedDistrictName = ""
-                                bottomSheetDialog.dismiss()
-                                activityHomeBinding.epoxyTabContent.requestModelBuild()
-                            }
-                            .addTo(controller)
-                } ?: bottomSheetDialog.dismiss()
-            }
-        })
+    private fun setDistrictInputLayout(district: String, id: Int) {
+        selectedDistrictName = district
+        selectedDistrictCodeId = id
+        activityHomeBinding.epoxyTabContent.requestModelBuild()
     }
 
-    private fun populateStateDistrictList() {
-        bottomSheetLayoutBinding.dataList.buildModelsWith(object :
-                EpoxyRecyclerView.ModelBuilderCallback {
-            override fun buildModels(controller: EpoxyController) {
-                val dataList = homeViewModel.districtList.value
-                dataList?.forEach { district ->
-                    ItemLayoutBottomSheetBindingModel_()
-                            .id(district.districtId)
-                            .name(district.districtName)
-                            .onClick { _ ->
-                                selectedDistrictName = district.districtName
-                                selectedDistrictCodeId = district.districtId
-                                bottomSheetDialog.dismiss()
-                                activityHomeBinding.epoxyTabContent.requestModelBuild()
-                            }
-                            .addTo(controller)
-                } ?: bottomSheetDialog.dismiss()
-            }
-        })
+    private fun setStateInputLayout(state: String, id: Int) {
+        selectedStateName = state
+        selectedDistrictName = ""
+        homeViewModel.getDistrictList(id)
+        activityHomeBinding.epoxyTabContent.requestModelBuild()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -1,4 +1,4 @@
-package com.vaccine.slot.notifier
+package com.vaccine.slot.notifier.other
 
 import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager

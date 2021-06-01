@@ -21,6 +21,7 @@ import com.vaccine.slot.notifier.data.model.Session
 import com.vaccine.slot.notifier.databinding.ActivityShowSlotsBinding
 import com.vaccine.slot.notifier.databinding.LayoutBookAppointmentDialogBinding
 import com.vaccine.slot.notifier.databinding.LayoutProgressDialogBinding
+import com.vaccine.slot.notifier.other.HorizontalGridSpan7Model_
 import com.vaccine.slot.notifier.other.Status
 import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedAge
 import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedDistrictCodeId
@@ -283,11 +284,10 @@ class ShowSlots : AppCompatActivity() {
             slotsViewModel.setChipFilterList(it?.data?.centers) // fetch unique fee type and vaccine type
 
             val prefAge = selectedAge.split("[–+]".toRegex()).map { it.trim() }
-            originalList = it.data?.centers?.filter { center ->
-                center.sessions?.any { session ->
-                    session.minAgeLimit == prefAge[0].toInt() && if (selectedDose == "1") session.availableCapacityDose1!! > 0
-                    else session.availableCapacityDose2!! > 0
-                } == true
+            it.data?.centers?.forEach { center ->
+                center.sessions?.filter { session ->
+                    session.minAgeLimit!! > prefAge[0].toInt() && session.availableCapacityDose1!! > 0
+                }
             }
 
             originalList = it?.data?.centers
