@@ -3,6 +3,8 @@ package com.vaccine.slot.notifier.data.model
 import com.google.gson.annotations.SerializedName
 
 data class Center(
+        @SerializedName("center_id")
+        val centerId: Int?,
         @SerializedName("name")
         val name: String?,
         @SerializedName("address")
@@ -12,5 +14,7 @@ data class Center(
         @SerializedName("fee_type")
         val feeType: String?,
         @SerializedName("sessions")
-        var sessions: List<Session>?
+        val sessions: List<Session>?,
+        @SerializedName("vaccine_fees")
+        val vaccineFee: List<VaccineFee>?
 )

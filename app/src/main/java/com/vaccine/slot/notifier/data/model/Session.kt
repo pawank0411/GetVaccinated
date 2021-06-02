@@ -3,10 +3,12 @@ package com.vaccine.slot.notifier.data.model
 import com.google.gson.annotations.SerializedName
 
 data class Session(
+        @SerializedName("session_id")
+        val sessionId: String?,
         @SerializedName("date")
         val date: String?,
         @SerializedName("available_capacity")
-        var availableCapacityDose: Double?,
+        val availableCapacityDose: Double?,
         @SerializedName("min_age_limit")
         val minAgeLimit: Int?,
         @SerializedName("vaccine")

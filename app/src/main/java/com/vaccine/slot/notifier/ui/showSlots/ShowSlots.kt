@@ -3,6 +3,7 @@ package com.vaccine.slot.notifier.ui.showSlots
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import com.vaccine.slot.notifier.*
 import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Session
@@ -32,16 +34,17 @@ import com.vaccine.slot.notifier.ui.home.HomeActivity.Companion.selectedTab
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class ShowSlots : AppCompatActivity() {
 
     private lateinit var activityShowSlotsBinding: ActivityShowSlotsBinding
     private lateinit var slotsViewModel: ShowSlotsViewModel
-    private var feeList: List<Center>? = listOf()
-    private var vaccineList: List<Center>? = listOf()
-    private var responseList: List<Center>? = listOf()
-    private var originalList: List<Center>? = listOf()
+    private var feeList: Map<Center, List<Session>?>? = HashMap()
+    private var vaccineList: Map<Center, List<Session>?>? = HashMap()
+    private var responseList: Map<Center, List<Session>?>? = HashMap()
+    private var originalList: Map<Center, List<Session>?>? = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,27 +69,6 @@ class ShowSlots : AppCompatActivity() {
         val layoutProgressDialogBinding = LayoutProgressDialogBinding.inflate(layoutInflater)
         bottomProgressDialog.setContentView(layoutProgressDialogBinding.root)
 
-        activityShowSlotsBinding.datesList.layoutManager = LinearLayoutManager(this)
-        activityShowSlotsBinding.datesList.buildModelsWith(object : EpoxyRecyclerView.ModelBuilderCallback {
-            override fun buildModels(controller: EpoxyController) {
-                val subItems = mutableListOf<EpoxyModel<*>>()
-                slotsViewModel.getSevenDayDate().forEachIndexed { index, item ->
-                    val splitDate = item.date.split(" ")
-                    subItems.add(ItemLayoutDateBindingModel_()
-                            .id(index)
-                            .text(splitDate[0] + "\n" + splitDate[1] + " " + splitDate[2]))
-                }
-
-                HorizontalGridSpan7Model_()
-                        .id(subItems.hashCode())
-                        .models(subItems)
-                        .padding(
-                                Carousel.Padding(0, 0, 0, 0, 15)
-                        )
-                        .addTo(controller)
-            }
-        })
-
         if (selectedTab == "1") {
             slotsViewModel.getSlotDetailsPinCodeWise(selectedPinCode)
             activityShowSlotsBinding.heading.text = resources.getString(
@@ -108,15 +90,15 @@ class ShowSlots : AppCompatActivity() {
         activityShowSlotsBinding.chipGroupFee.setOnCheckedChangeListener { _, checkedId: Int ->
             val chip: Chip? = activityShowSlotsBinding.chipGroupFee.findViewById(checkedId) as Chip?
             chip?.let {
+
                 val predicate: (Center) -> Boolean = { center ->
                     center.feeType.equals(it.text.toString(), ignoreCase = true)
                 }
-
-                val filter = if (vaccineList.isNullOrEmpty()) originalList?.filter(predicate) else vaccineList?.filter(predicate)
+                val filter = if (vaccineList.isNullOrEmpty()) originalList?.filterKeys(predicate) else vaccineList?.filterKeys(predicate)
+                feeList = originalList?.filterKeys(predicate)
                 responseList = filter
-                feeList = originalList?.filter(predicate)
             } ?: kotlin.run {
-                feeList = listOf()
+                feeList = HashMap()
                 responseList = if (vaccineList.isNullOrEmpty()) originalList else vaccineList
             }
             activityShowSlotsBinding.epoxy.requestModelBuild()
@@ -124,22 +106,16 @@ class ShowSlots : AppCompatActivity() {
 
         activityShowSlotsBinding.chipGroupVaccine.setOnCheckedChangeListener { _, checkedId: Int ->
             val chip: Chip? = activityShowSlotsBinding.chipGroupVaccine.findViewById(checkedId) as Chip?
-            chip?.let {
-                val predicate: (Session) -> Boolean = { session ->
-                    session.vaccine.equals(it.text.toString(), ignoreCase = true)
-                }
+            chip?.let { c ->
 
-                val filter = if (feeList.isNullOrEmpty()) originalList?.filter { center ->
-                    center.sessions?.any(predicate) == true
-                } else feeList?.filter { center ->
-                    center.sessions?.any(predicate) == true
+                val predicate: (Session) -> Boolean = { session ->
+                    session.vaccine.equals(c.text.toString(), ignoreCase = true)
                 }
+                val filter = if (feeList.isNullOrEmpty()) originalList?.map { it.key to it.value?.filter(predicate) }?.toMap() else feeList?.map { it.key to it.value?.filter(predicate) }?.toMap()
+                vaccineList = originalList?.map { it.key to it.value?.filter(predicate) }?.toMap()
                 responseList = filter
-                vaccineList = originalList?.filter { center ->
-                    center.sessions?.any(predicate) == true
-                }
             } ?: kotlin.run {
-                vaccineList = listOf()
+                vaccineList = HashMap()
                 responseList = if (feeList.isNullOrEmpty()) originalList else feeList
             }
             activityShowSlotsBinding.epoxy.requestModelBuild()
@@ -149,24 +125,42 @@ class ShowSlots : AppCompatActivity() {
         activityShowSlotsBinding.epoxy.buildModelsWith(object :
                 EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
+                val subItemsDates = mutableListOf<EpoxyModel<*>>()
+                slotsViewModel.getSevenDayDate().forEachIndexed { index, item ->
+                    val splitDate = item.date.split(" ")
+                    subItemsDates.add(ItemLayoutDateBindingModel_()
+                            .id(index)
+                            .text(splitDate[0] + "\n" + splitDate[1] + " " + splitDate[2]))
+                }
+
+                HorizontalGridSpan7Model_()
+                        .id(subItemsDates.hashCode())
+                        .models(subItemsDates)
+                        .padding(
+                                Carousel.Padding(0, 0, 0, 0, 15)
+                        )
+                        .addTo(controller)
+
                 val response = slotsViewModel.slotDetails.value
                 when (response?.status) {
                     Status.LOADING -> {
                         bottomProgressDialog.show()
                     }
                     Status.ERROR -> {
-                        // TODO snack the error message
                         bottomProgressDialog.dismiss()
+                        showSnackbar(response.message ?: "Something went wrong. Please try again")
+                        noSlotsAvailable()
                     }
                     Status.SUCCESS -> {
-                        val sortedList = responseList?.sortedBy { center -> center.name }
-                        if (sortedList.isNullOrEmpty()) noSlotsAvailable() else activityShowSlotsBinding.noSlotsMessage.visibility = GONE
-                        sortedList?.forEachIndexed { index, center ->
+                        if (responseList.isNullOrEmpty()) noSlotsAvailable() else activityShowSlotsBinding.noSlotsMessage.visibility = GONE
+                        val nonEmptyListOfResponse = responseList?.filterValues { it?.isNotEmpty() == true }
+                        nonEmptyListOfResponse?.map { centerMap ->
+                            val center = centerMap.key
                             ItemLayoutCenterHeaderBindingModel_()
-                                    .id(index)
+                                    .id(center.centerId)
                                     .centerName(center.name)
-                                    .pinCode(center.pincode.toString() + " \u2022 " + center.address)
                                     .price(center.feeType)
+                                    .pinCode(center.pincode.toString() + " \u2022 " + center.address)
                                     .addTo(controller)
 
                             val subItems = mutableListOf<EpoxyModel<*>>()
@@ -185,11 +179,12 @@ class ShowSlots : AppCompatActivity() {
                                 val currentDateStr = sdf.format(date)
 
                                 var currentSession: Session? = null
-                                center.sessions?.forEach { session ->
+
+                                centerMap.value?.forEach { session ->
                                     if (session.date!! == currentDateStr) {
                                         currentSession = session
                                     }
-                                } ?: noSlotsAvailable()
+                                }
 
                                 if (currentSession != null) {
                                     val colorTint: Int
@@ -273,6 +268,7 @@ class ShowSlots : AppCompatActivity() {
                                     .id(Random().nextInt())
                                     .addTo(controller)
 
+
                         }
                         bottomProgressDialog.dismiss()
                     }
@@ -280,17 +276,16 @@ class ShowSlots : AppCompatActivity() {
             }
         })
 
-        slotsViewModel.slotDetails.observe(this, {
+        slotsViewModel.slotDetails.observe(this, { it ->
             slotsViewModel.setChipFilterList(it?.data?.centers) // fetch unique fee type and vaccine type
 
             val prefAge = selectedAge.split("[–+]".toRegex()).map { it.trim() }
-            it.data?.centers?.forEach { center ->
-                center.sessions?.filter { session ->
-                    session.minAgeLimit!! > prefAge[0].toInt() && session.availableCapacityDose1!! > 0
-                }
-            }
 
-            originalList = it?.data?.centers
+            val allValidSessions = it?.data?.centers?.sortedBy { it.name }?.map { center ->
+                center to center.sessions?.filter { session -> isValidSession(session, prefAge[0], selectedDose) }
+            }?.toMap()
+
+            originalList = allValidSessions
             responseList = originalList
             activityShowSlotsBinding.epoxy.requestModelBuild()
         })
@@ -298,6 +293,11 @@ class ShowSlots : AppCompatActivity() {
         slotsViewModel.chipFilterList.observe(this, {
             addChips(it)
         })
+    }
+
+    private fun isValidSession(session: Session, s: String, selectedDose: String): Boolean {
+        if (session.minAgeLimit!! == s.toInt() && (if (selectedDose == "1") session.availableCapacityDose1!! > 0 else session.availableCapacityDose2!! > 0)) return true
+        return false
     }
 
     private fun addChips(chipSet: Set<String>) {
@@ -338,5 +338,10 @@ class ShowSlots : AppCompatActivity() {
         val builder = CustomTabsIntent.Builder()
         builder.setShowTitle(true)
         builder.build().launchUrl(this, Uri.parse("https://selfregistration.cowin.gov.in/"))
+    }
+
+    private fun showSnackbar(message: String) {
+        val parentLayout: View = findViewById(android.R.id.content)
+        Snackbar.make(parentLayout, message, Snackbar.LENGTH_SHORT).show()
     }
 }

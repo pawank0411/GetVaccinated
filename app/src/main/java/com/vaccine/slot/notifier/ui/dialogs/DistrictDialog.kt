@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.vaccine.slot.notifier.ItemLayoutBottomSheetBindingModel_
 import com.vaccine.slot.notifier.R
@@ -61,5 +62,11 @@ class DistrictDialog : BottomSheetDialogFragment() {
         homeViewModel.districtList.observe(this, {
             layoutStateDistrictListBinding.dataList.requestModelBuild()
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val behaviour = BottomSheetBehavior.from(requireView().parent as View)
+        behaviour.state = BottomSheetBehavior.STATE_EXPANDED
     }
 }
