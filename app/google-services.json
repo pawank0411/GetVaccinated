@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "568156960451-toeo8ks8tvb0075f8p6umjk34d9pvgvo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vaccine.slot.notifier",
+            "certificate_hash": "f5a07ad7d1556bcc89bf5d9d46ab3d40027738ba"
+          }
+        },
+        {
           "client_id": "568156960451-60er43m1cal59u882cfh2sp3tpuubidt.apps.googleusercontent.com",
           "client_type": 3
         }

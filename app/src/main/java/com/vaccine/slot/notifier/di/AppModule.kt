@@ -2,6 +2,7 @@ package com.vaccine.slot.notifier.di
 
 import android.content.Context
 import androidx.room.Room
+import com.vaccine.slot.notifier.BuildConfig
 import com.vaccine.slot.notifier.db.AppDatabase
 import com.vaccine.slot.notifier.retrofit.ApiService
 import dagger.Module
@@ -26,16 +27,16 @@ object AppModule {
 
         httpClient.addInterceptor { chain ->
             val request: Request = chain.request().newBuilder()
-                .addHeader("Authority", "cdn-api.co-vin.in")
-                .addHeader("Accept", "application/json")
-                .addHeader("Accept-Language", "hi_IN")
-                .addHeader("User-Agent", "PostmanRuntime/7.28.0")
-                .build()
+                    .addHeader("Authority", "cdn-api.co-vin.in")
+                    .addHeader("Accept", "application/json")
+                    .addHeader("Accept-Language", "hi_IN")
+                    .addHeader("User-Agent", "PostmanRuntime/7.28.0")
+                    .build()
             chain.proceed(request)
         }
 
         return Retrofit.Builder()
-                .baseUrl("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/")
+                .baseUrl(BuildConfig.API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
                 .build()
@@ -46,9 +47,21 @@ object AppModule {
     @Singleton
     fun provideDatabase(
             @ApplicationContext context: Context
-    ) = Room.databaseBuilder(context, AppDatabase::class.java, "Notification Database").build()
+    ) = Room.databaseBuilder(context, AppDatabase::class.java, "Database").build()
 
     @Provides
     @Singleton
     fun provideNotificationDao(dataBase: AppDatabase) = dataBase.notificationDao()
+
+    @Provides
+    @Singleton
+    fun provideSubscribedSlotsDao(dataBase: AppDatabase) = dataBase.subscribedSlotsDao()
+
+    @Provides
+    @Singleton
+    fun provideReportDao(dataBase: AppDatabase) = dataBase.reportDao()
+
+    @Provides
+    @Singleton
+    fun provideUserIDDao(dataBase: AppDatabase) = dataBase.userIDDao()
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
 import com.onesignal.OSNotificationAction
 import com.onesignal.OneSignal
+import com.vaccine.slot.notifier.other.Constants.CO_WIN_LINK
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -22,7 +23,7 @@ class MainApplication : Application() {
 
         // OneSignal Initialization
         OneSignal.initWithContext(this)
-        OneSignal.setAppId("a3e7ac5f-d229-4cc3-a769-62261c9eaf24")
+        OneSignal.setAppId(BuildConfig.APP_ID)
         OneSignal.setNotificationOpenedHandler { result ->
             val actionType = result?.action?.type
 
@@ -35,7 +36,7 @@ class MainApplication : Application() {
                         // BOOK NOW
                         builder.build().launchUrl(
                                 applicationContext,
-                                Uri.parse("https://selfregistration.cowin.gov.in/")
+                                Uri.parse(CO_WIN_LINK)
                         )
                     "id2" ->
                         // DONATE US

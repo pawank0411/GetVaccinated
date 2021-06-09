@@ -23,7 +23,7 @@
             android:id="@+id/stateDistrictName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8sp"
+            android:padding="8dp"
             android:text='@{name}'
             android:textAppearance="@style/Theme.BottomSheetItemColor"
             app:layout_constraintTop_toTopOf="parent"

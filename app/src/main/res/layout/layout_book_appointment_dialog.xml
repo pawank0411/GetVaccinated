@@ -35,6 +35,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:text="@string/continue_book"
+        android:elevation="0dp"
+        android:padding="15dp"
+        android:stateListAnimator="@null"
+        app:cornerRadius="10dp"
+        app:rippleColor="@color/trans"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/message" />
@@ -44,7 +49,15 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:elevation="0dp"
+        android:padding="15dp"
+        android:stateListAnimator="@null"
         android:text="@string/cancel_book"
         android:textAllCaps="false"
-        app:layout_constraintTop_toBottomOf="@id/bookAppointment" />
+        app:cornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bookAppointment"
+        app:rippleColor="@color/trans" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.vaccine.slot.notifier">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,7 +14,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.VaccineSlotNotifier">
+        android:networkSecurityConfig="@xml/network_configuration"
+        android:theme="@style/Theme.VaccineSlotNotifier"
+        tools:targetApi="n">
         <activity
             android:name=".ui.home.HomeActivity"
             android:label="@string/app_name">
@@ -24,6 +28,7 @@
         </activity>
         <activity android:name=".ui.showSlots.ShowSlots" />
         <activity android:name=".ui.notification.NotificationMessage" />
+        <activity android:name=".ui.alert.UserSubscribedAlerts" />
 
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"

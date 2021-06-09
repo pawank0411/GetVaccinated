@@ -6,39 +6,45 @@
     android:layout_height="wrap_content"
     android:background="@drawable/curve_edge">
 
-    <ImageView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/heading"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:contentDescription="@string/image_error"
-        android:src="@mipmap/ic_launcher"
+        android:layout_margin="15dp"
+        android:text="@string/alert_unsubscribed"
+        android:textAppearance="@style/Theme.BottomSheetTitle"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/message"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
         android:textAppearance="@style/Theme.ErrorMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/status"
-        tools:text="Please select your state and district" />
+        app:layout_constraintTop_toBottomOf="@id/heading"
+        tools:text="You are successfully unsubscribed" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="5dp"
+        android:layout_margin="15dp"
+        android:elevation="0dp"
+        android:padding="15dp"
+        android:stateListAnimator="@null"
         android:text="@string/ok"
         android:textColor="@color/white"
+        app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/message" />
+        app:layout_constraintTop_toBottomOf="@id/message"
+        app:rippleColor="@color/trans"
+        tools:layout_editor_absoluteX="15dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

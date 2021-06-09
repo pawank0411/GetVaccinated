@@ -7,9 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vaccine.slot.notifier.data.model.ApiResponse
 import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Date
+import com.vaccine.slot.notifier.data.model.Session
+import com.vaccine.slot.notifier.data.model.response.ApiResponse
 import com.vaccine.slot.notifier.other.Resource
 import com.vaccine.slot.notifier.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -88,12 +89,12 @@ class ShowSlotsViewModel @Inject constructor(
         return ColorStateList(states, colors)
     }
 
-    fun setChipFilterList(center: List<Center>?) {
+    fun setChipFilterList(map: Map<Center, List<Session>?>?) {
         val chipSet = mutableSetOf<String>()
-        center?.forEach { item ->
-            item.feeType?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
-            item.sessions?.forEach { session ->
-                session.vaccine?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
+        map?.filterValues { it?.isNotEmpty() == true }?.map { item ->
+            item.key.feeType?.let { it1 -> chipSet.add(it1.capitalizeWords()) }
+            item.value?.forEach { session ->
+                session.vaccine?.let { it2 -> chipSet.add(it2.capitalizeWords()) }
             }
         }
         _chipFilterList.value = chipSet
@@ -101,5 +102,4 @@ class ShowSlotsViewModel @Inject constructor(
 
     @SuppressLint("DefaultLocale")
     private fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.toLowerCase().capitalize() }
-
 }

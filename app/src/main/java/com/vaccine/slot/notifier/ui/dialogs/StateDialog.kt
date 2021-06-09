@@ -12,25 +12,22 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.vaccine.slot.notifier.ItemLayoutBottomSheetBindingModel_
 import com.vaccine.slot.notifier.R
-import com.vaccine.slot.notifier.databinding.LayoutStatedistrictListBinding
+import com.vaccine.slot.notifier.databinding.LayoutStatedistrictDialogBinding
 import com.vaccine.slot.notifier.ui.home.HomeViewModel
 
 class StateDialog : BottomSheetDialogFragment() {
-    companion object {
-        const val TAG = "StateDialog"
-    }
 
     private var onClickListener: ((String, Int) -> Unit)? = null
 
     private lateinit var homeViewModel: HomeViewModel
-    private lateinit var layoutStateDistrictListBinding: LayoutStatedistrictListBinding
+    private lateinit var layoutStateDistrictListBinding: LayoutStatedistrictDialogBinding
 
     fun setOnClickListener(listener: (String, Int) -> Unit) {
         onClickListener = listener
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        layoutStateDistrictListBinding = LayoutStatedistrictListBinding.inflate(inflater)
+        layoutStateDistrictListBinding = LayoutStatedistrictDialogBinding.inflate(inflater)
         return layoutStateDistrictListBinding.root
     }
 

@@ -8,12 +8,13 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="whitealpha">#F2FFFFFF</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#5FD865</color>
     <color name="yellow">#FBC16C</color>
     <color name="red">#EF867F</color>
     <color name="grey">#C1C0C0</color>
-    <color name="lightGrey">#51C3C1C1</color>
+    <color name="lightGrey">#B8B7B7</color>
     <color name="darkerGrey">#ADC6C4C4</color>
     <color name="blueF">#03A9F4</color>
     <color name="trans">#0000ffff</color>

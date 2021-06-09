@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/centerNameTV"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text='@{centerName}'
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -35,26 +35,25 @@
 
         <TextView
             android:id="@+id/pincodeTV"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5sp"
+            android:layout_marginTop="5dp"
             android:text='@{pinCode}'
-            android:layout_marginEnd="10dp"
-            android:maxLines="1"
-            app:layout_constraintEnd_toStartOf="@+id/priceTV"
+            android:layout_marginEnd="40dp"
+            android:singleLine="true"
             android:textAppearance="@style/Theme.Footer"
-            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toStartOf="@+id/priceTV"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/centerNameTV"
-            tools:text="491225" />
+            tools:text="789464" />
 
         <TextView
             android:id="@+id/priceTV"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text='@{price}'
-            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

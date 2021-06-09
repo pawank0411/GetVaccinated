@@ -5,14 +5,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.vaccine.slot.notifier.data.model.NotificationResponse
+import com.vaccine.slot.notifier.data.model.room.NotificationResponseRoom
 
 @Dao
 interface NotificationDao {
 
     @Query("SELECT * from response")
-    fun getAll(): LiveData<List<NotificationResponse>>?
+    fun getAll(): LiveData<List<NotificationResponseRoom>>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(notificationResponse: NotificationResponse)
+    suspend fun insert(notificationResponseRoom: NotificationResponseRoom)
 }

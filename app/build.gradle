@@ -21,6 +21,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "DOMAIN", DOMAIN_SLOTS_NOTIFY)
+        buildConfigField("String", "APP_ID", ONESIGNAL_APP_ID)
+        buildConfigField("String", "API", CO_WIN_API)
     }
 
     buildTypes {
@@ -71,10 +74,16 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     // epoxy recyclerView
     implementation 'com.airbnb.android:epoxy:4.6.1'
     implementation 'com.airbnb.android:epoxy-databinding:4.6.1'
     kapt 'com.airbnb.android:epoxy-processor:4.6.1'
+
+    // epoxy carousel customized
+    implementation 'com.github.worldsnas:slider:1.0.3'
 
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
@@ -86,7 +95,7 @@ dependencies {
     // firebase
     implementation 'com.google.firebase:firebase-messaging-ktx:21.0.0'
     implementation 'com.google.firebase:firebase-core:19.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.0.1'
     implementation 'com.google.firebase:firebase-analytics-ktx:19.0.0'
 
     // Room

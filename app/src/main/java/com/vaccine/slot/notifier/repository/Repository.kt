@@ -3,9 +3,7 @@ package com.vaccine.slot.notifier.repository
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import com.vaccine.slot.notifier.data.model.District
-import com.vaccine.slot.notifier.data.model.State
-import com.vaccine.slot.notifier.data.model.StateList
+import com.vaccine.slot.notifier.data.model.*
 import com.vaccine.slot.notifier.other.Resource
 import com.vaccine.slot.notifier.retrofit.ApiService
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -14,12 +12,13 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 class Repository @Inject constructor(
         @ApplicationContext
         context: Context,
-        private val apiService: ApiService,
+        private val apiService: ApiService
 ) {
     private var jsonString: String? = null
 
@@ -32,12 +31,30 @@ class Repository @Inject constructor(
         }
     }
 
-    suspend fun getDataDetailsDistrictWise(code: Int) = withContext(Dispatchers.IO) {
+    suspend fun getDataDetailsDistrictWise(code: Int) =
+            withContext(Dispatchers.IO) {
+                val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                val currentDate = sdf.format(Date())
+
+                try {
+                    val response = apiService.getSlotsDistrictWise(code, currentDate)
+                    if (response.isSuccessful) {
+                        Resource.success((response.body()))
+                    } else {
+                        Resource.error("Something went wrong. Please try again", null)
+                    }
+                } catch (e: Exception) {
+                    Log.d("Exception", e.toString())
+                    Resource.error("Something went wrong. Please try again", null)
+                }
+            }
+
+    suspend fun getDataDetailsPinCodeWise(code: Int) = withContext(Dispatchers.IO) {
         val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         val currentDate = sdf.format(Date())
 
         try {
-            val response = apiService.getSlotsDistrictWise(code, currentDate)
+            val response = apiService.getSlotsPinCodeWise(code, currentDate)
             if (response.isSuccessful) {
                 Resource.success((response.body()))
             } else {
@@ -49,12 +66,54 @@ class Repository @Inject constructor(
         }
     }
 
-    suspend fun getDataDetailsPinCodeWise(code: Int) = withContext(Dispatchers.IO) {
-        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val currentDate = sdf.format(Date())
+    suspend fun setSubscribeUserForSlots(subscribeSlots: SubscribeSlots, url: String) =
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = apiService.subscribeUserForSlot(subscribeSlots, url)
+                    if (response.isSuccessful) {
+                        Resource.success((response.body()))
+                    } else {
+                        Resource.error("Something went wrong. Please try again", null)
+                    }
+                } catch (e: Exception) {
+                    Log.d("Exception", e.toString())
+                    Resource.error("Something went wrong. Please try again", null)
+                }
+            }
 
+    suspend fun setUnsubscribeForSlots(subscribeSlots: SubscribeSlots, url: String) =
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = apiService.unsubscribeUserForSlot(subscribeSlots, url)
+                    if (response.isSuccessful) {
+                        Resource.success((response.body()))
+                    } else {
+                        Resource.error("Something went wrong. Please try again", null)
+                    }
+                } catch (e: Exception) {
+                    Log.d("Exception", e.toString())
+                    Resource.error("Something went wrong. Please try again", null)
+                }
+            }
+
+    suspend fun reportSlotAlert(reportAlert: ReportAlert, url: String) =
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = apiService.reportSlot(reportAlert, url)
+                    if (response.isSuccessful) {
+                        Resource.success((response.body()))
+                    } else {
+                        Resource.error("Something went wrong. Please try again", null)
+                    }
+                } catch (e: Exception) {
+                    Log.d("Exception", e.toString())
+                    Resource.error("Something went wrong. Please try again", null)
+                }
+            }
+
+    suspend fun getInfo(url: String) = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getSlotsPinCodeWise(code, currentDate)
+            val response = apiService.getInfo(url)
             if (response.isSuccessful) {
                 Resource.success((response.body()))
             } else {

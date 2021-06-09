@@ -31,17 +31,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="@{onClick}"
-        android:layout_marginTop="5sp">
+        android:layout_marginTop="5dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/vaccineNoTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="0dp"
-            android:paddingStart="10sp"
-            android:paddingTop="6sp"
-            android:paddingEnd="10sp"
-            android:paddingBottom="6sp"
+            android:paddingStart="10dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="6dp"
             android:backgroundTint="@{backgroundTint}"
             android:text="@{vaccineNo}"
             android:clickable="false"
