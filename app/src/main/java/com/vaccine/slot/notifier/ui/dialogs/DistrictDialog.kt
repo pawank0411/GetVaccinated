@@ -1,5 +1,8 @@
 package com.vaccine.slot.notifier.ui.dialogs
 
+import android.app.Dialog
+import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.vaccine.slot.notifier.ItemLayoutBottomSheetBindingModel_
 import com.vaccine.slot.notifier.R
@@ -37,20 +41,21 @@ class DistrictDialog : BottomSheetDialogFragment() {
         homeViewModel = ViewModelProvider(requireActivity()).get(HomeViewModel::class.java)
         layoutStateDistrictListBinding.bottomSheetTitle.text = resources.getString(R.string.select_your_district)
         layoutStateDistrictListBinding.dataList.layoutManager = LinearLayoutManager(requireContext())
-        layoutStateDistrictListBinding.dataList.buildModelsWith(object : EpoxyRecyclerView.ModelBuilderCallback {
+        layoutStateDistrictListBinding.dataList.buildModelsWith(object :
+            EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
                 val dataList = homeViewModel.districtList.value
                 dataList?.forEach { district ->
                     ItemLayoutBottomSheetBindingModel_()
-                            .id(district.districtId)
-                            .name(district.districtName)
-                            .onClick { _ ->
-                                onClickListener?.let { selected ->
-                                    selected(district.districtName, district.districtId)
-                                }
-                                dialog?.dismiss()
+                        .id(district.districtId)
+                        .name(district.districtName)
+                        .onClick { _ ->
+                            onClickListener?.let { selected ->
+                                selected(district.districtName, district.districtId)
                             }
-                            .addTo(controller)
+                            dialog?.dismiss()
+                        }
+                        .addTo(controller)
                 } ?: dialog?.dismiss()
             }
 
@@ -59,6 +64,21 @@ class DistrictDialog : BottomSheetDialogFragment() {
         homeViewModel.districtList.observe(this, {
             layoutStateDistrictListBinding.dataList.requestModelBuild()
         })
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        dialog.setOnShowListener { setupBottomSheet(it) }
+        return dialog
+    }
+
+    private fun setupBottomSheet(dialogInterface: DialogInterface) {
+        val bottomSheetDialog = dialogInterface as BottomSheetDialog
+        val bottomSheet = bottomSheetDialog.findViewById<View>(
+            com.google.android.material.R.id.design_bottom_sheet
+        )
+            ?: return
+        bottomSheet.setBackgroundColor(Color.TRANSPARENT)
     }
 
     override fun onStart() {

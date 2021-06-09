@@ -344,24 +344,25 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                 activityHomeBinding.epoxyTabContent.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                 activityHomeBinding.epoxyTabContent.buildModelsWith(object :
-                        EpoxyRecyclerView.ModelBuilderCallback {
+                    EpoxyRecyclerView.ModelBuilderCallback {
                     override fun buildModels(controller: EpoxyController) {
                         val hintTextList = homeViewModel.contentTabDistrict.value
                         for (i in 0..1) {
                             ItemLayoutDistrictBindingModel_()
-                                    .id(i)
-                                    .hintText(hintTextList?.get(i))
-                                    .text(if (i == 0) selectedStateName else selectedDistrictName)
-                                    .onClick { _ ->
-                                        when (i) {
-                                            0 -> {
-                                                StateDialog().apply {
-                                                    setOnClickListener { state, id ->
-                                                        setStateInputLayout(state, id)
-                                                    }
-                                                }.show(supportFragmentManager, STATE_TAG)
-                                            }
-                                            1 -> {
+                                .id(i)
+                                .hintText(hintTextList?.get(i))
+                                .text(if (i == 0) selectedStateName else selectedDistrictName)
+                                .onClick { _ ->
+                                    when (i) {
+                                        0 -> {
+                                            StateDialog().apply {
+                                                setOnClickListener { state, id ->
+                                                    setStateInputLayout(state, id)
+                                                }
+                                            }.show(supportFragmentManager, STATE_TAG)
+                                        }
+                                        1 -> {
+                                            if (selectedStateName.isNotEmpty()) {
                                                 DistrictDialog().apply {
                                                     setOnClickListener { district, id ->
                                                         setDistrictInputLayout(district, id)
@@ -370,7 +371,8 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                                             }
                                         }
                                     }
-                                    .addTo(controller)
+                                }
+                                .addTo(controller)
                         }
                     }
                 })
@@ -412,23 +414,28 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     private fun setUserToSubscribe(doseID: List<String>?, vaccineID: List<String>?) {
 
+        if (playerID.isNullOrEmpty()) {
+            showErrorMessage(resources.getString(R.string.error_message))
+            return
+        }
+
         val subscribeSlots = SubscribeSlots(
-                playerID,
-                selectedAge,
-                selectedStateId?.toString(),
-                selectedDistrictCodeId,
-                vaccineID,
-                doseID
+            playerID,
+            selectedAge,
+            selectedStateId?.toString(),
+            selectedDistrictCodeId,
+            vaccineID,
+            doseID
         )
 
         val isExists = isEqual(doseID, vaccineID)
         if (isExists) {
             showErrorMessage(resources.getString(R.string.user_subscribed))
             return
-        } else {
-            homeViewModel.getSlotsSubscribeResponse(subscribeSlots) // make the user to subscribe for the particular district
-            homeViewModel.setSubscribeSlotData(subscribeSlots)
         }
+        homeViewModel.getSlotsSubscribeResponse(subscribeSlots) // make the user to subscribe for the particular district
+        homeViewModel.setSubscribeSlotData(subscribeSlots)
+
     }
 
     private fun isEqual(dose: List<String>?, second: List<String>?): Boolean {

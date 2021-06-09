@@ -1,11 +1,15 @@
 package com.vaccine.slot.notifier.ui.dialogs
 
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.databinding.LayoutSubscribeNotificationDialogBinding
@@ -54,12 +58,27 @@ class SubscribeDialog : BottomSheetDialogFragment() {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    "SAMPLE TEXT"
+                Intent.EXTRA_TEXT,
+                "SAMPLE TEXT"
             )
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        dialog.setOnShowListener { setupBottomSheet(it) }
+        return dialog
+    }
+
+    private fun setupBottomSheet(dialogInterface: DialogInterface) {
+        val bottomSheetDialog = dialogInterface as BottomSheetDialog
+        val bottomSheet = bottomSheetDialog.findViewById<View>(
+            com.google.android.material.R.id.design_bottom_sheet
+        )
+            ?: return
+        bottomSheet.setBackgroundColor(Color.TRANSPARENT)
     }
 
     override fun onStart() {
