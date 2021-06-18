@@ -47,6 +47,10 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textStyle="bold"
         android:visibility="gone"
+        app:autoSizeMaxTextSize="20dp"
+        app:autoSizeMinTextSize="18dp"
+        app:autoSizeStepGranularity="2dp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintTop_toBottomOf="@+id/emptyImage"
         tools:text="SMAPLE TTS" />
 

@@ -78,9 +78,9 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // epoxy recyclerView
-    implementation 'com.airbnb.android:epoxy:4.6.1'
-    implementation 'com.airbnb.android:epoxy-databinding:4.6.1'
-    kapt 'com.airbnb.android:epoxy-processor:4.6.1'
+    implementation 'com.airbnb.android:epoxy:4.6.2'
+    implementation 'com.airbnb.android:epoxy-databinding:4.6.2'
+    kapt 'com.airbnb.android:epoxy-processor:4.6.2'
 
     // epoxy carousel customized
     implementation 'com.github.worldsnas:slider:1.0.3'

@@ -37,7 +37,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="Theme.BottomSheetItemColor" parent="@style/TextAppearance.MaterialComponents.Headline6">
+    <style name="Theme.BottomSheetItemColor" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">@color/black</item>
     </style>
 

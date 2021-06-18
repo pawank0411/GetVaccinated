@@ -18,7 +18,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -35,7 +35,11 @@
                 android:inputType="number"
                 android:maxLength="6"
                 android:text="@={viewModel.userText}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:autoSizeMaxTextSize="16dp"
+                app:autoSizeMinTextSize="14dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

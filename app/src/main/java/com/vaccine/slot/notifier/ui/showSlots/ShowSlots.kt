@@ -80,43 +80,53 @@ class ShowSlots : BaseActivity() {
         }
 
         activityShowSlotsBinding.chipGroupFee.setOnCheckedChangeListener { _, checkedId: Int ->
-            val chip: Chip? = activityShowSlotsBinding.chipGroupFee.findViewById(checkedId) as Chip?
-            chip?.let {
+            try {
+                val chip: Chip? = activityShowSlotsBinding.chipGroupFee.findViewById(checkedId) as Chip?
+                chip?.let {
 
-                val predicate: (Center) -> Boolean = { center ->
-                    center.feeType.equals(it.text.toString(), ignoreCase = true)
+                    val predicate: (Center) -> Boolean = { center ->
+                        center.feeType.equals(it.text.toString(), ignoreCase = true)
+                    }
+                    val filter =
+                            if (vaccineList.isNullOrEmpty()) originalList?.filterKeys(predicate) else vaccineList?.filterKeys(
+                                    predicate
+                            )
+                    feeList = originalList?.filterKeys(predicate)
+                    responseList = filter
+                } ?: kotlin.run {
+                    feeList = HashMap()
+                    responseList = if (vaccineList.isNullOrEmpty()) originalList else vaccineList
                 }
-                val filter =
-                        if (vaccineList.isNullOrEmpty()) originalList?.filterKeys(predicate) else vaccineList?.filterKeys(
-                                predicate
-                        )
-                feeList = originalList?.filterKeys(predicate)
-                responseList = filter
-            } ?: kotlin.run {
-                feeList = HashMap()
-                responseList = if (vaccineList.isNullOrEmpty()) originalList else vaccineList
+                activityShowSlotsBinding.epoxy.requestModelBuild()
+            } catch (e: Exception) {
+                activityShowSlotsBinding.epoxy.requestModelBuild()
+                println(e.localizedMessage)
             }
-            activityShowSlotsBinding.epoxy.requestModelBuild()
         }
 
         activityShowSlotsBinding.chipGroupVaccine.setOnCheckedChangeListener { _, checkedId: Int ->
-            val chip: Chip? =
-                    activityShowSlotsBinding.chipGroupVaccine.findViewById(checkedId) as Chip?
-            chip?.let { c ->
+            try {
+                val chip: Chip? =
+                        activityShowSlotsBinding.chipGroupVaccine.findViewById(checkedId) as Chip?
+                chip?.let { c ->
 
-                val predicate: (Session) -> Boolean = { session ->
-                    session.vaccine.equals(c.text.toString(), ignoreCase = true)
+                    val predicate: (Session) -> Boolean = { session ->
+                        session.vaccine.equals(c.text.toString(), ignoreCase = true)
+                    }
+                    val filter = if (feeList.isNullOrEmpty()) originalList?.map {
+                        it.key to it.value?.filter(predicate)
+                    }?.toMap() else feeList?.map { it.key to it.value?.filter(predicate) }?.toMap()
+                    vaccineList = originalList?.map { it.key to it.value?.filter(predicate) }?.toMap()
+                    responseList = filter
+                } ?: kotlin.run {
+                    vaccineList = HashMap()
+                    responseList = if (feeList.isNullOrEmpty()) originalList else feeList
                 }
-                val filter = if (feeList.isNullOrEmpty()) originalList?.map {
-                    it.key to it.value?.filter(predicate)
-                }?.toMap() else feeList?.map { it.key to it.value?.filter(predicate) }?.toMap()
-                vaccineList = originalList?.map { it.key to it.value?.filter(predicate) }?.toMap()
-                responseList = filter
-            } ?: kotlin.run {
-                vaccineList = HashMap()
-                responseList = if (feeList.isNullOrEmpty()) originalList else feeList
+                activityShowSlotsBinding.epoxy.requestModelBuild()
+            } catch (e: Exception) {
+                activityShowSlotsBinding.epoxy.requestModelBuild()
+                println(e.localizedMessage)
             }
-            activityShowSlotsBinding.epoxy.requestModelBuild()
         }
 
         activityShowSlotsBinding.dateEpoxy.layoutManager = LinearLayoutManager(this)
@@ -149,6 +159,7 @@ class ShowSlots : BaseActivity() {
             override fun buildModels(controller: EpoxyController) {
 
                 val response = slotsViewModel.slotDetails.value
+
                 when (response?.status) {
                     Status.LOADING -> {
                         activityShowSlotsBinding.progressBar.visibility = VISIBLE
@@ -204,11 +215,11 @@ class ShowSlots : BaseActivity() {
                                     subItems.add(
                                             ItemLayoutSlotsBindingModel_()
                                                     .id(currentSession!!.sessionId)
-                                                    .vaccineName(currentSession!!.vaccine)
+                                                    .vaccineName(currentSession?.vaccine)
                                                     .vaccineNo(
-                                                            if (selectedDose == "1") currentSession!!.availableCapacityDose1?.toInt()
+                                                            if (selectedDose == "1") currentSession?.availableCapacityDose1?.toInt()
                                                                     .toString()
-                                                            else currentSession!!.availableCapacityDose2?.toInt()
+                                                            else currentSession?.availableCapacityDose2?.toInt()
                                                                     .toString()
                                                     )
                                                     .isEnabled(true)
@@ -236,6 +247,7 @@ class ShowSlots : BaseActivity() {
                                                                     applicationContext.theme
                                                             )
                                                     )
+                                                    .onClick { _ -> }
                                     )
                                 }
                             }
@@ -272,13 +284,15 @@ class ShowSlots : BaseActivity() {
                                 )
                             }
 
-                            HorizontalGridSpan7Model_()
-                                    .id(innerSubItems.hashCode())
-                                    .models(innerSubItems)
-                                    .padding(
-                                            Carousel.Padding(0, 0, 0, 0, 15)
-                                    )
-                                    .addTo(controller)
+                            if (innerSubItems.size > 0) {
+                                HorizontalGridSpan7Model_()
+                                        .id(innerSubItems.hashCode())
+                                        .models(innerSubItems)
+                                        .padding(
+                                                Carousel.Padding(0, 0, 0, 0, 15)
+                                        )
+                                        .addTo(controller)
+                            }
 
                             ItemLayoutDividerBindingModel_()
                                     .id(Random().nextInt())
@@ -290,28 +304,30 @@ class ShowSlots : BaseActivity() {
             }
         })
 
-        slotsViewModel.slotDetails.observe(this, { it ->
-            val allValidSessions = it?.data?.centers?.sortedBy { it.name }?.map { center ->
-                center to center.sessions?.filter { session ->
-                    isValidSession(
-                            session,
-                            selectedAge.toString(),
-                            selectedDose
-                    )
-                }
-            }?.toMap()
+        slotsViewModel.slotDetails.observe(this,
+                { it ->
+                    val allValidSessions = it?.data?.centers?.sortedBy { it.name }?.map { center ->
+                        center to center.sessions?.filter { session ->
+                            isValidSession(
+                                    session,
+                                    selectedAge.toString(),
+                                    selectedDose
+                            )
+                        }
+                    }?.toMap()
 
-            originalList = allValidSessions
-            responseList = originalList
+                    originalList = allValidSessions
+                    responseList = originalList
 
-            slotsViewModel.setChipFilterList(originalList) // fetch unique fee type and vaccine type
+                    slotsViewModel.setChipFilterList(originalList) // fetch unique fee type and vaccine type
 
-            activityShowSlotsBinding.epoxy.requestModelBuild()
-        })
+                    activityShowSlotsBinding.epoxy.requestModelBuild()
+                })
 
-        slotsViewModel.chipFilterList.observe(this, {
-            addChips(it)
-        })
+        slotsViewModel.chipFilterList.observe(this,
+                {
+                    addChips(it)
+                })
     }
 
     private fun setPrice(center: Center): String {
@@ -377,7 +393,6 @@ class ShowSlots : BaseActivity() {
             else
                 list.add(e)
         }
-        println(list)
         return list
     }
 

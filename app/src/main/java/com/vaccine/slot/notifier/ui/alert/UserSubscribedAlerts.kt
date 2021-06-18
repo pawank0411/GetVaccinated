@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
+import com.google.gson.Gson
 import com.vaccine.slot.notifier.ItemLayoutAlertsBindingModel_
 import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.dao.SubscribedSlotsDao
+import com.vaccine.slot.notifier.dao.UserIDDao
 import com.vaccine.slot.notifier.data.model.SubscribeSlots
 import com.vaccine.slot.notifier.data.model.room.SubscribedSlotsRoom
 import com.vaccine.slot.notifier.databinding.ActivityShowAlertsBinding
@@ -32,6 +34,9 @@ class UserSubscribedAlerts : BaseActivity() {
 
     @Inject
     lateinit var subscribedSlotsDao: SubscribedSlotsDao
+
+    @Inject
+    lateinit var userIDDao: UserIDDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,20 +78,31 @@ class UserSubscribedAlerts : BaseActivity() {
             })
         })
 
+        userIDDao.getPlayerID().observe(this, { userID ->
+            userID?.let {
+                playerID = it.playerID
+            }
+        })
+
         viewModel.slotUnSubscribeResponse.observe(this, { response ->
             when (response?.status) {
                 Status.LOADING -> {
                     activityShowAlertsBinding.progressBar.visibility = VISIBLE
                 }
                 Status.SUCCESS -> {
+                    println(response)
                     viewModel.showDialog.observe(this, {
                         it?.getContentIfNotHandled()?.let {
-                            deleteFromDb()
+                            if (response.data?.message?.contains(
+                                            Constants.SUCCESS_UNSUBSCRIBED,
+                                            ignoreCase = true
+                                    ) == true)
+                                deleteFromDb()
+                            else showErrorMessage(resources.getString(R.string.error_message))
                         }
                     })
                 }
                 Status.ERROR -> {
-                    activityShowAlertsBinding.progressBar.visibility = GONE
                     response.message?.let { showErrorMessage(it) }
                 }
             }
@@ -111,19 +127,20 @@ class UserSubscribedAlerts : BaseActivity() {
     private fun getVaccineName(vaccineID: List<String>) = MAP_VACCINE.getValue(vaccineID[0])
 
     private fun showErrorMessage(message: String) {
+        activityShowAlertsBinding.progressBar.visibility = GONE
         ErrorMessageDialog.newInstance(message).show(supportFragmentManager, Constants.ERROR_TAG)
     }
 
     private fun unSubscribeSlotsAlert(alert: SubscribedSlotsRoom) {
         val subscribedSlots = SubscribeSlots(
-                "PLAYER_ID",
+                playerID,
                 alert.age,
                 alert.stateID,
                 alert.districtID,
                 alert.vaccineID,
                 alert.doseID
         )
-
+        println(Gson().toJson(subscribedSlots))
         viewModel.getSlotUnSubscribeResponse(subscribedSlots)
         viewModel.setSubscribeSlotData(alert)
     }
@@ -151,5 +168,9 @@ class UserSubscribedAlerts : BaseActivity() {
             finish()
         }
         return true
+    }
+
+    companion object {
+        var playerID: String? = String()
     }
 }

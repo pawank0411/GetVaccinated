@@ -16,8 +16,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/parentLayout"
         android:layout_width="match_parent"
-        android:onClick="@{onClick}"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{onClick}">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/stateDistrictName"
@@ -26,6 +26,10 @@
             android:padding="8dp"
             android:text='@{name}'
             android:textAppearance="@style/Theme.BottomSheetItemColor"
+            app:autoSizeMaxTextSize="16dp"
+            app:autoSizeMinTextSize="15dp"
+            app:autoSizeStepGranularity="1dp"
+            app:autoSizeTextType="uniform"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Rajasthan" />
 

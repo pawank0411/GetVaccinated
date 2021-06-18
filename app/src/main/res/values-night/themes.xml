@@ -48,5 +48,4 @@
     <style name="Switch" parent="Theme.MaterialComponents.Light">>
         <item name="android:colorControlActivated">@color/purple_700</item>
     </style>
-
 </resources>

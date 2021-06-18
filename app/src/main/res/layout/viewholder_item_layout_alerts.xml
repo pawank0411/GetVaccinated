@@ -57,9 +57,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
+                android:gravity="center_vertical"
                 android:text="@string/alert"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:textStyle="bold"
+                app:autoSizeMaxTextSize="14dp"
+                app:autoSizeMinTextSize="12dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintStart_toEndOf="@+id/bell"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,11 +72,15 @@
                 android:id="@+id/alertNo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
                 android:text="@{customKey}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:textStyle="bold"
+                app:autoSizeMaxTextSize="14dp"
+                app:autoSizeMinTextSize="12dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintStart_toEndOf="@+id/alert"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="1" />
@@ -81,8 +90,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
+                android:gravity="center_vertical"
                 android:text="@string/district_heading"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:autoSizeMaxTextSize="14dp"
+                app:autoSizeMinTextSize="12dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintStart_toEndOf="@+id/bell"
                 app:layout_constraintTop_toBottomOf="@+id/alertNo" />
 
@@ -90,9 +104,13 @@
                 android:id="@+id/district"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
                 android:text="@{district}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:autoSizeMaxTextSize="14dp"
+                app:autoSizeMinTextSize="12dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintStart_toEndOf="@+id/districtHeading"
                 app:layout_constraintTop_toBottomOf="@+id/alertNo"
                 tools:text="ABCD" />
@@ -129,7 +147,11 @@
                     android:layout_column="0"
                     android:layout_marginStart="15dp"
                     android:text="@string/dose"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    app:autoSizeMaxTextSize="14dp"
+                    app:autoSizeMinTextSize="12dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/doseValue"
@@ -142,6 +164,10 @@
                     android:text="@{dose}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textStyle="bold"
+                    app:autoSizeMaxTextSize="14dp"
+                    app:autoSizeMinTextSize="12dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform"
                     tools:text="1" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -152,7 +178,11 @@
                     android:layout_column="1"
                     android:layout_gravity="center"
                     android:text="@string/vaccine"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    app:autoSizeMaxTextSize="14dp"
+                    app:autoSizeMinTextSize="12dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/vaccineValue"
@@ -164,6 +194,10 @@
                     android:text="@{vaccine}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textStyle="bold"
+                    app:autoSizeMaxTextSize="14dp"
+                    app:autoSizeMinTextSize="12dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform"
                     tools:text="Covishield" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -174,7 +208,11 @@
                     android:layout_column="2"
                     android:layout_marginEnd="15dp"
                     android:text="@string/age"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    app:autoSizeMaxTextSize="14dp"
+                    app:autoSizeMinTextSize="12dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ageValue"
@@ -184,9 +222,14 @@
                     android:layout_column="2"
                     android:layout_gravity="center"
                     android:layout_marginEnd="15dp"
+                    android:gravity="center_vertical"
                     android:text="@{age}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textStyle="bold"
+                    app:autoSizeMaxTextSize="14dp"
+                    app:autoSizeMinTextSize="12dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform"
                     tools:text="18+" />
             </GridLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

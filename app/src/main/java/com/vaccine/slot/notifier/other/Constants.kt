@@ -30,7 +30,7 @@ object Constants {
     const val SUCCESS_UNSUBSCRIBED = "Removed from subscriptions."
 
     const val TAB_SEARCH_BY_DISTRICT = "District"
-    const val TAB_SEARCH_BY_PIN_CODE = "PIN"
+    const val TAB_SEARCH_BY_PIN_CODE = "Pin"
 
     const val VACCINE_1 = "Covaxin"
     const val VACCINE_2 = "Covishield"

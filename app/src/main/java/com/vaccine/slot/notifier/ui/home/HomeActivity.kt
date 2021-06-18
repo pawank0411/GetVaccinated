@@ -16,6 +16,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.*
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import com.onesignal.OSSubscriptionObserver
 import com.onesignal.OSSubscriptionStateChanges
 import com.onesignal.OneSignal
@@ -52,7 +56,8 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     private lateinit var activityHomeBinding: ActivityHomeBinding
     private lateinit var homeViewModel: HomeViewModel
-    private val titles = listOf("Search By District", "Search By PIN")
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private val titles = listOf("Search By District", "Search By Pin")
 
     @Inject
     lateinit var subscribedSlotsDao: SubscribedSlotsDao
@@ -71,6 +76,8 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
             setDisplayHomeAsUpEnabled(false)
             title = ""
         }
+
+        firebaseAnalytics = Firebase.analytics
 
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
@@ -247,6 +254,11 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         )
 
         homeViewModel.slotSubscribeResponse.observe(this@HomeActivity, { response ->
+            firebaseAnalytics.logEvent("ResponseSubscribe") {
+                param("response", response.toString())
+                param("message", response.message.toString())
+                param("data", response.data.toString())
+            }
             when (response?.status) {
                 Status.LOADING -> {
                     activityHomeBinding.progressBar.visibility = VISIBLE
@@ -263,7 +275,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                     })
                 }
                 Status.ERROR -> {
-                    response.message?.let { showSnackbar(it) }
+                    showErrorMessage(resources.getString(R.string.error_message))
                 }
             }
         })
@@ -288,7 +300,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                     })
                 }
                 Status.ERROR -> {
-                    response.message?.let { showSnackbar(it) }
+                    showErrorMessage(resources.getString(R.string.error_message))
                 }
             }
         })
@@ -344,35 +356,35 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                 activityHomeBinding.epoxyTabContent.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                 activityHomeBinding.epoxyTabContent.buildModelsWith(object :
-                    EpoxyRecyclerView.ModelBuilderCallback {
+                        EpoxyRecyclerView.ModelBuilderCallback {
                     override fun buildModels(controller: EpoxyController) {
                         val hintTextList = homeViewModel.contentTabDistrict.value
                         for (i in 0..1) {
                             ItemLayoutDistrictBindingModel_()
-                                .id(i)
-                                .hintText(hintTextList?.get(i))
-                                .text(if (i == 0) selectedStateName else selectedDistrictName)
-                                .onClick { _ ->
-                                    when (i) {
-                                        0 -> {
-                                            StateDialog().apply {
-                                                setOnClickListener { state, id ->
-                                                    setStateInputLayout(state, id)
-                                                }
-                                            }.show(supportFragmentManager, STATE_TAG)
-                                        }
-                                        1 -> {
-                                            if (selectedStateName.isNotEmpty()) {
-                                                DistrictDialog().apply {
-                                                    setOnClickListener { district, id ->
-                                                        setDistrictInputLayout(district, id)
+                                    .id(i)
+                                    .hintText(hintTextList?.get(i))
+                                    .text(if (i == 0) selectedStateName else selectedDistrictName)
+                                    .onClick { _ ->
+                                        when (i) {
+                                            0 -> {
+                                                StateDialog().apply {
+                                                    setOnClickListener { state, id ->
+                                                        setStateInputLayout(state, id)
                                                     }
-                                                }.show(supportFragmentManager, DISTRICT_TAG)
+                                                }.show(supportFragmentManager, STATE_TAG)
+                                            }
+                                            1 -> {
+                                                if (selectedStateName.isNotEmpty()) {
+                                                    DistrictDialog().apply {
+                                                        setOnClickListener { district, id ->
+                                                            setDistrictInputLayout(district, id)
+                                                        }
+                                                    }.show(supportFragmentManager, DISTRICT_TAG)
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                .addTo(controller)
+                                    .addTo(controller)
                         }
                     }
                 })
@@ -420,12 +432,12 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         }
 
         val subscribeSlots = SubscribeSlots(
-            playerID,
-            selectedAge,
-            selectedStateId?.toString(),
-            selectedDistrictCodeId,
-            vaccineID,
-            doseID
+                playerID,
+                selectedAge,
+                selectedStateId?.toString(),
+                selectedDistrictCodeId,
+                vaccineID,
+                doseID
         )
 
         val isExists = isEqual(doseID, vaccineID)
@@ -435,7 +447,6 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         }
         homeViewModel.getSlotsSubscribeResponse(subscribeSlots) // make the user to subscribe for the particular district
         homeViewModel.setSubscribeSlotData(subscribeSlots)
-
     }
 
     private fun isEqual(dose: List<String>?, second: List<String>?): Boolean {
@@ -460,12 +471,6 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
             }
         }
         return false
-    }
-
-    private fun showSnackbar(message: String) {
-        activityHomeBinding.progressBar.visibility = GONE
-        val parentLayout: View = findViewById(android.R.id.content)
-        Snackbar.make(parentLayout, message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showErrorMessage(message: String) {

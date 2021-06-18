@@ -29,7 +29,7 @@ class NotificationServiceExtension : OneSignal.OSRemoteNotificationReceivedHandl
                 val notificationResponse = NotificationResponseRoom(
                         content = response,
                         title = responseTitle,
-                        time = responseData?.getString("timestamp")
+                        time = ""
                 )
                 db.notificationDao().insert(notificationResponse)
             } catch (e: Exception) {

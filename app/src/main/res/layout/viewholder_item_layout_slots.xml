@@ -33,9 +33,10 @@
         android:layout_marginTop="5dp"
         android:onClick="@{onClick}">
 
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/vaccineNoTV"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@{backgroundTint}"
             android:clickable="false"
@@ -57,10 +58,14 @@
             android:id="@+id/vaccineNameTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="@{vaccineName}"
-            android:textAlignment="center"
             android:textAppearance="@style/Theme.Vaccine.Name"
             android:typeface="monospace"
+            app:autoSizeMaxTextSize="10dp"
+            app:autoSizeMinTextSize="9dp"
+            app:autoSizeStepGranularity="1dp"
+            app:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

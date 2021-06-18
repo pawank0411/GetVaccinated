@@ -9,7 +9,7 @@
         android:id="@+id/epoxy"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toTopOf="@id/viewAlert"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +48,10 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textStyle="bold"
         android:visibility="gone"
+        app:autoSizeMaxTextSize="20dp"
+        app:autoSizeMinTextSize="18dp"
+        app:autoSizeStepGranularity="2dp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintTop_toBottomOf="@+id/emptyImage"
         tools:text="SMAPLE TTS" />
 
@@ -65,7 +69,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:padding="15dp"
+        android:padding="10dp"
         android:text="@string/view_alerts"
         android:textAllCaps="false"
         app:cornerRadius="10dp"

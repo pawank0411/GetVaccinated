@@ -12,7 +12,7 @@ import com.vaccine.slot.notifier.data.model.room.ReportAlertRoom
 import com.vaccine.slot.notifier.data.model.room.SubscribedSlotsRoom
 import com.vaccine.slot.notifier.data.model.room.UserID
 
-@Database(entities = [NotificationResponseRoom::class, SubscribedSlotsRoom::class, ReportAlertRoom::class, UserID::class], version = 2)
+@Database(entities = [NotificationResponseRoom::class, SubscribedSlotsRoom::class, ReportAlertRoom::class, UserID::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun notificationDao(): NotificationDao

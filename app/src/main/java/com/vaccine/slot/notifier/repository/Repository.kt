@@ -76,8 +76,7 @@ class Repository @Inject constructor(
                         Resource.error("Something went wrong. Please try again", null)
                     }
                 } catch (e: Exception) {
-                    Log.d("Exception", e.toString())
-                    Resource.error("Something went wrong. Please try again", null)
+                    Resource.error(e.toString(), null)
                 }
             }
 
@@ -91,8 +90,7 @@ class Repository @Inject constructor(
                         Resource.error("Something went wrong. Please try again", null)
                     }
                 } catch (e: Exception) {
-                    Log.d("Exception", e.toString())
-                    Resource.error("Something went wrong. Please try again", null)
+                    Resource.error(e.toString(), null)
                 }
             }
 
@@ -106,8 +104,7 @@ class Repository @Inject constructor(
                         Resource.error("Something went wrong. Please try again", null)
                     }
                 } catch (e: Exception) {
-                    Log.d("Exception", e.toString())
-                    Resource.error("Something went wrong. Please try again", null)
+                    Resource.error(e.toString(), null)
                 }
             }
 
