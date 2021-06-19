@@ -55,7 +55,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/alert"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_margin="15dp"
                 android:gravity="center_vertical"
                 android:text="@string/alert"
@@ -71,7 +71,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/alertNo"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_marginTop="15dp"
                 android:gravity="center_vertical"
                 android:text="@{customKey}"
@@ -88,7 +88,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/districtHeading"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_marginStart="15dp"
                 android:gravity="center_vertical"
                 android:text="@string/district_heading"
@@ -103,7 +103,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/district"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:gravity="center_vertical"
                 android:text="@{district}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"

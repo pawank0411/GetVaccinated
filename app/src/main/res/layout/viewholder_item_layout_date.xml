@@ -11,13 +11,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:backgroundTint="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,15 +28,16 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/dateText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:clickable="false"
+                android:gravity="center"
                 android:padding="5dp"
                 android:text="@{text}"
-                android:textAlignment="center"
+                android:minWidth="80dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 android:textColor="?attr/colorPrimary"
-                app:autoSizeMaxTextSize="16dp"
-                app:autoSizeMinTextSize="14dp"
+                app:autoSizeMaxTextSize="13dp"
+                app:autoSizeMinTextSize="11dp"
                 app:autoSizeStepGranularity="2dp"
                 app:autoSizeTextType="uniform"
                 tools:text="Sun \n 16 May" />

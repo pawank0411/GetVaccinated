@@ -35,7 +35,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/title"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_margin="10dp"
         android:gravity="center"
         android:paddingStart="10dp"
@@ -55,7 +55,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/description"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_margin="10dp"
         android:gravity="center"
         android:paddingStart="10dp"

@@ -70,11 +70,11 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         activityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(activityHomeBinding.root)
 
-        supportActionBar?.apply {
-            setDisplayShowHomeEnabled(false)
+        setSupportActionBar(findViewById(R.id.toolbar))
+
+        activityHomeBinding.toolbarLayout.apply {
+            title = "GetVaccinated"
             elevation = 0.0F
-            setDisplayHomeAsUpEnabled(false)
-            title = ""
         }
 
         firebaseAnalytics = Firebase.analytics
@@ -93,11 +93,12 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                 TAB_SEARCH_BY_DISTRICT,
                 false
         ) // default selected tab
-        activityHomeBinding.epoxyTabs.layoutManager =
+        activityHomeBinding.contentHome.epoxyTabs.layoutManager =
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        activityHomeBinding.epoxyTabs.buildModelsWith(object :
+        activityHomeBinding.contentHome.epoxyTabs.buildModelsWith(object :
                 EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
+                val subItems = mutableListOf<EpoxyModel<*>>()
                 titles.forEach { title ->
                     val backgroundColor = when (homeViewModel.tabSelection.value) {
                         0 -> {
@@ -131,7 +132,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                                 R.drawable.transparent_background
                         )
                     }
-                    ItemLayoutTabBindingModel_()
+                    subItems.add(ItemLayoutTabBindingModel_()
                             .id(Random().nextInt())
                             .text(title)
                             .background(backgroundColor)
@@ -139,14 +140,18 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                                 homeViewModel.setTabSelected(if (title.contains(TAB_SEARCH_BY_DISTRICT)) 0 else 1)
                                 homeViewModel.getContentList(title)
                                 buildTabContent(title, true)
-                            }
-                            .addTo(controller)
+                            })
                 }
+
+                GridTabModel_()
+                        .id(subItems.hashCode())
+                        .models(subItems)
+                        .addTo(controller)
             }
         })
 
-        activityHomeBinding.viewPager.layoutManager = LinearLayoutManager(this)
-        activityHomeBinding.viewPager.buildModelsWith(object :
+        activityHomeBinding.contentHome.viewPager.layoutManager = LinearLayoutManager(this)
+        activityHomeBinding.contentHome.viewPager.buildModelsWith(object :
                 EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
 
@@ -188,7 +193,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
             }
         })
 
-        activityHomeBinding.notifySlots.setOnClickListener {
+        activityHomeBinding.contentHome.notifySlots.setOnClickListener {
             selectedAge = getUserSelectedAge()
             if (selectedDistrictName.isEmpty()) showErrorMessage(resources.getString(R.string.select_error))
             else {
@@ -213,7 +218,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
             }
         }
 
-        activityHomeBinding.checkAvailability.setOnClickListener {
+        activityHomeBinding.contentHome.checkAvailability.setOnClickListener {
             selectedAge = getUserSelectedAge()
             selectedDose = getUserSelectedDose()
 
@@ -231,22 +236,22 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         })
 
         homeViewModel.getInfo.observe(this, {
-            activityHomeBinding.viewPager.requestModelBuild()
+            activityHomeBinding.contentHome.viewPager.requestModelBuild()
         })
 
         homeViewModel.tabSelection.observe(this, {
             selectedTab = it.toString()
             if (selectedTab == "0") {
-                activityHomeBinding.notifySlots.visibility = VISIBLE
+                activityHomeBinding.contentHome.notifySlots.visibility = VISIBLE
                 buildTabContent(TAB_SEARCH_BY_DISTRICT, true)
             } else {
-                activityHomeBinding.notifySlots.visibility = GONE
+                activityHomeBinding.contentHome.notifySlots.visibility = GONE
                 buildTabContent(TAB_SEARCH_BY_PIN_CODE, true)
             }
         })
 
-        activityHomeBinding.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
-        activityHomeBinding.footerTextTitle.setLinkTextColor(
+        activityHomeBinding.contentHome.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
+        activityHomeBinding.contentHome.footerTextTitle.setLinkTextColor(
                 ContextCompat.getColor(
                         this,
                         R.color.blueF
@@ -261,7 +266,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
             }
             when (response?.status) {
                 Status.LOADING -> {
-                    activityHomeBinding.progressBar.visibility = VISIBLE
+                    activityHomeBinding.contentHome.progressBar.visibility = VISIBLE
                 }
                 Status.SUCCESS -> {
                     homeViewModel.showDialog.observe(this, {
@@ -287,7 +292,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         homeViewModel.reportAlertResponse.observe(this, { response ->
             when (response?.status) {
                 Status.LOADING -> {
-                    activityHomeBinding.progressBar.visibility = VISIBLE
+                    activityHomeBinding.contentHome.progressBar.visibility = VISIBLE
                 }
                 Status.SUCCESS -> {
                     homeViewModel.showDialog.observe(this, {
@@ -353,9 +358,9 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
     private fun buildTabContent(title: String, requestRebuild: Boolean) {
         when {
             title.contains(TAB_SEARCH_BY_DISTRICT) -> {
-                activityHomeBinding.epoxyTabContent.layoutManager =
+                activityHomeBinding.contentHome.epoxyTabContent.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                activityHomeBinding.epoxyTabContent.buildModelsWith(object :
+                activityHomeBinding.contentHome.epoxyTabContent.buildModelsWith(object :
                         EpoxyRecyclerView.ModelBuilderCallback {
                     override fun buildModels(controller: EpoxyController) {
                         val hintTextList = homeViewModel.contentTabDistrict.value
@@ -390,9 +395,9 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                 })
             }
             title.contains(TAB_SEARCH_BY_PIN_CODE) -> {
-                activityHomeBinding.epoxyTabContent.layoutManager =
+                activityHomeBinding.contentHome.epoxyTabContent.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                activityHomeBinding.epoxyTabContent.buildModelsWith(object :
+                activityHomeBinding.contentHome.epoxyTabContent.buildModelsWith(object :
                         EpoxyRecyclerView.ModelBuilderCallback {
                     override fun buildModels(controller: EpoxyController) {
                         val hintTextList = homeViewModel.contentTabPincode.value
@@ -407,13 +412,13 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         }
 
         if (requestRebuild)
-            activityHomeBinding.epoxyTabs.requestModelBuild()
+            activityHomeBinding.contentHome.epoxyTabs.requestModelBuild()
     }
 
     private fun setDistrictInputLayout(district: String, id: Int) {
         selectedDistrictName = district
         selectedDistrictCodeId = id
-        activityHomeBinding.epoxyTabContent.requestModelBuild()
+        activityHomeBinding.contentHome.epoxyTabContent.requestModelBuild()
     }
 
     private fun setStateInputLayout(state: String, id: Int) {
@@ -421,7 +426,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         selectedDistrictName = ""
         selectedStateId = id
         homeViewModel.getDistrictList(id)
-        activityHomeBinding.epoxyTabContent.requestModelBuild()
+        activityHomeBinding.contentHome.epoxyTabContent.requestModelBuild()
     }
 
     private fun setUserToSubscribe(doseID: List<String>?, vaccineID: List<String>?) {
@@ -474,34 +479,34 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
     }
 
     private fun showErrorMessage(message: String) {
-        activityHomeBinding.progressBar.visibility = GONE
+        activityHomeBinding.contentHome.progressBar.visibility = GONE
         ErrorMessageDialog.newInstance(message).show(supportFragmentManager, ERROR_TAG)
     }
 
     private fun getUserSelectedAge(): Int =
-            when (activityHomeBinding.ageGroup.checkedRadioButtonId) {
+            when (activityHomeBinding.contentHome.ageGroup.checkedRadioButtonId) {
                 R.id.age1 ->
-                    activityHomeBinding.age1.text.toString().split("[–+]".toRegex())
+                    activityHomeBinding.contentHome.age1.text.toString().split("[–+]".toRegex())
                             .map { it.trim() }[0].toInt()
                 R.id.age2 ->
-                    activityHomeBinding.age2.text.toString().split("[–+]".toRegex())
+                    activityHomeBinding.contentHome.age2.text.toString().split("[–+]".toRegex())
                             .map { it.trim() }[0].toInt()
                 else -> 0
             }
 
 
     private fun getUserSelectedDose(): String {
-        when (activityHomeBinding.doseGroup.checkedRadioButtonId) {
+        when (activityHomeBinding.contentHome.doseGroup.checkedRadioButtonId) {
             R.id.dose1 ->
-                selectedDose = activityHomeBinding.dose1.text.toString()
+                selectedDose = activityHomeBinding.contentHome.dose1.text.toString()
             R.id.dose2 ->
-                selectedDose = activityHomeBinding.dose2.text.toString()
+                selectedDose = activityHomeBinding.contentHome.dose2.text.toString()
         }
         return selectedDose.split(" ")[1]
     }
 
     private fun openSubscribeDialog(title: String, message: String) {
-        activityHomeBinding.progressBar.visibility = GONE
+        activityHomeBinding.contentHome.progressBar.visibility = GONE
         SubscribeDialog.newInstance(title, message).show(supportFragmentManager, SUBSCRIBE_DIALOG)
     }
 

@@ -26,7 +26,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/centerNameTV"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_marginEnd="40dp"
             android:gravity="center_vertical"
             android:text='@{centerName}'
@@ -43,7 +43,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/pincodeTV"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="40dp"
             android:gravity="center_vertical"
@@ -57,12 +57,12 @@
             app:layout_constraintEnd_toStartOf="@+id/priceTV"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/centerNameTV"
-            tools:text="789464" />
+            tools:text="78946" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/priceTV"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:gravity="center_vertical"
             android:text='@{price}'
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
