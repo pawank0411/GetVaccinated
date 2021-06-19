@@ -73,7 +73,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         activityHomeBinding.toolbarLayout.apply {
-            title = "GetVaccinated"
+            title = resources.getString(R.string.app_name)
             elevation = 0.0F
         }
 
@@ -89,69 +89,9 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
             }
         })
 
-        if (selectedTab.isEmpty()) buildTabContent(
-                TAB_SEARCH_BY_DISTRICT,
-                false
-        ) // default selected tab
-        activityHomeBinding.contentHome.epoxyTabs.layoutManager =
-                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        activityHomeBinding.contentHome.epoxyTabs.buildModelsWith(object :
-                EpoxyRecyclerView.ModelBuilderCallback {
-            override fun buildModels(controller: EpoxyController) {
-                val subItems = mutableListOf<EpoxyModel<*>>()
-                titles.forEach { title ->
-                    val backgroundColor = when (homeViewModel.tabSelection.value) {
-                        0 -> {
-                            if (title.contains(TAB_SEARCH_BY_DISTRICT)) {
-                                ContextCompat.getDrawable(
-                                        this@HomeActivity,
-                                        R.drawable.rounded_corners
-                                )
-                            } else {
-                                ContextCompat.getDrawable(
-                                        this@HomeActivity,
-                                        R.drawable.transparent_background
-                                )
-                            }
-                        }
-                        1 -> {
-                            if (title.contains(TAB_SEARCH_BY_PIN_CODE)) {
-                                ContextCompat.getDrawable(
-                                        this@HomeActivity,
-                                        R.drawable.rounded_corners
-                                )
-                            } else {
-                                ContextCompat.getDrawable(
-                                        this@HomeActivity,
-                                        R.drawable.transparent_background
-                                )
-                            }
-                        }
-                        else -> ContextCompat.getDrawable(
-                                this@HomeActivity,
-                                R.drawable.transparent_background
-                        )
-                    }
-                    subItems.add(ItemLayoutTabBindingModel_()
-                            .id(Random().nextInt())
-                            .text(title)
-                            .background(backgroundColor)
-                            .onClick { _ ->
-                                homeViewModel.setTabSelected(if (title.contains(TAB_SEARCH_BY_DISTRICT)) 0 else 1)
-                                homeViewModel.getContentList(title)
-                                buildTabContent(title, true)
-                            })
-                }
-
-                GridTabModel_()
-                        .id(subItems.hashCode())
-                        .models(subItems)
-                        .addTo(controller)
-            }
-        })
-
-        activityHomeBinding.contentHome.viewPager.layoutManager = LinearLayoutManager(this)
-        activityHomeBinding.contentHome.viewPager.buildModelsWith(object :
+        activityHomeBinding.contentHome.epoxy.layoutManager =
+                LinearLayoutManager(this)
+        activityHomeBinding.contentHome.epoxy.buildModelsWith(object :
                 EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
 
@@ -159,7 +99,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                 val urlList = homeViewModel.getInfo.value?.data?.imagesLink
                 urlList?.forEach {
                     photoList.add(ItemLayoutViewPagerBindingModel_()
-                            .id(1)
+                            .id(Random().nextInt())
                             .onBind { _, view, _ ->
                                 val binding = view.dataBinding as ViewholderItemLayoutViewPagerBinding
                                 Picasso
@@ -186,10 +126,100 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                         .id("carousel")
                         .models(photoList)
                         .cycleDelay(5_000)
-                        .indicatorVisible(true)
-                        .indicatorSelectedDotColor(getColor(R.color.purple_200))
-                        .indicatorDotColor(getColor(R.color.white))
+                        .indicatorVisible(false)
                         .addTo(controller)
+
+                val subItems = mutableListOf<EpoxyModel<*>>()
+                titles.forEach { title ->
+                    val backgroundColor = when (homeViewModel.tabSelection.value) {
+                        0 -> {
+                            if (title.contains(TAB_SEARCH_BY_DISTRICT)) {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.tab_rounded_corners
+                                )
+                            } else {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.transparent_background
+                                )
+                            }
+                        }
+                        1 -> {
+                            if (title.contains(TAB_SEARCH_BY_PIN_CODE)) {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.tab_rounded_corners
+                                )
+                            } else {
+                                ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.transparent_background
+                                )
+                            }
+                        }
+                        else -> ContextCompat.getDrawable(
+                                this@HomeActivity,
+                                R.drawable.transparent_background
+                        )
+                    }
+                    subItems.add(ItemLayoutTabBindingModel_()
+                            .id(Random().nextInt())
+                            .text(title)
+                            .background(backgroundColor)
+                            .onClick { _ ->
+                                homeViewModel.setTabSelected(if (title.contains(TAB_SEARCH_BY_DISTRICT)) 0 else 1)
+                                homeViewModel.getContentList(title)
+                            })
+                }
+
+                GridTabModel_()
+                        .id(subItems.hashCode())
+                        .models(subItems)
+                        .addTo(controller)
+
+                when (homeViewModel.tabSelection.value) {
+                    0 -> {
+                        activityHomeBinding.contentHome.notifySlots.visibility = VISIBLE
+                        val hintTextList = homeViewModel.contentTabDistrict.value
+                        for (i in 0..1) {
+                            ItemLayoutDistrictBindingModel_()
+                                    .id(i)
+                                    .hintText(hintTextList?.get(i))
+                                    .text(if (i == 0) selectedStateName else selectedDistrictName)
+                                    .onClick { _ ->
+                                        when (i) {
+                                            0 -> {
+                                                StateDialog().apply {
+                                                    setOnClickListener { state, id ->
+                                                        setStateInputLayout(state, id)
+                                                    }
+                                                }.show(supportFragmentManager, STATE_TAG)
+                                            }
+                                            1 -> {
+                                                if (selectedStateName.isNotEmpty()) {
+                                                    DistrictDialog().apply {
+                                                        setOnClickListener { district, id ->
+                                                            setDistrictInputLayout(district, id)
+                                                        }
+                                                    }.show(supportFragmentManager, DISTRICT_TAG)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .addTo(controller)
+                        }
+                    }
+                    1 -> {
+                        activityHomeBinding.contentHome.notifySlots.visibility = GONE
+                        val hintTextList = homeViewModel.contentTabPincode.value
+                        ItemLayoutPincodeBindingModel_()
+                                .id(Random().nextInt())
+                                .hintText(hintTextList?.get(0))
+                                .viewModel(homeViewModel)
+                                .addTo(controller)
+                    }
+                }
             }
         })
 
@@ -236,18 +266,11 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         })
 
         homeViewModel.getInfo.observe(this, {
-            activityHomeBinding.contentHome.viewPager.requestModelBuild()
+            activityHomeBinding.contentHome.epoxy.requestModelBuild()
         })
 
         homeViewModel.tabSelection.observe(this, {
-            selectedTab = it.toString()
-            if (selectedTab == "0") {
-                activityHomeBinding.contentHome.notifySlots.visibility = VISIBLE
-                buildTabContent(TAB_SEARCH_BY_DISTRICT, true)
-            } else {
-                activityHomeBinding.contentHome.notifySlots.visibility = GONE
-                buildTabContent(TAB_SEARCH_BY_PIN_CODE, true)
-            }
+            activityHomeBinding.contentHome.epoxy.requestModelBuild()
         })
 
         activityHomeBinding.contentHome.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
@@ -355,70 +378,10 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         } ?: showErrorMessage(resources.getString(R.string.error_message))
     }
 
-    private fun buildTabContent(title: String, requestRebuild: Boolean) {
-        when {
-            title.contains(TAB_SEARCH_BY_DISTRICT) -> {
-                activityHomeBinding.contentHome.epoxyTabContent.layoutManager =
-                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                activityHomeBinding.contentHome.epoxyTabContent.buildModelsWith(object :
-                        EpoxyRecyclerView.ModelBuilderCallback {
-                    override fun buildModels(controller: EpoxyController) {
-                        val hintTextList = homeViewModel.contentTabDistrict.value
-                        for (i in 0..1) {
-                            ItemLayoutDistrictBindingModel_()
-                                    .id(i)
-                                    .hintText(hintTextList?.get(i))
-                                    .text(if (i == 0) selectedStateName else selectedDistrictName)
-                                    .onClick { _ ->
-                                        when (i) {
-                                            0 -> {
-                                                StateDialog().apply {
-                                                    setOnClickListener { state, id ->
-                                                        setStateInputLayout(state, id)
-                                                    }
-                                                }.show(supportFragmentManager, STATE_TAG)
-                                            }
-                                            1 -> {
-                                                if (selectedStateName.isNotEmpty()) {
-                                                    DistrictDialog().apply {
-                                                        setOnClickListener { district, id ->
-                                                            setDistrictInputLayout(district, id)
-                                                        }
-                                                    }.show(supportFragmentManager, DISTRICT_TAG)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    .addTo(controller)
-                        }
-                    }
-                })
-            }
-            title.contains(TAB_SEARCH_BY_PIN_CODE) -> {
-                activityHomeBinding.contentHome.epoxyTabContent.layoutManager =
-                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                activityHomeBinding.contentHome.epoxyTabContent.buildModelsWith(object :
-                        EpoxyRecyclerView.ModelBuilderCallback {
-                    override fun buildModels(controller: EpoxyController) {
-                        val hintTextList = homeViewModel.contentTabPincode.value
-                        ItemLayoutPincodeBindingModel_()
-                                .id(Random().nextInt())
-                                .hintText(hintTextList?.get(0))
-                                .viewModel(homeViewModel)
-                                .addTo(controller)
-                    }
-                })
-            }
-        }
-
-        if (requestRebuild)
-            activityHomeBinding.contentHome.epoxyTabs.requestModelBuild()
-    }
-
     private fun setDistrictInputLayout(district: String, id: Int) {
         selectedDistrictName = district
         selectedDistrictCodeId = id
-        activityHomeBinding.contentHome.epoxyTabContent.requestModelBuild()
+        activityHomeBinding.contentHome.epoxy.requestModelBuild()
     }
 
     private fun setStateInputLayout(state: String, id: Int) {
@@ -426,7 +389,7 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         selectedDistrictName = ""
         selectedStateId = id
         homeViewModel.getDistrictList(id)
-        activityHomeBinding.contentHome.epoxyTabContent.requestModelBuild()
+        activityHomeBinding.contentHome.epoxy.requestModelBuild()
     }
 
     private fun setUserToSubscribe(doseID: List<String>?, vaccineID: List<String>?) {

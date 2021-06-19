@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/quote"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
+            android:text="some motivational quote about vaccincation"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            app:autoSizeMaxTextSize="14dp"
+            app:autoSizeMinTextSize="12dp"
+            app:autoSizeStepGranularity="2dp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/epoxy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintTop_toBottomOf="@id/quote" />
+
+        <GridLayout
+            android:id="@+id/ageDose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:columnCount="2"
+            android:rowCount="4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/epoxy">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:gravity="center_vertical"
+                android:text="@string/age_group"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:autoSizeMaxTextSize="14dp"
+                app:autoSizeMinTextSize="12dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform" />
+
+            <RadioGroup
+                android:id="@+id/ageGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/age1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:checked="true"
+                    android:text="@string/_18_44"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:autoSizeMaxTextSize="16dp"
+                    app:autoSizeMinTextSize="14dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/age2"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:text="@string/_45"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:autoSizeMaxTextSize="16dp"
+                    app:autoSizeMinTextSize="14dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform" />
+            </RadioGroup>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:gravity="center_vertical"
+                android:text="@string/dose"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:autoSizeMaxTextSize="14dp"
+                app:autoSizeMinTextSize="12dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform" />
+
+            <RadioGroup
+                android:id="@+id/doseGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_row="3"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/dose1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:checked="true"
+                    android:text="@string/dose_1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:autoSizeMaxTextSize="16dp"
+                    app:autoSizeMinTextSize="14dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/dose2"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:buttonTint="?attr/colorPrimary"
+                    android:text="@string/dose_2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:autoSizeMaxTextSize="16dp"
+                    app:autoSizeMinTextSize="14dp"
+                    app:autoSizeStepGranularity="2dp"
+                    app:autoSizeTextType="uniform" />
+            </RadioGroup>
+        </GridLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/checkAvailability"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="0dp"
+            android:padding="15dp"
+            android:stateListAnimator="@null"
+            android:text="@string/check_availability"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="@color/white"
+            app:cornerRadius="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/ageDose"
+            app:rippleColor="@color/trans" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/purple_200"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/notifySlots"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:elevation="0dp"
+            android:padding="15dp"
+            android:stateListAnimator="@null"
+            android:text="@string/notify_me_when_slots_are_available"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:cornerRadius="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/checkAvailability"
+            app:rippleColor="@color/trans"
+            app:strokeColor="?attr/colorPrimary" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/note_rounded_corner"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/notifySlots">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/information"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/footerTextTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginStart="2dp"
+                android:text="@string/this_data_is_sourced_real_time_from_co_win"
+                android:textAppearance="@style/Theme.Footer"
+                app:autoSizeMaxTextSize="14dp"
+                app:autoSizeMinTextSize="12dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/icon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
