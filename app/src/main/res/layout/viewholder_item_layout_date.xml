@@ -36,9 +36,9 @@
                 android:minWidth="80dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 android:textColor="?attr/colorPrimary"
-                app:autoSizeMaxTextSize="13dp"
+                app:autoSizeMaxTextSize="12dp"
                 app:autoSizeMinTextSize="11dp"
-                app:autoSizeStepGranularity="2dp"
+                app:autoSizeStepGranularity="1dp"
                 app:autoSizeTextType="uniform"
                 tools:text="Sun \n 16 May" />
         </com.google.android.material.card.MaterialCardView>

@@ -275,6 +275,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         })
 
         homeViewModel.tabSelection.observe(this, {
+            selectedTab = it.toString()
             activityHomeBinding.contentHome.epoxy.requestModelBuild()
         })
 
