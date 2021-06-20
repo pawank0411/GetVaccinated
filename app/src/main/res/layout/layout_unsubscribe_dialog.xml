@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/curve_edge">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/heading"
@@ -13,7 +12,7 @@
         android:layout_margin="15dp"
         android:gravity="center_vertical"
         android:text="@string/alert_unsubscribed"
-        android:textAppearance="@style/Theme.BottomSheetTitle"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         android:textStyle="bold"
         app:autoSizeMaxTextSize="20dp"
         app:autoSizeMinTextSize="18dp"
@@ -31,7 +30,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
         android:gravity="center_vertical"
-        android:textAppearance="@style/Theme.ErrorMessage"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:autoSizeMaxTextSize="14dp"
         app:autoSizeMinTextSize="12dp"
         app:autoSizeStepGranularity="2dp"

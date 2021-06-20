@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +32,7 @@ import com.vaccine.slot.notifier.data.model.room.SubscribedSlotsRoom
 import com.vaccine.slot.notifier.data.model.room.UserID
 import com.vaccine.slot.notifier.databinding.*
 import com.vaccine.slot.notifier.other.*
+import com.vaccine.slot.notifier.other.Constants.CONNECTION_DIALOG
 import com.vaccine.slot.notifier.other.Constants.CRITERIA_TAG
 import com.vaccine.slot.notifier.other.Constants.DISTRICT_TAG
 import com.vaccine.slot.notifier.other.Constants.ERROR_TAG
@@ -41,6 +41,7 @@ import com.vaccine.slot.notifier.other.Constants.SUBSCRIBE_DIALOG
 import com.vaccine.slot.notifier.other.Constants.SUCCESS_SUBSCRIBED
 import com.vaccine.slot.notifier.other.Constants.TAB_SEARCH_BY_DISTRICT
 import com.vaccine.slot.notifier.other.Constants.TAB_SEARCH_BY_PIN_CODE
+import com.vaccine.slot.notifier.ui.base.BaseActivity
 import com.vaccine.slot.notifier.ui.dialogs.*
 import com.vaccine.slot.notifier.ui.notification.NotificationMessage
 import com.vaccine.slot.notifier.ui.showSlots.ShowSlots
@@ -52,7 +53,7 @@ import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
+class HomeActivity : BaseActivity(), OSSubscriptionObserver {
 
     private lateinit var activityHomeBinding: ActivityHomeBinding
     private lateinit var homeViewModel: HomeViewModel
@@ -97,30 +98,32 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
 
                 val photoList = mutableListOf<EpoxyModel<*>>()
                 val urlList = homeViewModel.getInfo.value?.data?.imagesLink
-                urlList?.forEach {
-                    photoList.add(ItemLayoutViewPagerBindingModel_()
-                            .id(Random().nextInt())
-                            .onBind { _, view, _ ->
-                                val binding = view.dataBinding as ViewholderItemLayoutViewPagerBinding
-                                Picasso
-                                        .get()
-                                        .load(Uri.parse(it))
-                                        .placeholder(
-                                                ContextCompat.getDrawable(
-                                                        this@HomeActivity,
-                                                        R.drawable.image_outline
-                                                )!!
-                                        )
-                                        .error(
-                                                ContextCompat.getDrawable(
-                                                        this@HomeActivity,
-                                                        R.drawable.image_broken_variant
-                                                )!!
-                                        )
-                                        .into(binding.image)
-                            }
-                    )
-                }
+
+                if (!isInternetAvailable()) NoConnectionDialog().show(supportFragmentManager, CONNECTION_DIALOG) else
+                    urlList?.forEach {
+                        photoList.add(ItemLayoutViewPagerBindingModel_()
+                                .id(Random().nextInt())
+                                .onBind { _, view, _ ->
+                                    val binding = view.dataBinding as ViewholderItemLayoutViewPagerBinding
+                                    Picasso
+                                            .get()
+                                            .load(Uri.parse(it))
+                                            .placeholder(
+                                                    ContextCompat.getDrawable(
+                                                            this@HomeActivity,
+                                                            R.drawable.image_outline
+                                                    )!!
+                                            )
+                                            .error(
+                                                    ContextCompat.getDrawable(
+                                                            this@HomeActivity,
+                                                            R.drawable.image_broken_variant
+                                                    )!!
+                                            )
+                                            .into(binding.image)
+                                }
+                        )
+                    }
 
                 SliderModel_()
                         .id("carousel")
@@ -225,40 +228,42 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
 
         activityHomeBinding.contentHome.notifySlots.setOnClickListener {
             selectedAge = getUserSelectedAge()
-            if (selectedDistrictName.isEmpty()) showErrorMessage(resources.getString(R.string.select_error))
-            else {
-                val isNotificationEnabled = NotificationManagerCompat.from(this).areNotificationsEnabled()
-                if (isNotificationEnabled) {
-                    CriteriaDialog().apply {
-                        setOnClickListener { dose, vaccine ->
-                            setUserToSubscribe(dose, vaccine)
-                        }
-                    }.show(supportFragmentManager, CRITERIA_TAG)
-                } else {
-                    val parentLayout: View = findViewById(android.R.id.content)
-                    Snackbar.make(parentLayout, "Please enable the notifications", Snackbar.LENGTH_LONG)
-                            .setAction("OPEN SETTINGS") {
-                                startActivity(Intent()
-                                        .setAction("android.settings.APP_NOTIFICATION_SETTINGS")
-                                        .putExtra("app_package", packageName)
-                                        .putExtra("app_uid", applicationInfo.uid)
-                                        .putExtra("android.provider.extra.APP_PACKAGE", packageName))
-                            }.show()
+            if (!isInternetAvailable()) NoConnectionDialog().show(supportFragmentManager, CONNECTION_DIALOG) else
+                if (selectedDistrictName.isEmpty()) showErrorMessage(resources.getString(R.string.select_error))
+                else {
+                    val isNotificationEnabled = NotificationManagerCompat.from(this).areNotificationsEnabled()
+                    if (isNotificationEnabled) {
+                        CriteriaDialog().apply {
+                            setOnClickListener { dose, vaccine ->
+                                setUserToSubscribe(dose, vaccine)
+                            }
+                        }.show(supportFragmentManager, CRITERIA_TAG)
+                    } else {
+                        val parentLayout: View = findViewById(android.R.id.content)
+                        Snackbar.make(parentLayout, "Please enable the notifications", Snackbar.LENGTH_LONG)
+                                .setAction("OPEN SETTINGS") {
+                                    startActivity(Intent()
+                                            .setAction("android.settings.APP_NOTIFICATION_SETTINGS")
+                                            .putExtra("app_package", packageName)
+                                            .putExtra("app_uid", applicationInfo.uid)
+                                            .putExtra("android.provider.extra.APP_PACKAGE", packageName))
+                                }.show()
+                    }
                 }
-            }
         }
 
         activityHomeBinding.contentHome.checkAvailability.setOnClickListener {
             selectedAge = getUserSelectedAge()
             selectedDose = getUserSelectedDose()
 
-            if (homeViewModel.tabSelection.value == 0 && (selectedStateName.isEmpty() || selectedDistrictName.isEmpty())) {
-                showErrorMessage(resources.getString(R.string.select_error))
-            } else if (homeViewModel.tabSelection.value == 1 && (selectedPinCode.isEmpty() || selectedPinCode.length < 6)) {
-                showErrorMessage(resources.getString(R.string.pincode_error))
-            } else {
-                startActivity(Intent(this, ShowSlots::class.java))
-            }
+            if (!isInternetAvailable()) NoConnectionDialog().show(supportFragmentManager, CONNECTION_DIALOG) else
+                if (homeViewModel.tabSelection.value == 0 && (selectedStateName.isEmpty() || selectedDistrictName.isEmpty())) {
+                    showErrorMessage(resources.getString(R.string.select_error))
+                } else if (homeViewModel.tabSelection.value == 1 && (selectedPinCode.isEmpty() || selectedPinCode.length < 6)) {
+                    showErrorMessage(resources.getString(R.string.pincode_error))
+                } else {
+                    startActivity(Intent(this, ShowSlots::class.java))
+                }
         }
 
         homeViewModel.userText.observe(this, {
@@ -272,14 +277,6 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         homeViewModel.tabSelection.observe(this, {
             activityHomeBinding.contentHome.epoxy.requestModelBuild()
         })
-
-        activityHomeBinding.contentHome.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
-        activityHomeBinding.contentHome.footerTextTitle.setLinkTextColor(
-                ContextCompat.getColor(
-                        this,
-                        R.color.blueF
-                )
-        )
 
         homeViewModel.slotSubscribeResponse.observe(this@HomeActivity, { response ->
             firebaseAnalytics.logEvent("ResponseSubscribe") {
@@ -332,6 +329,14 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
                 }
             }
         })
+
+        activityHomeBinding.contentHome.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
+        activityHomeBinding.contentHome.footerTextTitle.setLinkTextColor(
+                ContextCompat.getColor(
+                        this,
+                        R.color.blueF
+                )
+        )
 
         if (savedInstanceState != null) {
             val stateDialog =
@@ -441,11 +446,6 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
         return false
     }
 
-    private fun showErrorMessage(message: String) {
-        activityHomeBinding.contentHome.progressBar.visibility = GONE
-        ErrorMessageDialog.newInstance(message).show(supportFragmentManager, ERROR_TAG)
-    }
-
     private fun getUserSelectedAge(): Int =
             when (activityHomeBinding.contentHome.ageGroup.checkedRadioButtonId) {
                 R.id.age1 ->
@@ -471,6 +471,11 @@ class HomeActivity : AppCompatActivity(), OSSubscriptionObserver {
     private fun openSubscribeDialog(title: String, message: String) {
         activityHomeBinding.contentHome.progressBar.visibility = GONE
         SubscribeDialog.newInstance(title, message).show(supportFragmentManager, SUBSCRIBE_DIALOG)
+    }
+
+    private fun showErrorMessage(message: String) {
+        activityHomeBinding.contentHome.progressBar.visibility = GONE
+        ErrorMessageDialog.newInstance(message).show(supportFragmentManager, ERROR_TAG)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

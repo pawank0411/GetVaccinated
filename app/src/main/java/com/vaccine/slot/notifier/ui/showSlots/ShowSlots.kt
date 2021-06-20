@@ -336,7 +336,7 @@ class ShowSlots : BaseActivity() {
                         FEE_PAID,
                         ignoreCase = true
                 )
-        ) if (vaccineFee?.size == 1) ("\u20B9 " + vaccineFee[0].fee) else FEE_PAID else FEE_FREE
+        ) if (vaccineFee?.size == 1) ("\u20B9" + vaccineFee[0].fee) else ("\u20B9" + vaccineFee?.minByOrNull { it.fee!!.toInt() }?.fee + "+") else FEE_FREE
     }
 
     private fun isValidSession(session: Session, s: String?, selectedDose: String): Boolean {

@@ -15,7 +15,7 @@
             android:layout_height="20dp"
             android:layout_margin="10dp"
             android:gravity="center_vertical"
-            android:text="some motivational quote about vaccincation"
+            android:text="some motivational quote about vaccination"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
             app:autoSizeMaxTextSize="14dp"
