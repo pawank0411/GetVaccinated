@@ -85,7 +85,7 @@
         android:gravity="center_vertical"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:text="Do you want vaccine alert?\n(May not be accurate)"
+        android:text="Filter by vaccine?\n(May not be accurate)"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         app:autoSizeMaxTextSize="14dp"
         app:autoSizeMinTextSize="12dp"
@@ -95,14 +95,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/chipGroupDose" />
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/vaccineSwitch"
+        style="@style/Theme.Switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:theme="@style/Switch"
         app:layout_constraintBottom_toTopOf="@+id/vaccine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chipGroupDose" />
