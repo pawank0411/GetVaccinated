@@ -69,6 +69,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.getInfo(BuildConfig.DOMAIN + "/info")
             _getInfo.postValue(response)
+            _showDialog.value = Event(true)
         }
 
         _stateList.value = repository.getStateListFromJSON()

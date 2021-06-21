@@ -29,9 +29,9 @@
         <item name="rippleColor">@color/black</item>
     </style>
 
-    <style name="Theme.VaccineSlotNotifier.AppBarOverlay" parent="Theme.MaterialComponents.DayNight.DarkActionBar" />
+    <style name="Theme.VaccineSlotNotifier.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.VaccineSlotNotifier.PopupOverlay" parent="Theme.MaterialComponents.DayNight.DarkActionBar" />
+    <style name="Theme.VaccineSlotNotifier.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Theme.Title.Expanded" parent="android:TextAppearance">
         <item name="android:textStyle">bold</item>

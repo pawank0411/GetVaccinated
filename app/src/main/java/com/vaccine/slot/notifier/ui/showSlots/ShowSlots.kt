@@ -147,7 +147,7 @@ class ShowSlots : BaseActivity() {
                         .id(subItemsDates.hashCode())
                         .models(subItemsDates)
                         .padding(
-                                Carousel.Padding(0, 0, 0, 0, 10)
+                                Carousel.Padding(0, 0, 0, 0, 8)
                         )
                         .addTo(controller)
             }
@@ -256,7 +256,7 @@ class ShowSlots : BaseActivity() {
                                     .id(subItems.hashCode())
                                     .models(subItems)
                                     .padding(
-                                            Carousel.Padding(0, 0, 0, 0, 10)
+                                            Carousel.Padding(0, 0, 0, 0, 8)
                                     )
                                     .addTo(controller)
                             // show same date sessions
@@ -289,7 +289,7 @@ class ShowSlots : BaseActivity() {
                                         .id(innerSubItems.hashCode())
                                         .models(innerSubItems)
                                         .padding(
-                                                Carousel.Padding(0, 0, 0, 0, 10)
+                                                Carousel.Padding(0, 0, 0, 0, 8)
                                         )
                                         .addTo(controller)
                             }

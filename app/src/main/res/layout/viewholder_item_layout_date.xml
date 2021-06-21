@@ -40,7 +40,7 @@
                 app:autoSizeMinTextSize="11dp"
                 app:autoSizeStepGranularity="1dp"
                 app:autoSizeTextType="uniform"
-                tools:text="Sun \n 16 May" />
+                tools:text="Sun\n16 May" />
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -219,8 +219,8 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/footerTextTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="2dp"
                 android:text="@string/this_data_is_sourced_real_time_from_co_win"
                 android:textAppearance="@style/Theme.Footer"
@@ -229,7 +229,9 @@
                 app:autoSizeStepGranularity="2dp"
                 app:autoSizeTextType="uniform"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/icon" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/icon"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

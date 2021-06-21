@@ -3,18 +3,18 @@ package com.vaccine.slot.notifier.ui.home
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -32,15 +32,19 @@ import com.vaccine.slot.notifier.data.model.room.SubscribedSlotsRoom
 import com.vaccine.slot.notifier.data.model.room.UserID
 import com.vaccine.slot.notifier.databinding.*
 import com.vaccine.slot.notifier.other.*
+import com.vaccine.slot.notifier.other.Constants.ACTION_INSTALL
+import com.vaccine.slot.notifier.other.Constants.ACTION_NOTIFICATION
 import com.vaccine.slot.notifier.other.Constants.CONNECTION_DIALOG
 import com.vaccine.slot.notifier.other.Constants.CRITERIA_TAG
 import com.vaccine.slot.notifier.other.Constants.DISTRICT_TAG
 import com.vaccine.slot.notifier.other.Constants.ERROR_TAG
+import com.vaccine.slot.notifier.other.Constants.SNACK_DIALOG
 import com.vaccine.slot.notifier.other.Constants.STATE_TAG
 import com.vaccine.slot.notifier.other.Constants.SUBSCRIBE_DIALOG
 import com.vaccine.slot.notifier.other.Constants.SUCCESS_SUBSCRIBED
 import com.vaccine.slot.notifier.other.Constants.TAB_SEARCH_BY_DISTRICT
 import com.vaccine.slot.notifier.other.Constants.TAB_SEARCH_BY_PIN_CODE
+import com.vaccine.slot.notifier.other.Constants.UPDATED_APK_FILE_NAME
 import com.vaccine.slot.notifier.ui.base.BaseActivity
 import com.vaccine.slot.notifier.ui.dialogs.*
 import com.vaccine.slot.notifier.ui.notification.NotificationMessage
@@ -49,6 +53,7 @@ import com.worldsnas.slider.SliderModel_
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.layout_criteria_alert_dialog.*
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -239,15 +244,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                             }
                         }.show(supportFragmentManager, CRITERIA_TAG)
                     } else {
-                        val parentLayout: View = findViewById(android.R.id.content)
-                        Snackbar.make(parentLayout, "Please enable the notifications", Snackbar.LENGTH_LONG)
-                                .setAction("OPEN SETTINGS") {
-                                    startActivity(Intent()
-                                            .setAction("android.settings.APP_NOTIFICATION_SETTINGS")
-                                            .putExtra("app_package", packageName)
-                                            .putExtra("app_uid", applicationInfo.uid)
-                                            .putExtra("android.provider.extra.APP_PACKAGE", packageName))
-                                }.show()
+                        showBottomSnack(resources.getString(R.string.allow_notification), ACTION_NOTIFICATION)
                     }
                 }
         }
@@ -272,6 +269,19 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
 
         homeViewModel.getInfo.observe(this, {
             activityHomeBinding.contentHome.epoxy.requestModelBuild()
+            val currentVersion = BuildConfig.VERSION_CODE
+            val updatedVersion = it.data?.version?.toInt()
+            if (updatedVersion != null) {
+                if (updatedVersion > currentVersion)
+                    if (!isUpdatedFileExists()) it.data.downloadLink.let { it1 -> downloadUpdate(it1) }
+                    else {
+                        homeViewModel.showDialog.observe(this, { ev ->
+                            ev?.getContentIfNotHandled()?.let {
+                                showBottomSnack(resources.getString(R.string.update_app), ACTION_INSTALL)
+                            }
+                        })
+                    }
+            }
         })
 
         homeViewModel.tabSelection.observe(this, {
@@ -354,6 +364,11 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                     supportFragmentManager.findFragmentByTag(CRITERIA_TAG) as CriteriaDialog?
             criteriaDialog?.setOnClickListener { s1, s2 ->
                 setUserToSubscribe(s1, s2)
+            }
+            val snackBarDialog =
+                    supportFragmentManager.findFragmentByTag(SNACK_DIALOG) as BottomSnackBarDialog?
+            snackBarDialog?.setOnClickListener { s ->
+                setActionIntent(s)
             }
         }
     }
@@ -469,6 +484,18 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         return selectedDose.split(" ")[1]
     }
 
+    private fun isUpdatedFileExists(): Boolean {
+        var destination: String = this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/"
+        val fileName = UPDATED_APK_FILE_NAME
+        destination += fileName
+        fileDestination = destination
+
+        val file = File(destination)
+        if (file.exists())
+            return true
+        return false
+    }
+
     private fun openSubscribeDialog(title: String, message: String) {
         activityHomeBinding.contentHome.progressBar.visibility = GONE
         SubscribeDialog.newInstance(title, message).show(supportFragmentManager, SUBSCRIBE_DIALOG)
@@ -477,6 +504,36 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     private fun showErrorMessage(message: String) {
         activityHomeBinding.contentHome.progressBar.visibility = GONE
         ErrorMessageDialog.newInstance(message).show(supportFragmentManager, ERROR_TAG)
+    }
+
+    private fun showBottomSnack(message: String, action: String) {
+
+        BottomSnackBarDialog.newInstance(message, action).apply {
+            setOnClickListener {
+                setActionIntent(it)
+            }
+        }.show(supportFragmentManager, SNACK_DIALOG)
+    }
+
+    private fun setActionIntent(action: String) {
+        when (action) {
+            ACTION_NOTIFICATION -> {
+                startActivity(Intent()
+                        .setAction("android.settings.APP_NOTIFICATION_SETTINGS")
+                        .putExtra("app_package", packageName)
+                        .putExtra("app_uid", applicationInfo.uid)
+                        .putExtra("android.provider.extra.APP_PACKAGE", packageName))
+
+            }
+            ACTION_INSTALL -> {
+                val contentUri: Uri = FileProvider.getUriForFile(this@HomeActivity, BuildConfig.APPLICATION_ID + ".provider", File(fileDestination))
+                val openFileIntent = Intent(Intent.ACTION_VIEW)
+                openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                openFileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                openFileIntent.data = contentUri
+                startActivity(openFileIntent)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -514,6 +571,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         var selectedStateId: Int? = 0
         var storedData: List<SubscribedSlotsRoom> = listOf()
         var playerID: String? = String()
+        var fileDestination: String = String()
     }
 
     override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
