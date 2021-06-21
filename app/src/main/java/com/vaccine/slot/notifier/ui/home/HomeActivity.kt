@@ -1,6 +1,10 @@
 package com.vaccine.slot.notifier.ui.home
 
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -94,6 +98,15 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                 playerID = it.playerID
             }
         })
+
+        // listen the completion of downloading updates
+        val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                showBottomSnack(resources.getString(R.string.update_app), ACTION_INSTALL)
+                unregisterReceiver(this)
+            }
+        }
+        registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         activityHomeBinding.contentHome.epoxy.layoutManager =
                 LinearLayoutManager(this)
