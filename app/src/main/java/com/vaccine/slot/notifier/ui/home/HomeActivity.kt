@@ -355,12 +355,6 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         })
 
         activityHomeBinding.contentHome.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
-        activityHomeBinding.contentHome.footerTextTitle.setLinkTextColor(
-                ContextCompat.getColor(
-                        this,
-                        R.color.blueF
-                )
-        )
 
         if (savedInstanceState != null) {
             val stateDialog =

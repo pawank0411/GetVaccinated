@@ -60,7 +60,7 @@ class ShowSlotsViewModel @Inject constructor(
     }
 
     fun backgroundColorStateList(
-            checkedColor: Int = Color.parseColor("#FFBB86FC"),
+            checkedColor: Int = Color.parseColor("#022D83"),
             uncheckedColor: Int = Color.parseColor("#51C3C1C1"),
     ): ColorStateList {
         val states = arrayOf(

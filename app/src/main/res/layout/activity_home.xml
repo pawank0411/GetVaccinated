@@ -11,6 +11,7 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:backgroundTint="#121212"
         android:fitsSystemWindows="true"
         android:theme="@style/Theme.GetVaccinated.AppBarOverlay">
 
@@ -20,7 +21,8 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentInsetStartWithNavigation="0dp"
-            app:contentScrim="@android:color/black"
+            app:contentScrim="#121212"
+            app:expandedTitleMarginBottom="5dp"
             app:expandedTitleMarginEnd="10dp"
             app:expandedTitleMarginStart="10dp"
             app:expandedTitleTextAppearance="@style/Theme.Title.Expanded"
@@ -31,6 +33,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="#121212"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/Theme.GetVaccinated.PopupOverlay" />
 

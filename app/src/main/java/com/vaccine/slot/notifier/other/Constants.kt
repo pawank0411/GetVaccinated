@@ -13,9 +13,9 @@ object Constants {
     const val ACTION_INSTALL = "Install"
 
     const val DEFAULT_MESSAGE_ERROR = "Please provide the necessary details"
-    const val QUOTE_VACCINE = "some motivational quote"
     const val APP_TAG = "#GetVaccinated"
     const val CO_WIN_LINK = "https://selfregistration.cowin.gov.in/"
+    const val DONATE_LINK = "https://www.instamojo.com/dashboard"
 
     const val FEE_PAID = "Paid"
     const val FEE_FREE = "Free"

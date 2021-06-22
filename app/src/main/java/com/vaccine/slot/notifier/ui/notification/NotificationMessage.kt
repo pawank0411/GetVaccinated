@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
@@ -83,7 +85,11 @@ class NotificationMessage : BaseActivity() {
 
     private fun openCoWinWebsite() {
         val builder = CustomTabsIntent.Builder()
+        val params = CustomTabColorSchemeParams.Builder()
+                .setToolbarColor(ContextCompat.getColor(this, R.color.blue_700))
+                .build()
         builder.setShowTitle(true)
+        builder.setDefaultColorSchemeParams(params)
         builder.build().launchUrl(this, Uri.parse(CO_WIN_LINK))
     }
 

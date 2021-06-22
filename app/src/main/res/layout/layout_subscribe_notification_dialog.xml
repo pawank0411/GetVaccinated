@@ -73,7 +73,7 @@
         android:stateListAnimator="@null"
         android:text="@string/share_with_your_friends"
         android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:textStyle="bold"
         app:cornerRadius="10dp"
         app:icon="@drawable/share_all_outline"
         app:iconGravity="textStart"
