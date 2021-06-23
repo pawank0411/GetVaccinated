@@ -15,7 +15,7 @@
             android:layout_height="20dp"
             android:layout_margin="10dp"
             android:gravity="center_vertical"
-            android:text="@string/winning_over_covid_19"
+            android:text="@string/motivational_quote"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
             app:autoSizeMaxTextSize="14dp"
@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:overScrollMode="never"
             app:layout_constraintTop_toBottomOf="@id/quote" />
 
         <GridLayout

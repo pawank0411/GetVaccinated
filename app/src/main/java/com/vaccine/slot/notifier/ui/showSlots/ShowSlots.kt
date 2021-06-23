@@ -243,8 +243,8 @@ class ShowSlots : BaseActivity() {
                                                     .isEnabled(false)
                                                     .backgroundTint(
                                                             resources.getColor(
-                                                                    R.color.grey,
-                                                                    applicationContext.theme
+                                                                R.color.darkerGrey,
+                                                                applicationContext.theme
                                                             )
                                                     )
                                                     .onClick { _ -> }
