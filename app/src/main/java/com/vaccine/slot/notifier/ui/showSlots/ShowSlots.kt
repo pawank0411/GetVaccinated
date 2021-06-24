@@ -64,33 +64,34 @@ class ShowSlots : BaseActivity() {
         if (selectedTab == "1") {
             slotsViewModel.getSlotDetailsPinCodeWise(selectedPinCode)
             activityShowSlotsBinding.heading.text = resources.getString(
-                    R.string.heading_slots,
-                    selectedDose,
-                    selectedPinCode,
-                    selectedAge.toString()
+                R.string.heading_slots,
+                selectedDose,
+                selectedPinCode,
+                selectedAge.toString()
             )
         } else {
             slotsViewModel.getSlotDetailsDistrictWise(selectedDistrictCodeId)
             activityShowSlotsBinding.heading.text = this.resources.getString(
-                    R.string.heading_slots,
-                    selectedDose,
-                    selectedDistrictName,
-                    selectedAge.toString()
+                R.string.heading_slots,
+                selectedDose,
+                selectedDistrictName,
+                selectedAge.toString()
             )
         }
 
         activityShowSlotsBinding.chipGroupFee.setOnCheckedChangeListener { _, checkedId: Int ->
             try {
-                val chip: Chip? = activityShowSlotsBinding.chipGroupFee.findViewById(checkedId) as Chip?
+                val chip: Chip? =
+                    activityShowSlotsBinding.chipGroupFee.findViewById(checkedId) as Chip?
                 chip?.let {
 
                     val predicate: (Center) -> Boolean = { center ->
                         center.feeType.equals(it.text.toString(), ignoreCase = true)
                     }
                     val filter =
-                            if (vaccineList.isNullOrEmpty()) originalList?.filterKeys(predicate) else vaccineList?.filterKeys(
-                                    predicate
-                            )
+                        if (vaccineList.isNullOrEmpty()) originalList?.filterKeys(predicate) else vaccineList?.filterKeys(
+                            predicate
+                        )
                     feeList = originalList?.filterKeys(predicate)
                     responseList = filter
                 } ?: kotlin.run {
@@ -107,7 +108,7 @@ class ShowSlots : BaseActivity() {
         activityShowSlotsBinding.chipGroupVaccine.setOnCheckedChangeListener { _, checkedId: Int ->
             try {
                 val chip: Chip? =
-                        activityShowSlotsBinding.chipGroupVaccine.findViewById(checkedId) as Chip?
+                    activityShowSlotsBinding.chipGroupVaccine.findViewById(checkedId) as Chip?
                 chip?.let { c ->
 
                     val predicate: (Session) -> Boolean = { session ->
@@ -116,7 +117,8 @@ class ShowSlots : BaseActivity() {
                     val filter = if (feeList.isNullOrEmpty()) originalList?.map {
                         it.key to it.value?.filter(predicate)
                     }?.toMap() else feeList?.map { it.key to it.value?.filter(predicate) }?.toMap()
-                    vaccineList = originalList?.map { it.key to it.value?.filter(predicate) }?.toMap()
+                    vaccineList =
+                        originalList?.map { it.key to it.value?.filter(predicate) }?.toMap()
                     responseList = filter
                 } ?: kotlin.run {
                     vaccineList = HashMap()
@@ -131,31 +133,31 @@ class ShowSlots : BaseActivity() {
 
         activityShowSlotsBinding.dateEpoxy.layoutManager = LinearLayoutManager(this)
         activityShowSlotsBinding.dateEpoxy.buildModelsWith(object :
-                EpoxyRecyclerView.ModelBuilderCallback {
+            EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
                 val subItemsDates = mutableListOf<EpoxyModel<*>>()
                 slotsViewModel.getSevenDayDate().forEachIndexed { index, item ->
                     val splitDate = item.date.split(" ")
                     subItemsDates.add(
-                            ItemLayoutDateBindingModel_()
-                                    .id(index)
-                                    .text(splitDate[0] + "\n" + splitDate[1] + " " + splitDate[2])
+                        ItemLayoutDateBindingModel_()
+                            .id(index)
+                            .text(splitDate[0] + "\n" + splitDate[1] + " " + splitDate[2])
                     )
                 }
 
                 HorizontalGridSpan7Model_()
-                        .id(subItemsDates.hashCode())
-                        .models(subItemsDates)
-                        .padding(
-                                Carousel.Padding(0, 0, 0, 0, 8)
-                        )
-                        .addTo(controller)
+                    .id(subItemsDates.hashCode())
+                    .models(subItemsDates)
+                    .padding(
+                        Carousel.Padding(0, 0, 0, 0, 8)
+                    )
+                    .addTo(controller)
             }
         })
 
         activityShowSlotsBinding.epoxy.layoutManager = LinearLayoutManager(this)
         activityShowSlotsBinding.epoxy.buildModelsWith(object :
-                EpoxyRecyclerView.ModelBuilderCallback {
+            EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
 
                 val response = slotsViewModel.slotDetails.value
@@ -167,23 +169,23 @@ class ShowSlots : BaseActivity() {
                     Status.ERROR -> {
                         activityShowSlotsBinding.progressBar.visibility = GONE
                         showSnackbar(
-                                response.message ?: resources.getString(R.string.error_message)
+                            response.message ?: resources.getString(R.string.error_message)
                         )
                         noSlotsAvailable()
                     }
                     Status.SUCCESS -> {
                         val nonEmptyListOfResponse =
-                                responseList?.filterValues { it?.isNotEmpty() == true }
+                            responseList?.filterValues { it?.isNotEmpty() == true }
 
                         if (nonEmptyListOfResponse.isNullOrEmpty()) noSlotsAvailable() else slotsAvailable()
                         nonEmptyListOfResponse?.map { centerMap ->
                             val center = centerMap.key
                             ItemLayoutCenterHeaderBindingModel_()
-                                    .id(center.centerId)
-                                    .centerName(center.name)
-                                    .price(setPrice(center))
-                                    .pinCode(center.pincode.toString() + " \u2022 " + center.address)
-                                    .addTo(controller)
+                                .id(center.centerId)
+                                .centerName(center.name)
+                                .price(setPrice(center))
+                                .pinCode(center.pincode.toString() + " \u2022 " + center.address)
+                                .addTo(controller)
 
                             val subItems = mutableListOf<EpoxyModel<*>>()
                             val innerSubItems = mutableListOf<EpoxyModel<*>>()
@@ -196,8 +198,8 @@ class ShowSlots : BaseActivity() {
                                 val calendar = Calendar.getInstance()
                                 calendar.time = date
                                 calendar.set(
-                                        Calendar.YEAR,
-                                        Calendar.getInstance().get(Calendar.YEAR)
+                                    Calendar.YEAR,
+                                    Calendar.getInstance().get(Calendar.YEAR)
                                 )
 
                                 date = calendar.time
@@ -213,90 +215,90 @@ class ShowSlots : BaseActivity() {
                                 }
                                 if (currentSession != null) {
                                     subItems.add(
-                                            ItemLayoutSlotsBindingModel_()
-                                                    .id(currentSession!!.sessionId)
-                                                    .vaccineName(currentSession?.vaccine)
-                                                    .vaccineNo(
-                                                            if (selectedDose == "1") currentSession?.availableCapacityDose1?.toInt()
-                                                                    .toString()
-                                                            else currentSession?.availableCapacityDose2?.toInt()
-                                                                    .toString()
+                                        ItemLayoutSlotsBindingModel_()
+                                            .id(currentSession!!.sessionId)
+                                            .vaccineName(currentSession?.vaccine)
+                                            .vaccineNo(
+                                                if (selectedDose == "1") currentSession?.availableCapacityDose1?.toInt()
+                                                    .toString()
+                                                else currentSession?.availableCapacityDose2?.toInt()
+                                                    .toString()
+                                            )
+                                            .isEnabled(true)
+                                            .backgroundTint(getBackgroundColor(currentSession))
+                                            .onClick { _ ->
+                                                bookAppointmentDialog(
+                                                    resources.getString(
+                                                        R.string.book_address,
+                                                        center.name,
+                                                        center.pincode.toString()
                                                     )
-                                                    .isEnabled(true)
-                                                    .backgroundTint(getBackgroundColor(currentSession))
-                                                    .onClick { _ ->
-                                                        bookAppointmentDialog(
-                                                                resources.getString(
-                                                                        R.string.book_address,
-                                                                        center.name,
-                                                                        center.pincode.toString()
-                                                                )
-                                                        )
-                                                    }
+                                                )
+                                            }
                                     )
                                 } else {
                                     subItems.add(
-                                            ItemLayoutSlotsBindingModel_()
-                                                    .id(i)
-                                                    .vaccineName("")
-                                                    .vaccineNo("NA")
-                                                    .isEnabled(false)
-                                                    .backgroundTint(
-                                                            resources.getColor(
-                                                                R.color.darkerGrey,
-                                                                applicationContext.theme
-                                                            )
-                                                    )
-                                                    .onClick { _ -> }
+                                        ItemLayoutSlotsBindingModel_()
+                                            .id(i)
+                                            .vaccineName("")
+                                            .vaccineNo("NA")
+                                            .isEnabled(false)
+                                            .backgroundTint(
+                                                resources.getColor(
+                                                    R.color.darkerGrey,
+                                                    applicationContext.theme
+                                                )
+                                            )
+                                            .onClick { _ -> }
                                     )
                                 }
                             }
 
                             HorizontalGridSpan7Model_()
-                                    .id(subItems.hashCode())
-                                    .models(subItems)
-                                    .padding(
-                                            Carousel.Padding(0, 0, 0, 0, 8)
-                                    )
-                                    .addTo(controller)
+                                .id(subItems.hashCode())
+                                .models(subItems)
+                                .padding(
+                                    Carousel.Padding(0, 0, 0, 0, 8)
+                                )
+                                .addTo(controller)
                             // show same date sessions
                             getSameDateSessions(centerMap.value)?.forEach { session ->
                                 innerSubItems.add(
-                                        ItemLayoutSlotsBindingModel_()
-                                                .id(session.sessionId)
-                                                .vaccineName(session.vaccine)
-                                                .vaccineNo(
-                                                        if (selectedDose == "1") session.availableCapacityDose1?.toInt()
-                                                                .toString()
-                                                        else session.availableCapacityDose2?.toInt().toString()
+                                    ItemLayoutSlotsBindingModel_()
+                                        .id(session.sessionId)
+                                        .vaccineName(session.vaccine)
+                                        .vaccineNo(
+                                            if (selectedDose == "1") session.availableCapacityDose1?.toInt()
+                                                .toString()
+                                            else session.availableCapacityDose2?.toInt().toString()
+                                        )
+                                        .isEnabled(true)
+                                        .backgroundTint(getBackgroundColor(session))
+                                        .onClick { _ ->
+                                            bookAppointmentDialog(
+                                                resources.getString(
+                                                    R.string.book_address,
+                                                    center.name,
+                                                    center.pincode.toString()
                                                 )
-                                                .isEnabled(true)
-                                                .backgroundTint(getBackgroundColor(session))
-                                                .onClick { _ ->
-                                                    bookAppointmentDialog(
-                                                            resources.getString(
-                                                                    R.string.book_address,
-                                                                    center.name,
-                                                                    center.pincode.toString()
-                                                            )
-                                                    )
-                                                }
+                                            )
+                                        }
                                 )
                             }
 
                             if (innerSubItems.size > 0) {
                                 HorizontalGridSpan7Model_()
-                                        .id(innerSubItems.hashCode())
-                                        .models(innerSubItems)
-                                        .padding(
-                                                Carousel.Padding(0, 0, 0, 0, 8)
-                                        )
-                                        .addTo(controller)
+                                    .id(innerSubItems.hashCode())
+                                    .models(innerSubItems)
+                                    .padding(
+                                        Carousel.Padding(0, 0, 0, 0, 8)
+                                    )
+                                    .addTo(controller)
                             }
 
                             ItemLayoutDividerBindingModel_()
-                                    .id(Random().nextInt())
-                                    .addTo(controller)
+                                .id(Random().nextInt())
+                                .addTo(controller)
                         }
                         activityShowSlotsBinding.progressBar.visibility = GONE
                     }
@@ -305,38 +307,44 @@ class ShowSlots : BaseActivity() {
         })
 
         slotsViewModel.slotDetails.observe(this,
-                { it ->
-                    val allValidSessions = it?.data?.centers?.sortedBy { it.name }?.map { center ->
-                        center to center.sessions?.filter { session ->
-                            isValidSession(
-                                    session,
-                                    selectedAge.toString(),
-                                    selectedDose
-                            )
-                        }
-                    }?.toMap()
+            { it ->
+                val allValidSessions = it?.data?.centers?.sortedBy { it.name }?.map { center ->
+                    center to center.sessions?.filter { session ->
+                        isValidSession(
+                            session,
+                            selectedAge.toString(),
+                            selectedDose
+                        )
+                    }
+                }?.toMap()
 
-                    originalList = allValidSessions
-                    responseList = originalList
+                originalList = allValidSessions
+                responseList = originalList
 
-                    slotsViewModel.setChipFilterList(originalList) // fetch unique fee type and vaccine type
+                slotsViewModel.setChipFilterList(originalList) // fetch unique fee type and vaccine type
 
-                    activityShowSlotsBinding.epoxy.requestModelBuild()
-                })
+                activityShowSlotsBinding.epoxy.requestModelBuild()
+            })
 
         slotsViewModel.chipFilterList.observe(this,
-                {
-                    addChips(it)
-                })
+            {
+                addChips(it)
+            })
     }
 
     private fun setPrice(center: Center): String {
         val vaccineFee = center.vaccineFee
         return if (center.feeType.equals(
-                        FEE_PAID,
-                        ignoreCase = true
-                )
-        ) if (vaccineFee?.size == 1) ("\u20B9" + vaccineFee[0].fee) else ("\u20B9" + vaccineFee?.minByOrNull { it.fee!!.toInt() }?.fee + "+") else FEE_FREE
+                FEE_PAID,
+                ignoreCase = true
+            )
+        ) try {
+            if (vaccineFee?.size == 1) ("\u20B9" + vaccineFee[0].fee) else (vaccineFee?.let {
+                "\u20B9" + it.minByOrNull { f -> f.fee!!.toInt() }?.fee + "+"
+            } ?: FEE_PAID)
+        } catch (e: Exception) {
+            FEE_PAID
+        } else FEE_FREE
     }
 
     private fun isValidSession(session: Session, s: String?, selectedDose: String): Boolean {
@@ -377,10 +385,10 @@ class ShowSlots : BaseActivity() {
     }
 
     private fun getDistinctDateSessions(sessionList: List<Session>?) =
-            sessionList?.distinctBy { it.date }
+        sessionList?.distinctBy { it.date }
 
     private fun getSameDateSessions(sessionList: List<Session>?) =
-            sessionList?.duplicateBy { it.date }
+        sessionList?.duplicateBy { it.date }
 
     private fun <T, K> Iterable<T>.duplicateBy(selector: (T) -> K): List<T> {
         val set = HashSet<K>()
@@ -397,30 +405,30 @@ class ShowSlots : BaseActivity() {
     }
 
     private fun getBackgroundColor(session: Session?) =
-            if (selectedDose == "1")
-                when {
-                    session!!.availableCapacityDose1?.toInt() ?: 0 >= 30 -> {
-                        resources.getColor(R.color.green, applicationContext.theme)
-                    }
-                    session.availableCapacityDose1?.toInt() ?: 0 in 11..29 -> {
-                        resources.getColor(R.color.yellow, applicationContext.theme)
-                    }
-                    else -> {
-                        resources.getColor(R.color.red, applicationContext.theme)
-                    }
+        if (selectedDose == "1")
+            when {
+                session!!.availableCapacityDose1?.toInt() ?: 0 >= 30 -> {
+                    resources.getColor(R.color.green, applicationContext.theme)
                 }
-            else
-                when {
-                    session!!.availableCapacityDose2?.toInt() ?: 0 >= 30 -> {
-                        resources.getColor(R.color.green, applicationContext.theme)
-                    }
-                    session.availableCapacityDose2?.toInt() ?: 0 in 11..29 -> {
-                        resources.getColor(R.color.yellow, applicationContext.theme)
-                    }
-                    else -> {
-                        resources.getColor(R.color.red, applicationContext.theme)
-                    }
+                session.availableCapacityDose1?.toInt() ?: 0 in 11..29 -> {
+                    resources.getColor(R.color.yellow, applicationContext.theme)
                 }
+                else -> {
+                    resources.getColor(R.color.red, applicationContext.theme)
+                }
+            }
+        else
+            when {
+                session!!.availableCapacityDose2?.toInt() ?: 0 >= 30 -> {
+                    resources.getColor(R.color.green, applicationContext.theme)
+                }
+                session.availableCapacityDose2?.toInt() ?: 0 in 11..29 -> {
+                    resources.getColor(R.color.yellow, applicationContext.theme)
+                }
+                else -> {
+                    resources.getColor(R.color.red, applicationContext.theme)
+                }
+            }
 
     private fun bookAppointmentDialog(title: String) {
         BookAppointmentDialog.newInstance(title).show(supportFragmentManager, BOOK_APPOINTMENT_TAG)

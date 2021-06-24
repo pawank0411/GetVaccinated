@@ -61,9 +61,9 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/priceTV"
-            android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:gravity="center_vertical"
+            android:layout_width="70dp"
+            android:layout_height="0dp"
+            android:gravity="end|center"
             android:text='@{price}'
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
             android:textStyle="bold"
@@ -74,6 +74,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Free" />
+            tools:text="Rs141880" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

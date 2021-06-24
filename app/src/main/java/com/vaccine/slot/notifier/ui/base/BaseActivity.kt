@@ -9,7 +9,6 @@ import com.vaccine.slot.notifier.other.Constants.UPDATED_APK_FILE_NAME
 import java.io.File
 import javax.inject.Inject
 
-
 open class BaseActivity : AppCompatActivity() {
 
     @Inject

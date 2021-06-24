@@ -66,4 +66,9 @@
     <string name="allow_notification">Please allow notifications to get slots alert</string>
     <string name="retry">Retry</string>
     <string name="motivational_quote">Be strong headed, Get vaccinated</string>
+    <string name="delete_all">Delete all</string>
+    <string name="delete_confirmation">Are you sure, you want to delete?</string>
+    <string name="delete">Delete</string>
+    <string name="delete_message">All the messages will be permanently deleted</string>
+    <string name="raise_issue">Raise Issue</string>
 </resources>
