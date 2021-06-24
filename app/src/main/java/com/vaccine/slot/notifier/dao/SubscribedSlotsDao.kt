@@ -16,9 +16,6 @@ interface SubscribedSlotsDao {
     @Query("DELETE FROM subscribed_slots WHERE id = :id")
     suspend fun deleteDataById(id: Int)
 
-//    @Query("SELECT clientID FROM subscribed_slots LIMIT :limit")
-//    fun getTopRow(limit: Int): LiveData<SubscribedSlotsRoom>?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(subscribedSlotsRoom: SubscribedSlotsRoom)
 }

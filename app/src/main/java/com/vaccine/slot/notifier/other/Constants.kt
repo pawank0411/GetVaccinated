@@ -16,6 +16,7 @@ object Constants {
     const val APP_TAG = "#GetVaccinated"
     const val CO_WIN_LINK = "https://selfregistration.cowin.gov.in/"
     const val DONATE_LINK = "https://www.instamojo.com/dashboard"
+    const val FEEDBACK_LINK = "https://bit.ly/3qpShNm"
 
     const val FEE_PAID = "Paid"
     const val FEE_FREE = "Free"
@@ -29,6 +30,7 @@ object Constants {
     const val UNSUBSCRIBE_DIALOG = "UnSubscribeDialog"
     const val CONNECTION_DIALOG = "ConnectionDialog"
     const val SNACK_DIALOG = "SnackDialog"
+    const val DELETE_DIALOG = "DeleteDialog"
 
     const val SUCCESS_SUBSCRIBED = "Added to subscriptions."
     const val SUCCESS_UNSUBSCRIBED = "Removed from subscriptions."

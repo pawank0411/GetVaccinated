@@ -12,7 +12,11 @@ class NoConnectionDialog : BottomSheetDialogFragment() {
 
     private lateinit var layoutNoConnectionDialog: LayoutNoConnectionDialogBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         layoutNoConnectionDialog = LayoutNoConnectionDialogBinding.inflate(inflater)
         return layoutNoConnectionDialog.root
     }
