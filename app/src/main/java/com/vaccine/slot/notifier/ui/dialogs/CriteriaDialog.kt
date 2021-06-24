@@ -3,7 +3,8 @@ package com.vaccine.slot.notifier.ui.dialogs
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -53,12 +54,12 @@ class CriteriaDialog : BottomSheetDialogFragment() {
         layoutCriteriaAlertDialogBinding.vaccineSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 chosenVaccine = listOf("1")
-                layoutCriteriaAlertDialogBinding.vaccine.visibility = VISIBLE
                 layoutCriteriaAlertDialogBinding.chipGroupVaccine.visibility = VISIBLE
+                layoutCriteriaAlertDialogBinding.note.visibility = VISIBLE
             } else {
                 chosenVaccine = listOf("1", "2", "3")
-                layoutCriteriaAlertDialogBinding.vaccine.visibility = INVISIBLE
                 layoutCriteriaAlertDialogBinding.chipGroupVaccine.visibility = GONE
+                layoutCriteriaAlertDialogBinding.note.visibility = GONE
             }
         }
 

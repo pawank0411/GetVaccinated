@@ -129,13 +129,13 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                                             .placeholder(
                                                     ContextCompat.getDrawable(
                                                             this@HomeActivity,
-                                                            R.drawable.image_outline
+                                                            R.drawable.ic_image_outline
                                                     )!!
                                             )
                                             .error(
                                                     ContextCompat.getDrawable(
                                                             this@HomeActivity,
-                                                            R.drawable.image_broken_variant
+                                                        R.drawable.ic_image_broken_variant
                                                     )!!
                                             )
                                             .into(binding.image)
@@ -544,7 +544,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.home, menu)
+        menuInflater.inflate(R.menu.menu_home, menu)
         return true
     }
 

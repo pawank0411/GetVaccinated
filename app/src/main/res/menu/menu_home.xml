@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_notification"
-        android:icon="@drawable/message"
+        android:icon="@drawable/ic_message"
         android:title="@string/notification"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/share"
+        android:icon="@drawable/ic_share"
         android:title="@string/share"
         app:showAsAction="ifRoom" />
 </menu>

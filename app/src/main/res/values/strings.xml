@@ -71,4 +71,6 @@
     <string name="delete">Delete</string>
     <string name="delete_message">All the messages will be permanently deleted</string>
     <string name="raise_issue">Raise Issue</string>
+    <string name="filter_vaccine">Vaccine</string>
+    <string name="note_vaccine">Note: Vaccine may vary for the alerts</string>
 </resources>

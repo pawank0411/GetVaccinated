@@ -13,7 +13,7 @@
         android:contentDescription="@string/close"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:src="@drawable/close_circle"
+        android:src="@drawable/ic_close_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,7 +75,7 @@
         android:textAllCaps="false"
         android:textStyle="bold"
         app:cornerRadius="10dp"
-        app:icon="@drawable/share_all_outline"
+        app:icon="@drawable/ic_share_all_outline"
         app:iconGravity="textStart"
         app:iconTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"

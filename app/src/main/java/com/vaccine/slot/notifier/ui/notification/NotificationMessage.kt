@@ -108,7 +108,7 @@ class NotificationMessage : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.notification, menu)
+        menuInflater.inflate(R.menu.menu_notification, menu)
         return true
     }
 

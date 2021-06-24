@@ -35,7 +35,7 @@
                 android:id="@+id/inputNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/arrow_down"
+                android:drawableEnd="@drawable/ic_arrow_down"
                 android:focusable="false"
                 android:onClick="@{onClick}"
                 android:text="@={text}"
