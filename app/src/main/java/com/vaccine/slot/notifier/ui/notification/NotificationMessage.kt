@@ -81,6 +81,20 @@ class NotificationMessage : BaseActivity() {
         activityNotificationMessageBinding.raiseIssue.setOnClickListener {
             openCustomWebsite(FEEDBACK_LINK)
         }
+
+        if (savedInstanceState != null) {
+            val deleteDialog =
+                supportFragmentManager.findFragmentByTag(DELETE_DIALOG) as DeleteDialog?
+            deleteDialog?.setOnClickListener {
+                try {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        notificationDao.deleteAll()
+                    }
+                } catch (e: Exception) {
+                    println(e.localizedMessage)
+                }
+            }
+        }
     }
 
     private fun openCustomWebsite(link: String) {
