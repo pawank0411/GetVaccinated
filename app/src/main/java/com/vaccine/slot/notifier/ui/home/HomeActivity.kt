@@ -146,7 +146,6 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                 SliderModel_()
                         .id("carousel")
                         .models(photoList)
-                        .cycleDelay(5_000)
                         .indicatorVisible(false)
                         .addTo(controller)
 
@@ -157,7 +156,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                             if (title.contains(TAB_SEARCH_BY_DISTRICT)) {
                                 ContextCompat.getDrawable(
                                         this@HomeActivity,
-                                        R.drawable.tab_rounded_corners
+                                        R.drawable.tab_rounded_corner
                                 )
                             } else {
                                 ContextCompat.getDrawable(
@@ -170,7 +169,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                             if (title.contains(TAB_SEARCH_BY_PIN_CODE)) {
                                 ContextCompat.getDrawable(
                                         this@HomeActivity,
-                                        R.drawable.tab_rounded_corners
+                                    R.drawable.tab_rounded_corner
                                 )
                             } else {
                                 ContextCompat.getDrawable(

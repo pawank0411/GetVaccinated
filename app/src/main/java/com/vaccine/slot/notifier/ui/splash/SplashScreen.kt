@@ -1,9 +1,10 @@
-package com.vaccine.slot.notifier
+package com.vaccine.slot.notifier.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.vaccine.slot.notifier.ui.home.HomeActivity
+import com.vaccine.slot.notifier.R
+import com.vaccine.slot.notifier.ui.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -13,7 +14,7 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.SplashTheme)
 
-        startActivity(Intent(this, HomeActivity::class.java))
+        startActivity(Intent(this, WelcomeActivity::class.java))
         finish()
     }
 }
