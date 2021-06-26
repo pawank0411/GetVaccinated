@@ -74,5 +74,5 @@
     <string name="filter_vaccine">Vaccine</string>
     <string name="note_vaccine">Note: Vaccine may vary for the alerts</string>
     <string name="welcome_images">welcome images</string>
-    <string name="finish">Finish</string>
+    <string name="finish">proceed</string>
 </resources>
