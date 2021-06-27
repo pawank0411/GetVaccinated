@@ -2,9 +2,9 @@
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-An Android application to check and subscribe for slots availability of vaccines used in India.
+An Android application to check slots availability and for getting real time slot alerts
 
-The data we provide is fetched from public APIs of [CoWIN](https://apisetu.gov.in/public/api/cowin/cowin-public-v2#/)
+The data we provide is fetched from public APIs of [Co-WIN](https://apisetu.gov.in/public/api/cowin/cowin-public-v2#/)
 
 ## ✨ Features
 - [x] Check slots availability with an ease.
