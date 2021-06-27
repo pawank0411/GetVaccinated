@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getColor
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.databinding.LayoutDialogSnackbarBinding
 import com.vaccine.slot.notifier.other.Constants.ACTION_NOTIFICATION
 import com.vaccine.slot.notifier.other.Constants.EXTRA_ACTION_SNACK
@@ -31,7 +33,11 @@ class BottomSnackBarDialog : BottomSheetDialogFragment() {
         onClickListener = listener
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         bottomSnackBarDialog = LayoutDialogSnackbarBinding.inflate(inflater)
         return bottomSnackBarDialog.root
     }
@@ -53,7 +59,12 @@ class BottomSnackBarDialog : BottomSheetDialogFragment() {
             if (action.equals(ACTION_NOTIFICATION))
                 bottomSnackBarDialog.button.setTextColor(Color.RED)
             else
-                bottomSnackBarDialog.button.setTextColor(Color.YELLOW)
+                bottomSnackBarDialog.button.setTextColor(
+                    getColor(
+                        requireContext(),
+                        R.color.yellow_200
+                    )
+                )
 
             bottomSnackBarDialog.button.setOnClickListener {
                 onClickListener?.let {

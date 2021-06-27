@@ -109,45 +109,44 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         activityHomeBinding.contentHome.epoxy.layoutManager =
-                LinearLayoutManager(this)
+            LinearLayoutManager(this)
         activityHomeBinding.contentHome.epoxy.buildModelsWith(object :
-                EpoxyRecyclerView.ModelBuilderCallback {
+            EpoxyRecyclerView.ModelBuilderCallback {
             override fun buildModels(controller: EpoxyController) {
 
                 val photoList = mutableListOf<EpoxyModel<*>>()
                 val urlList = homeViewModel.getInfo.value?.data?.imagesLink
 
-                if (!isInternetAvailable()) NoConnectionDialog().show(supportFragmentManager, CONNECTION_DIALOG) else
-                    urlList?.forEach {
-                        photoList.add(ItemLayoutViewPagerBindingModel_()
-                                .id(Random().nextInt())
-                                .onBind { _, view, _ ->
-                                    val binding = view.dataBinding as ViewholderItemLayoutViewPagerBinding
-                                    Picasso
-                                            .get()
-                                            .load(Uri.parse(it))
-                                            .placeholder(
-                                                    ContextCompat.getDrawable(
-                                                            this@HomeActivity,
-                                                            R.drawable.ic_image_outline
-                                                    )!!
-                                            )
-                                            .error(
-                                                    ContextCompat.getDrawable(
-                                                            this@HomeActivity,
-                                                        R.drawable.ic_image_broken_variant
-                                                    )!!
-                                            )
-                                            .into(binding.image)
-                                }
-                        )
-                    }
+                urlList?.forEach {
+                    photoList.add(ItemLayoutViewPagerBindingModel_()
+                        .id(Random().nextInt())
+                        .onBind { _, view, _ ->
+                            val binding = view.dataBinding as ViewholderItemLayoutViewPagerBinding
+                            Picasso
+                                .get()
+                                .load(Uri.parse(it))
+                                .placeholder(
+                                    ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.ic_image_outline
+                                    )!!
+                                )
+                                .error(
+                                    ContextCompat.getDrawable(
+                                        this@HomeActivity,
+                                        R.drawable.ic_image_broken_variant
+                                    )!!
+                                )
+                                .into(binding.image)
+                        }
+                    )
+                }
 
                 SliderModel_()
-                        .id("carousel")
-                        .models(photoList)
-                        .indicatorVisible(false)
-                        .addTo(controller)
+                    .id("carousel")
+                    .models(photoList)
+                    .indicatorVisible(false)
+                    .addTo(controller)
 
                 val subItems = mutableListOf<EpoxyModel<*>>()
                 titles.forEach { title ->
@@ -155,48 +154,53 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                         0 -> {
                             if (title.contains(TAB_SEARCH_BY_DISTRICT)) {
                                 ContextCompat.getDrawable(
-                                        this@HomeActivity,
-                                        R.drawable.tab_rounded_corner
+                                    this@HomeActivity,
+                                    R.drawable.tab_rounded_corner
                                 )
                             } else {
                                 ContextCompat.getDrawable(
-                                        this@HomeActivity,
-                                        R.drawable.transparent_background
+                                    this@HomeActivity,
+                                    R.drawable.transparent_background
                                 )
                             }
                         }
                         1 -> {
                             if (title.contains(TAB_SEARCH_BY_PIN_CODE)) {
                                 ContextCompat.getDrawable(
-                                        this@HomeActivity,
+                                    this@HomeActivity,
                                     R.drawable.tab_rounded_corner
                                 )
                             } else {
                                 ContextCompat.getDrawable(
-                                        this@HomeActivity,
-                                        R.drawable.transparent_background
+                                    this@HomeActivity,
+                                    R.drawable.transparent_background
                                 )
                             }
                         }
                         else -> ContextCompat.getDrawable(
-                                this@HomeActivity,
-                                R.drawable.transparent_background
+                            this@HomeActivity,
+                            R.drawable.transparent_background
                         )
                     }
                     subItems.add(ItemLayoutTabBindingModel_()
-                            .id(Random().nextInt())
-                            .text(title)
-                            .background(backgroundColor)
-                            .onClick { _ ->
-                                homeViewModel.setTabSelected(if (title.contains(TAB_SEARCH_BY_DISTRICT)) 0 else 1)
-                                homeViewModel.getContentList(title)
-                            })
+                        .id(Random().nextInt())
+                        .text(title)
+                        .background(backgroundColor)
+                        .onClick { _ ->
+                            homeViewModel.setTabSelected(
+                                if (title.contains(
+                                        TAB_SEARCH_BY_DISTRICT
+                                    )
+                                ) 0 else 1
+                            )
+                            homeViewModel.getContentList(title)
+                        })
                 }
 
                 GridTabModel_()
-                        .id(subItems.hashCode())
-                        .models(subItems)
-                        .addTo(controller)
+                    .id(subItems.hashCode())
+                    .models(subItems)
+                    .addTo(controller)
 
                 when (homeViewModel.tabSelection.value) {
                     0 -> {
@@ -204,40 +208,40 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                         val hintTextList = homeViewModel.contentTabDistrict.value
                         for (i in 0..1) {
                             ItemLayoutDistrictBindingModel_()
-                                    .id(i)
-                                    .hintText(hintTextList?.get(i))
-                                    .text(if (i == 0) selectedStateName else selectedDistrictName)
-                                    .onClick { _ ->
-                                        when (i) {
-                                            0 -> {
-                                                StateDialog().apply {
-                                                    setOnClickListener { state, id ->
-                                                        setStateInputLayout(state, id)
-                                                    }
-                                                }.show(supportFragmentManager, STATE_TAG)
-                                            }
-                                            1 -> {
-                                                if (selectedStateName.isNotEmpty()) {
-                                                    DistrictDialog().apply {
-                                                        setOnClickListener { district, id ->
-                                                            setDistrictInputLayout(district, id)
-                                                        }
-                                                    }.show(supportFragmentManager, DISTRICT_TAG)
+                                .id(i)
+                                .hintText(hintTextList?.get(i))
+                                .text(if (i == 0) selectedStateName else selectedDistrictName)
+                                .onClick { _ ->
+                                    when (i) {
+                                        0 -> {
+                                            StateDialog().apply {
+                                                setOnClickListener { state, id ->
+                                                    setStateInputLayout(state, id)
                                                 }
+                                            }.show(supportFragmentManager, STATE_TAG)
+                                        }
+                                        1 -> {
+                                            if (selectedStateName.isNotEmpty()) {
+                                                DistrictDialog().apply {
+                                                    setOnClickListener { district, id ->
+                                                        setDistrictInputLayout(district, id)
+                                                    }
+                                                }.show(supportFragmentManager, DISTRICT_TAG)
                                             }
                                         }
                                     }
-                                    .addTo(controller)
+                                }
+                                .addTo(controller)
                         }
                     }
                     1 -> {
                         activityHomeBinding.contentHome.notifySlots.visibility = GONE
                         val hintTextList = homeViewModel.contentTabPincode.value
                         ItemLayoutPincodeBindingModel_()
-                                .id(Random().nextInt())
-                                .hintText(hintTextList?.get(0))
-                                .viewModel(homeViewModel)
-                                .addTo(controller)
+                            .id(Random().nextInt())
+                            .hintText(hintTextList?.get(0))
+                            .viewModel(homeViewModel)
+                            .addTo(controller)
                     }
                 }
             }
@@ -245,10 +249,14 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
 
         activityHomeBinding.contentHome.notifySlots.setOnClickListener {
             selectedAge = getUserSelectedAge()
-            if (!isInternetAvailable()) NoConnectionDialog().show(supportFragmentManager, CONNECTION_DIALOG) else
+            if (!isInternetAvailable()) NoConnectionDialog().show(
+                supportFragmentManager,
+                CONNECTION_DIALOG
+            ) else
                 if (selectedDistrictName.isEmpty()) showErrorMessage(resources.getString(R.string.select_error))
                 else {
-                    val isNotificationEnabled = NotificationManagerCompat.from(this).areNotificationsEnabled()
+                    val isNotificationEnabled =
+                        NotificationManagerCompat.from(this).areNotificationsEnabled()
                     if (isNotificationEnabled) {
                         CriteriaDialog().apply {
                             setOnClickListener { dose, vaccine ->
@@ -256,7 +264,10 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                             }
                         }.show(supportFragmentManager, CRITERIA_TAG)
                     } else {
-                        showBottomSnack(resources.getString(R.string.allow_notification), ACTION_NOTIFICATION)
+                        showBottomSnack(
+                            resources.getString(R.string.allow_notification),
+                            ACTION_NOTIFICATION
+                        )
                     }
                 }
         }
@@ -265,7 +276,10 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
             selectedAge = getUserSelectedAge()
             selectedDose = getUserSelectedDose()
 
-            if (!isInternetAvailable()) NoConnectionDialog().show(supportFragmentManager, CONNECTION_DIALOG) else
+            if (!isInternetAvailable()) NoConnectionDialog().show(
+                supportFragmentManager,
+                CONNECTION_DIALOG
+            ) else
                 if (homeViewModel.tabSelection.value == 0 && (selectedStateName.isEmpty() || selectedDistrictName.isEmpty())) {
                     showErrorMessage(resources.getString(R.string.select_error))
                 } else if (homeViewModel.tabSelection.value == 1 && (selectedPinCode.isEmpty() || selectedPinCode.length < 6)) {
@@ -289,7 +303,10 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                     else {
                         homeViewModel.showDialog.observe(this, { ev ->
                             ev?.getContentIfNotHandled()?.let {
-                                showBottomSnack(resources.getString(R.string.update_app), ACTION_INSTALL)
+                                showBottomSnack(
+                                    resources.getString(R.string.update_app),
+                                    ACTION_INSTALL
+                                )
                             }
                         })
                     }
@@ -315,9 +332,9 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                     homeViewModel.showDialog.observe(this, {
                         it?.getContentIfNotHandled()?.let {
                             if (response.data?.message?.contains(
-                                            SUCCESS_SUBSCRIBED,
-                                            ignoreCase = true
-                                    ) == true
+                                    SUCCESS_SUBSCRIBED,
+                                    ignoreCase = true
+                                ) == true
                             ) insertToDb() else reportForArea()
                         }
                     })
@@ -341,8 +358,8 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                     homeViewModel.showDialog.observe(this, {
                         it?.getContentIfNotHandled()?.let {
                             if (response.data?.status == true) openSubscribeDialog(
-                                    resources.getString(R.string.happy_serve),
-                                    resources.getString(R.string.first_user)
+                                resources.getString(R.string.happy_serve),
+                                resources.getString(R.string.first_user)
                             ) else showErrorMessage(resources.getString(R.string.error_message))
                         }
                     })
@@ -353,26 +370,27 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
             }
         })
 
-        activityHomeBinding.contentHome.footerTextTitle.movementMethod = LinkMovementMethod.getInstance()
+        activityHomeBinding.contentHome.footerTextTitle.movementMethod =
+            LinkMovementMethod.getInstance()
 
         if (savedInstanceState != null) {
             val stateDialog =
-                    supportFragmentManager.findFragmentByTag(STATE_TAG) as StateDialog?
+                supportFragmentManager.findFragmentByTag(STATE_TAG) as StateDialog?
             stateDialog?.setOnClickListener { s, i ->
                 setStateInputLayout(s, i)
             }
             val districtDialog =
-                    supportFragmentManager.findFragmentByTag(DISTRICT_TAG) as DistrictDialog?
+                supportFragmentManager.findFragmentByTag(DISTRICT_TAG) as DistrictDialog?
             districtDialog?.setOnClickListener { s, i ->
                 setDistrictInputLayout(s, i)
             }
             val criteriaDialog =
-                    supportFragmentManager.findFragmentByTag(CRITERIA_TAG) as CriteriaDialog?
+                supportFragmentManager.findFragmentByTag(CRITERIA_TAG) as CriteriaDialog?
             criteriaDialog?.setOnClickListener { s1, s2 ->
                 setUserToSubscribe(s1, s2)
             }
             val snackBarDialog =
-                    supportFragmentManager.findFragmentByTag(SNACK_DIALOG) as BottomSnackBarDialog?
+                supportFragmentManager.findFragmentByTag(SNACK_DIALOG) as BottomSnackBarDialog?
             snackBarDialog?.setOnClickListener { s ->
                 setActionIntent(s)
             }
@@ -382,9 +400,9 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     private fun reportForArea() {
 
         val reportAlert = ReportAlert(
-                age = selectedAge,
-                stateID = selectedStateId.toString(),
-                districtID = selectedDistrictCodeId
+            age = selectedAge,
+            stateID = selectedStateId.toString(),
+            districtID = selectedDistrictCodeId
         )
         homeViewModel.getReportAreaResponse(reportAlert)
     }
@@ -394,13 +412,13 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         val subscribeSlots = homeViewModel.subscribeSlotsData.value
         subscribeSlots?.let { data ->
             homeViewModel.insertSubscribedUserInDb(
-                    data,
-                    selectedStateName,
-                    selectedDistrictName
+                data,
+                selectedStateName,
+                selectedDistrictName
             )
             openSubscribeDialog(
-                    resources.getString(R.string.notification_set),
-                    resources.getString(R.string.success_message)
+                resources.getString(R.string.notification_set),
+                resources.getString(R.string.success_message)
             )
         } ?: showErrorMessage(resources.getString(R.string.error_message))
     }
@@ -427,12 +445,12 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         }
 
         val subscribeSlots = SubscribeSlots(
-                playerID,
-                selectedAge,
-                selectedStateId?.toString(),
-                selectedDistrictCodeId,
-                vaccineID,
-                doseID
+            playerID,
+            selectedAge,
+            selectedStateId?.toString(),
+            selectedDistrictCodeId,
+            vaccineID,
+            doseID
         )
 
         val isExists = isEqual(doseID, vaccineID)
@@ -449,8 +467,8 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         val first = mutableListOf<String>()
         storedData.forEach { data ->
             if (data.districtID == selectedDistrictCodeId &&
-                    data.age == selectedAge &&
-                    data.doseID?.get(0) == dose?.get(0)
+                data.age == selectedAge &&
+                data.doseID?.get(0) == dose?.get(0)
             ) {
                 data.vaccineID?.forEach {
                     first.add(it)
@@ -469,15 +487,15 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     }
 
     private fun getUserSelectedAge(): Int =
-            when (activityHomeBinding.contentHome.ageGroup.checkedRadioButtonId) {
-                R.id.age1 ->
-                    activityHomeBinding.contentHome.age1.text.toString().split("[–+]".toRegex())
-                            .map { it.trim() }[0].toInt()
-                R.id.age2 ->
-                    activityHomeBinding.contentHome.age2.text.toString().split("[–+]".toRegex())
-                            .map { it.trim() }[0].toInt()
-                else -> 0
-            }
+        when (activityHomeBinding.contentHome.ageGroup.checkedRadioButtonId) {
+            R.id.age1 ->
+                activityHomeBinding.contentHome.age1.text.toString().split("[–+]".toRegex())
+                    .map { it.trim() }[0].toInt()
+            R.id.age2 ->
+                activityHomeBinding.contentHome.age2.text.toString().split("[–+]".toRegex())
+                    .map { it.trim() }[0].toInt()
+            else -> 0
+        }
 
 
     private fun getUserSelectedDose(): String {
@@ -491,7 +509,8 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     }
 
     private fun isUpdatedFileExists(): Boolean {
-        var destination: String = this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/"
+        var destination: String =
+            this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/"
         val fileName = UPDATED_APK_FILE_NAME
         destination += fileName
         fileDestination = destination
@@ -524,15 +543,21 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     private fun setActionIntent(action: String) {
         when (action) {
             ACTION_NOTIFICATION -> {
-                startActivity(Intent()
+                startActivity(
+                    Intent()
                         .setAction("android.settings.APP_NOTIFICATION_SETTINGS")
                         .putExtra("app_package", packageName)
                         .putExtra("app_uid", applicationInfo.uid)
-                        .putExtra("android.provider.extra.APP_PACKAGE", packageName))
+                        .putExtra("android.provider.extra.APP_PACKAGE", packageName)
+                )
 
             }
             ACTION_INSTALL -> {
-                val contentUri: Uri = FileProvider.getUriForFile(this@HomeActivity, BuildConfig.APPLICATION_ID + ".provider", File(fileDestination))
+                val contentUri: Uri = FileProvider.getUriForFile(
+                    this@HomeActivity,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    File(fileDestination)
+                )
                 val openFileIntent = Intent(Intent.ACTION_VIEW)
                 openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 openFileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -553,8 +578,8 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    "SAMPLE TEXT"
+                Intent.EXTRA_TEXT,
+                ""
             )
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
@@ -582,7 +607,8 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
 
     override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
         if (stateChanges?.from?.isSubscribed != true &&
-                stateChanges?.to?.isSubscribed == true) {
+            stateChanges?.to?.isSubscribed == true
+        ) {
             homeViewModel.insertPlayerIDInDb(UserID(id = 0, playerID = stateChanges.to.userId))
         }
     }
