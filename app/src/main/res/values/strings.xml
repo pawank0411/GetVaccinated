@@ -30,12 +30,8 @@
     <string name="book_now">Book Now</string>
     <string name="stop_alert">Stop Alert</string>
     <string name="no_slots">No slots available</string>
-    <string name="please_wait">Please wait…</string>
     <string name="free">Free</string>
     <string name="paid">Paid</string>
-    <string name="covaxin">Covaxin</string>
-    <string name="covishield">Covishield</string>
-    <string name="sputnik">Sputnik</string>
     <string name="select_alter_criteria">Select alert criteria</string>
     <string name="close">Close</string>
     <string name="vaccine">Vaccine</string>
@@ -64,7 +60,6 @@
     <string name="please_check_your_internet_settings">Please check your internet settings</string>
     <string name="update_app">Install the updates to get new experience</string>
     <string name="allow_notification">Please allow notifications to get slots alert</string>
-    <string name="retry">Retry</string>
     <string name="motivational_quote">Be strong headed, Get vaccinated</string>
     <string name="delete_all">Delete all</string>
     <string name="delete_confirmation">Are you sure, you want to delete?</string>

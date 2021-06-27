@@ -101,7 +101,6 @@ class ShowSlots : BaseActivity() {
                 activityShowSlotsBinding.epoxy.requestModelBuild()
             } catch (e: Exception) {
                 activityShowSlotsBinding.epoxy.requestModelBuild()
-                println(e.localizedMessage)
             }
         }
 
@@ -127,7 +126,6 @@ class ShowSlots : BaseActivity() {
                 activityShowSlotsBinding.epoxy.requestModelBuild()
             } catch (e: Exception) {
                 activityShowSlotsBinding.epoxy.requestModelBuild()
-                println(e.localizedMessage)
             }
         }
 
@@ -263,27 +261,30 @@ class ShowSlots : BaseActivity() {
                                 .addTo(controller)
                             // show same date sessions
                             getSameDateSessions(centerMap.value)?.forEach { session ->
-                                innerSubItems.add(
-                                    ItemLayoutSlotsBindingModel_()
-                                        .id(session.sessionId)
-                                        .vaccineName(session.vaccine)
-                                        .vaccineNo(
-                                            if (selectedDose == "1") session.availableCapacityDose1?.toInt()
-                                                .toString()
-                                            else session.availableCapacityDose2?.toInt().toString()
-                                        )
-                                        .isEnabled(true)
-                                        .backgroundTint(getBackgroundColor(session))
-                                        .onClick { _ ->
-                                            bookAppointmentDialog(
-                                                resources.getString(
-                                                    R.string.book_address,
-                                                    center.name,
-                                                    center.pincode.toString()
-                                                )
+                                if (session != null) {
+                                    innerSubItems.add(
+                                        ItemLayoutSlotsBindingModel_()
+                                            .id(session.sessionId)
+                                            .vaccineName(session.vaccine)
+                                            .vaccineNo(
+                                                if (selectedDose == "1") session.availableCapacityDose1?.toInt()
+                                                    .toString()
+                                                else session.availableCapacityDose2?.toInt()
+                                                    .toString()
                                             )
-                                        }
-                                )
+                                            .isEnabled(true)
+                                            .backgroundTint(getBackgroundColor(session))
+                                            .onClick { _ ->
+                                                bookAppointmentDialog(
+                                                    resources.getString(
+                                                        R.string.book_address,
+                                                        center.name,
+                                                        center.pincode.toString()
+                                                    )
+                                                )
+                                            }
+                                    )
+                                }
                             }
 
                             if (innerSubItems.size > 0) {
@@ -306,30 +307,28 @@ class ShowSlots : BaseActivity() {
             }
         })
 
-        slotsViewModel.slotDetails.observe(this,
-            { it ->
-                val allValidSessions = it?.data?.centers?.sortedBy { it.name }?.map { center ->
-                    center to center.sessions?.filter { session ->
-                        isValidSession(
-                            session,
-                            selectedAge.toString(),
-                            selectedDose
-                        )
-                    }
-                }?.toMap()
+        slotsViewModel.slotDetails.observe(this, { it ->
+            val allValidSessions = it?.data?.centers?.sortedBy { it.name }?.map { center ->
+                center to center.sessions?.filter { session ->
+                    isValidSession(
+                        session,
+                        selectedAge.toString(),
+                        selectedDose
+                    )
+                }
+            }?.toMap()
 
-                originalList = allValidSessions
-                responseList = originalList
+            originalList = allValidSessions
+            responseList = originalList
 
-                slotsViewModel.setChipFilterList(originalList) // fetch unique fee type and vaccine type
+            slotsViewModel.setChipFilterList(originalList) // fetch unique fee type and vaccine type
 
-                activityShowSlotsBinding.epoxy.requestModelBuild()
-            })
+            activityShowSlotsBinding.epoxy.requestModelBuild()
+        })
 
-        slotsViewModel.chipFilterList.observe(this,
-            {
-                addChips(it)
-            })
+        slotsViewModel.chipFilterList.observe(this, {
+            addChips(it)
+        })
     }
 
     private fun setPrice(center: Center): String {
@@ -355,6 +354,7 @@ class ShowSlots : BaseActivity() {
     private fun addChips(chipSet: Set<String>) {
         activityShowSlotsBinding.chipGroupFee.removeAllViews()
         activityShowSlotsBinding.chipGroupVaccine.removeAllViews()
+
         chipSet.forEach { filter ->
             val chip = Chip(this)
             chip.text = filter
@@ -363,7 +363,7 @@ class ShowSlots : BaseActivity() {
             chip.setRippleColorResource(R.color.black)
             chip.setCheckedIconTintResource(R.color.white)
             chip.isCheckable = true
-            if (filter.contains("Free") || filter.contains("Paid")) {
+            if (filter.contains(FEE_FREE) || filter.contains(FEE_PAID)) {
                 activityShowSlotsBinding.chipGroupFee.addView(chip)
                 activityShowSlotsBinding.chipGroupFee.visibility = VISIBLE
             } else {
@@ -387,8 +387,8 @@ class ShowSlots : BaseActivity() {
     private fun getDistinctDateSessions(sessionList: List<Session>?) =
         sessionList?.distinctBy { it.date }
 
-    private fun getSameDateSessions(sessionList: List<Session>?) =
-        sessionList?.duplicateBy { it.date }
+    private fun getSameDateSessions(sessionList: List<Session?>?) =
+        sessionList?.duplicateBy { it?.date }
 
     private fun <T, K> Iterable<T>.duplicateBy(selector: (T) -> K): List<T> {
         val set = HashSet<K>()

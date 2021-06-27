@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
-import com.google.gson.Gson
 import com.vaccine.slot.notifier.ItemLayoutAlertsBindingModel_
 import com.vaccine.slot.notifier.R
 import com.vaccine.slot.notifier.dao.SubscribedSlotsDao
@@ -59,18 +58,22 @@ class UserSubscribedAlerts : BaseActivity() {
             activityShowAlertsBinding.epoxy.buildModelsWith(object : EpoxyRecyclerView.ModelBuilderCallback {
                 override fun buildModels(controller: EpoxyController) {
                     if (it.isNullOrEmpty()) noMessages() else messagesAvailable()
-                    it.forEachIndexed { index, alert ->
+                    it?.forEachIndexed { index, alert ->
                         ItemLayoutAlertsBindingModel_()
-                                .id(alert.id)
-                                .customKey((index + 1).toString())
-                                .district(alert.districtName)
-                                .vaccine(if (alert.vaccineID?.size?.let { vc -> vc > 1 } == true) "--" else alert.vaccineID?.let { it1 -> getVaccineName(it1) })
-                                .dose(alert.doseID?.get(0).toString())
-                                .age(alert.age.toString() + "+")
-                                .onClick { _ ->
-                                    // unSubscribe here
-                                    unSubscribeSlotsAlert(alert)
-                                }
+                            .id(alert.id)
+                            .customKey((index + 1).toString())
+                            .district(alert.districtName)
+                            .vaccine(if (alert.vaccineID?.size?.let { vc -> vc > 1 } == true) "--" else alert.vaccineID?.let { it1 ->
+                                getVaccineName(
+                                    it1
+                                )
+                            })
+                            .dose(alert.doseID?.get(0).toString())
+                            .age(alert.age.toString() + "+")
+                            .onClick { _ ->
+                                // unSubscribe here
+                                unSubscribeSlotsAlert(alert)
+                            }
                                 .addTo(controller)
                     }
                     activityShowAlertsBinding.progressBar.visibility = GONE
@@ -140,7 +143,6 @@ class UserSubscribedAlerts : BaseActivity() {
                 alert.vaccineID,
                 alert.doseID
         )
-        println(Gson().toJson(subscribedSlots))
         viewModel.getSlotUnSubscribeResponse(subscribedSlots)
         viewModel.setSubscribeSlotData(alert)
     }
@@ -156,7 +158,6 @@ class UserSubscribedAlerts : BaseActivity() {
         activityShowAlertsBinding.emptyImage.visibility = GONE
         activityShowAlertsBinding.emptyMessage.visibility = GONE
     }
-
 
     private fun showUnSubscribedDialog(message: String) {
         UnsubscribeDialog.newInstance(message).show(supportFragmentManager, UNSUBSCRIBE_DIALOG)

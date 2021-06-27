@@ -15,7 +15,7 @@ object Constants {
     const val DEFAULT_MESSAGE_ERROR = "Please provide the necessary details"
     const val APP_TAG = "#GetVaccinated"
     const val CO_WIN_LINK = "https://selfregistration.cowin.gov.in/"
-    const val DONATE_LINK = "https://www.instamojo.com/dashboard"
+    const val DONATE_LINK = "https://bit.ly/3h97wX0"
     const val FEEDBACK_LINK = "https://bit.ly/3qpShNm"
 
     const val FEE_PAID = "Paid"

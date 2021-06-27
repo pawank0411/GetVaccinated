@@ -465,7 +465,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     private fun isEqual(dose: List<String>?, second: List<String>?): Boolean {
 
         val first = mutableListOf<String>()
-        storedData.forEach { data ->
+        storedData?.forEach { data ->
             if (data.districtID == selectedDistrictCodeId &&
                 data.age == selectedAge &&
                 data.doseID?.get(0) == dose?.get(0)
@@ -532,7 +532,6 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     }
 
     private fun showBottomSnack(message: String, action: String) {
-
         BottomSnackBarDialog.newInstance(message, action).apply {
             setOnClickListener {
                 setActionIntent(it)
@@ -541,29 +540,32 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     }
 
     private fun setActionIntent(action: String) {
-        when (action) {
-            ACTION_NOTIFICATION -> {
-                startActivity(
-                    Intent()
-                        .setAction("android.settings.APP_NOTIFICATION_SETTINGS")
-                        .putExtra("app_package", packageName)
-                        .putExtra("app_uid", applicationInfo.uid)
-                        .putExtra("android.provider.extra.APP_PACKAGE", packageName)
-                )
-
+        try {
+            when (action) {
+                ACTION_NOTIFICATION -> {
+                    startActivity(
+                        Intent()
+                            .setAction("android.settings.APP_NOTIFICATION_SETTINGS")
+                            .putExtra("app_package", packageName)
+                            .putExtra("app_uid", applicationInfo.uid)
+                            .putExtra("android.provider.extra.APP_PACKAGE", packageName)
+                    )
+                }
+                ACTION_INSTALL -> {
+                    val contentUri: Uri = FileProvider.getUriForFile(
+                        this@HomeActivity,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        File(fileDestination)
+                    )
+                    val openFileIntent = Intent(Intent.ACTION_VIEW)
+                    openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    openFileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    openFileIntent.data = contentUri
+                    startActivity(openFileIntent)
+                }
             }
-            ACTION_INSTALL -> {
-                val contentUri: Uri = FileProvider.getUriForFile(
-                    this@HomeActivity,
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    File(fileDestination)
-                )
-                val openFileIntent = Intent(Intent.ACTION_VIEW)
-                openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                openFileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                openFileIntent.data = contentUri
-                startActivity(openFileIntent)
-            }
+        } catch (e: Exception) {
+            showErrorMessage(resources.getString(R.string.error_message))
         }
     }
 
@@ -600,7 +602,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         var selectedDistrictName: String = String()
         var selectedDistrictCodeId: Int = 0
         var selectedStateId: Int? = 0
-        var storedData: List<SubscribedSlotsRoom> = listOf()
+        var storedData: List<SubscribedSlotsRoom>? = listOf()
         var playerID: String? = String()
         var fileDestination: String = String()
     }

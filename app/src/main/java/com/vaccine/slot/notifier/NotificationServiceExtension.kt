@@ -16,33 +16,42 @@ import kotlinx.coroutines.launch
 
 class NotificationServiceExtension : OneSignal.OSRemoteNotificationReceivedHandler {
     override fun remoteNotificationReceived(
-            context: Context?,
-            notificationReceivedEvent: OSNotificationReceivedEvent?
+        context: Context?,
+        notificationReceivedEvent: OSNotificationReceivedEvent?
     ) {
         val response = notificationReceivedEvent?.notification?.body
         val responseTitle = notificationReceivedEvent?.notification?.title
         val responseData = notificationReceivedEvent?.notification?.additionalData
 
-        val mutableNotification: OSMutableNotification? = notificationReceivedEvent?.notification?.mutableCopy()
-        mutableNotification?.setExtender { builder: NotificationCompat.Builder -> builder.setColor(getColor(context!!, R.color.blue_500)) }
-        notificationReceivedEvent?.complete(mutableNotification)
+        try {
+            val mutableNotification: OSMutableNotification? =
+                notificationReceivedEvent?.notification?.mutableCopy()
+            mutableNotification?.setExtender { builder: NotificationCompat.Builder ->
+                builder.setColor(
+                    getColor(context!!, R.color.blue_500)
+                )
+            }
+            notificationReceivedEvent?.complete(mutableNotification)
 
-        val db = Room.databaseBuilder(
+            val db = Room.databaseBuilder(
                 context!!,
                 AppDatabase::class.java, "Database"
-        ).build()
+            ).build()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val notificationResponse = NotificationResponseRoom(
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val notificationResponse = NotificationResponseRoom(
                         content = response,
                         title = responseTitle,
                         time = ""
-                )
-                db.notificationDao().insert(notificationResponse)
-            } catch (e: Exception) {
-                println(e.localizedMessage)
+                    )
+                    db.notificationDao().insert(notificationResponse)
+                } catch (e: Exception) {
+                    println(e.localizedMessage)
+                }
             }
+        } catch (e: Exception) {
+            // notification will be sent normally
         }
     }
 }
