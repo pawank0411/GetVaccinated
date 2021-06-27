@@ -10,6 +10,7 @@ The data we provide is fetched from public APIs of [CoWIN](https://apisetu.gov.i
 - [x] Check slots availability with an ease.
 - [x] Subscribe for alerts to get real time notification when slots are available.
 - [x] Unsubscribe from alerts anytime.
+- [x] High-quality design and a user-friendly interface.
 
 ## 📸 Screenshots
 Home                        |  Set alerts                 |  Manage alerts    
