@@ -93,8 +93,8 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/noSlotsMessage"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"

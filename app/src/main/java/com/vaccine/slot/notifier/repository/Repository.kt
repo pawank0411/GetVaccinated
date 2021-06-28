@@ -1,7 +1,6 @@
 package com.vaccine.slot.notifier.repository
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 import com.vaccine.slot.notifier.data.model.*
 import com.vaccine.slot.notifier.other.Resource
@@ -41,11 +40,16 @@ class Repository @Inject constructor(
                     if (response.isSuccessful) {
                         Resource.success((response.body()))
                     } else {
-                        Resource.error("Something went wrong. Please try again", null)
+                        Resource.error(
+                            "We are having issue connecting to Co-WIN servers. Please try after sometime.",
+                            null
+                        )
                     }
                 } catch (e: Exception) {
-                    Log.d("Exception", e.toString())
-                    Resource.error("Something went wrong. Please try again", null)
+                    Resource.error(
+                        "We are having issue connecting to Co-WIN servers. Please try after sometime.",
+                        null
+                    )
                 }
             }
 
@@ -58,11 +62,16 @@ class Repository @Inject constructor(
             if (response.isSuccessful) {
                 Resource.success((response.body()))
             } else {
-                Resource.error("Something went wrong. Please try again", null)
+                Resource.error(
+                    "We are having issue connecting to Co-WIN servers. Please try after sometime.",
+                    null
+                )
             }
         } catch (e: Exception) {
-            Log.d("Exception", e.toString())
-            Resource.error("Something went wrong. Please try again", null)
+            Resource.error(
+                "We are having issue connecting to Co-WIN servers. Please try after sometime.",
+                null
+            )
         }
     }
 
@@ -117,7 +126,6 @@ class Repository @Inject constructor(
                 Resource.error("Something went wrong. Please try again", null)
             }
         } catch (e: Exception) {
-            Log.d("Exception", e.toString())
             Resource.error("Something went wrong. Please try again", null)
         }
     }

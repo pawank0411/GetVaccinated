@@ -2,7 +2,6 @@ package com.vaccine.slot.notifier.ui.showSlots
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.lifecycle.ViewModelProvider
@@ -12,7 +11,6 @@ import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
 import com.vaccine.slot.notifier.*
 import com.vaccine.slot.notifier.data.model.Center
 import com.vaccine.slot.notifier.data.model.Session
@@ -166,16 +164,19 @@ class ShowSlots : BaseActivity() {
                     }
                     Status.ERROR -> {
                         activityShowSlotsBinding.progressBar.visibility = GONE
-                        showSnackbar(
+                        noSlotsAvailable(
                             response.message ?: resources.getString(R.string.error_message)
                         )
-                        noSlotsAvailable()
                     }
                     Status.SUCCESS -> {
                         val nonEmptyListOfResponse =
                             responseList?.filterValues { it?.isNotEmpty() == true }
 
-                        if (nonEmptyListOfResponse.isNullOrEmpty()) noSlotsAvailable() else slotsAvailable()
+                        if (nonEmptyListOfResponse.isNullOrEmpty()) noSlotsAvailable(
+                            resources.getString(
+                                R.string.no_slots
+                            )
+                        ) else slotsAvailable()
                         nonEmptyListOfResponse?.map { centerMap ->
                             val center = centerMap.key
                             ItemLayoutCenterHeaderBindingModel_()
@@ -373,10 +374,10 @@ class ShowSlots : BaseActivity() {
         }
     }
 
-    private fun noSlotsAvailable() {
+    private fun noSlotsAvailable(message: String) {
         activityShowSlotsBinding.noSlotsImage.visibility = VISIBLE
         activityShowSlotsBinding.noSlotsMessage.visibility = VISIBLE
-        activityShowSlotsBinding.noSlotsMessage.text = resources.getString(R.string.no_slots)
+        activityShowSlotsBinding.noSlotsMessage.text = message
     }
 
     private fun slotsAvailable() {
@@ -432,11 +433,6 @@ class ShowSlots : BaseActivity() {
 
     private fun bookAppointmentDialog(title: String) {
         BookAppointmentDialog.newInstance(title).show(supportFragmentManager, BOOK_APPOINTMENT_TAG)
-    }
-
-    private fun showSnackbar(message: String) {
-        val parentLayout: View = findViewById(android.R.id.content)
-        Snackbar.make(parentLayout, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
