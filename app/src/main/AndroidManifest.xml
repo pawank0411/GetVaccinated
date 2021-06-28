@@ -27,7 +27,8 @@
         </activity>
         <activity
             android:name=".ui.home.HomeActivity"
-            android:theme="@style/Theme.GetVaccinated.NoActionBar" />
+            android:theme="@style/Theme.GetVaccinated.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.showSlots.ShowSlots" />
         <activity android:name=".ui.notification.NotificationMessage" />
         <activity android:name=".ui.alert.UserSubscribedAlerts" />
