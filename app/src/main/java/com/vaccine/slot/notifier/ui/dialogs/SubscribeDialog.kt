@@ -27,8 +27,13 @@ class SubscribeDialog : BottomSheetDialogFragment() {
 
     private lateinit var layoutSubscribeNotificationDialogBinding: LayoutSubscribeNotificationDialogBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        layoutSubscribeNotificationDialogBinding = LayoutSubscribeNotificationDialogBinding.inflate(inflater)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        layoutSubscribeNotificationDialogBinding =
+            LayoutSubscribeNotificationDialogBinding.inflate(inflater)
         return layoutSubscribeNotificationDialogBinding.root
     }
 
@@ -55,7 +60,23 @@ class SubscribeDialog : BottomSheetDialogFragment() {
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
                 Intent.EXTRA_TEXT,
-                "SAMPLE TEXT"
+                "Are you vaccinated?\n" +
+                        "\n" +
+                        "Have you booked your slots for vacation yet?\n" +
+                        "\n" +
+                        "If not then install \"Get Vaccinated\" app asap. Find suitable slots and get notified at the right moment when slots open at your preferred area.\n" +
+                        "Be strong headed , Get Vaccinated..\n" +
+                        "\n" +
+                        "Link: https://bit.ly/3y8SWpn\n" +
+                        "\n" +
+                        "For any issues or features request feel free to contact us at \n" +
+                        "getvaccinated.sup@gmail.com\n" +
+                        "\n" +
+                        "To get proper knowledge about the app watch this.\n" +
+                        "\n" +
+                        "https://youtu.be/qnMJ-LEpY70\n" +
+                        "\n" +
+                        "Stay safe, Get Vaccinated ✌\uD83C\uDFFB"
             )
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
