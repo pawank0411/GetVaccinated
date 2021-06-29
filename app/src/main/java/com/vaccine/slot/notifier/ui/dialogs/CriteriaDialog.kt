@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import com.vaccine.slot.notifier.BuildConfig
 import com.vaccine.slot.notifier.databinding.LayoutCriteriaAlertDialogBinding
 import com.vaccine.slot.notifier.other.Constants.MAP_VACCINE
 import com.vaccine.slot.notifier.other.Constants.getKey
@@ -23,9 +24,9 @@ class CriteriaDialog : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         layoutCriteriaAlertDialogBinding = LayoutCriteriaAlertDialogBinding.inflate(inflater)
         return layoutCriteriaAlertDialogBinding.root
@@ -39,13 +40,13 @@ class CriteriaDialog : BottomSheetDialogFragment() {
 
         layoutCriteriaAlertDialogBinding.chipGroupDose.setOnCheckedChangeListener { _, checkedId: Int ->
             val chip: Chip? =
-                    layoutCriteriaAlertDialogBinding.chipGroupDose.findViewById(checkedId) as Chip?
+                layoutCriteriaAlertDialogBinding.chipGroupDose.findViewById(checkedId) as Chip?
             chip?.let { chosenDose = listOf(it.text.toString().split(" ")[1]) }
         }
 
         layoutCriteriaAlertDialogBinding.chipGroupVaccine.setOnCheckedChangeListener { _, checkedId: Int ->
             val chip: Chip? =
-                    layoutCriteriaAlertDialogBinding.chipGroupVaccine.findViewById(checkedId) as Chip?
+                layoutCriteriaAlertDialogBinding.chipGroupVaccine.findViewById(checkedId) as Chip?
             chip?.let {
                 chosenVaccine = listOf(getKey(MAP_VACCINE, it.text.toString()))
             }
@@ -61,6 +62,12 @@ class CriteriaDialog : BottomSheetDialogFragment() {
                 layoutCriteriaAlertDialogBinding.chipGroupVaccine.visibility = GONE
                 layoutCriteriaAlertDialogBinding.note.visibility = GONE
             }
+        }
+
+        try {
+            layoutCriteriaAlertDialogBinding.appVersion.text = BuildConfig.VERSION_NAME
+        } catch (e: Exception) {
+            layoutCriteriaAlertDialogBinding.appVersion.visibility = GONE
         }
 
         layoutCriteriaAlertDialogBinding.close.setOnClickListener { dialog?.dismiss() }
