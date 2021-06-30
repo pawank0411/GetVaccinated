@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -190,6 +191,16 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
         android:textStyle="bold"
         app:cornerRadius="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/appVersion"
         app:layout_constraintTop_toBottomOf="@id/note" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/appVersion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:textAppearance="@style/Theme.Footer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="v1.0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,7 +62,7 @@ class SubscribeDialog : BottomSheetDialogFragment() {
                 Intent.EXTRA_TEXT,
                 "Are you vaccinated?\n" +
                         "\n" +
-                        "Have you booked your slots for vacation yet?\n" +
+                        "Have you booked your slots for vaccination yet?\n" +
                         "\n" +
                         "If not then install \"Get Vaccinated\" app asap. Find suitable slots and get notified at the right moment when slots open at your preferred area.\n" +
                         "Be strong headed , Get Vaccinated..\n" +
