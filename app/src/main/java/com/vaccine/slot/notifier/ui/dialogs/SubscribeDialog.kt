@@ -64,7 +64,7 @@ class SubscribeDialog : BottomSheetDialogFragment() {
                         "\n" +
                         "Have you booked your slots for vaccination yet?\n" +
                         "\n" +
-                        "If not then install \"Get Vaccinated\" app asap. Find suitable slots and get notified at the right moment when slots open at your preferred area.\n" +
+                        "If not then install \"GetVaccinated\" app asap. Find suitable slots and get notified at the right moment when slots open at your preferred area.\n" +
                         "Be strong headed , Get Vaccinated..\n" +
                         "\n" +
                         "Link: https://bit.ly/3y8SWpn\n" +
@@ -80,6 +80,8 @@ class SubscribeDialog : BottomSheetDialogFragment() {
             )
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
+
+            dialog?.dismiss()
         }
     }
 
