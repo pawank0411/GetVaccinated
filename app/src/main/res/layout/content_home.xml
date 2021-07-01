@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:buttonTint="?attr/colorPrimary"
                     android:checked="true"
-                    android:text="@string/_18_44"
+                    android:text="@string/_18"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     app:autoSizeMaxTextSize="16dp"
                     app:autoSizeMinTextSize="14dp"

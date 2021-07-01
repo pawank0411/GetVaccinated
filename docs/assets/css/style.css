@@ -11,26 +11,29 @@ body {
     margin: 0;
 }
 
-.up-content{
+.up-content {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
     align-items: center;
 }
-.col-md-5{
+
+.col-md-5 {
     width: 40%;
     margin: 10px;
 }
-.div-button{
+
+.div-button {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     text-align: center;
 }
-button{
+
+button {
     padding: 20px 30px;
-    color:#fff;
+    color: #fff;
     font-family: 'Quicksand', sans-serif;
     font-weight: bold;
     font-size: 1em;
@@ -43,14 +46,20 @@ button{
     /* font-size: 16px; */
     margin: 30px;
 }
-a, a:hover, a:focus, a:active {
+
+a,
+a:hover,
+a:focus,
+a:active {
     text-decoration: none;
     color: inherit;
 }
-button:hover{
+
+button:hover {
     transform: scale(1.2);
     background-color: #FDBC00;
 }
+
 .main-container {
     width: 80%;
     padding: 25px;
@@ -63,7 +72,6 @@ button:hover{
     border: 2px rgba(255, 255, 255, 0.4) solid;
     border-bottom: 2px rgba(40, 40, 40, 0.35) solid;
     border-right: 2px rgba(40, 40, 40, 0.35) solid;
-
     border-radius: 5px;
     text-align: left;
     top: 50%;
@@ -86,19 +94,18 @@ button:hover{
     /* .header {
         font-size: 2em;
     } */
-
     .main-container {
         width: 95%;
         /* font-size: 4vw; */
         color: white;
     }
-    .up-content{
+    .up-content {
         flex-direction: column;
     }
-    .col-md-5{
+    .col-md-5 {
         width: 40%;
         margin: 10px;
-    }   
+    }
 }
 
 .top {
@@ -140,11 +147,9 @@ img {
     overflow-x: scroll;
     overflow-y: hidden;
     margin: 0 auto;
-
     display: grid;
     grid-template-columns: repeat(6, auto);
     grid-gap: 0 50px;
-
     padding: 30px 60px;
     padding-right: 0;
     -ms-overflow-style: none;
@@ -171,7 +176,9 @@ img {
     width: 10px;
 }
 
+
 /* for stats */
+
 .img-container {
     width: 30%;
     padding: 10px;
@@ -181,7 +188,7 @@ img {
 .clearfix {
     margin-top: 20px;
     border-radius: 6px;
-    border : 0;
+    border: 0;
     display: flex;
     justify-content: space-evenly;
     flex-flow: row wrap;
@@ -195,6 +202,54 @@ img {
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
     .clearfix {
-      flex-direction: column;
+        flex-direction: column;
     }
-  }
+}
+
+
+/*SKP mods for CSS*/
+
+
+/* From line 215 to 252 */
+
+.iframe-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+h1 {
+    font-size: 4rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+p {
+    font-size: 2rem;
+}
+
+@media(max-width:991px) {
+    h1 {
+        font-size: calc(1vw + 3rem);
+    }
+    h2 {
+        font-size: calc(1vw + 1rem);
+    }
+    p {
+        font-size: calc(0.5vw + 1rem);
+    }
+}
+
+
+/* mods ends here */

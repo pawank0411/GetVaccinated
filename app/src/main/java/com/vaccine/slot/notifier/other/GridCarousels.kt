@@ -18,3 +18,19 @@ class HorizontalGridSpan7(context: Context) : Carousel(context) {
         private const val SPAN_COUNT = 7
     }
 }
+
+@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
+class GridTab(context: Context) : Carousel(context) {
+
+    init {
+        isNestedScrollingEnabled = false
+    }
+
+    override fun createLayoutManager(): RecyclerView.LayoutManager {
+        return GridLayoutManager(context, SPAN_COUNT, LinearLayoutManager.VERTICAL, false)
+    }
+
+    companion object {
+        private const val SPAN_COUNT = 2
+    }
+}

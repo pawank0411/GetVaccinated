@@ -65,7 +65,7 @@ class ShowSlots : BaseActivity() {
                 R.string.heading_slots,
                 selectedDose,
                 selectedPinCode,
-                selectedAge.toString()
+                selectedAge
             )
         } else {
             slotsViewModel.getSlotDetailsDistrictWise(selectedDistrictCodeId)
@@ -73,7 +73,7 @@ class ShowSlots : BaseActivity() {
                 R.string.heading_slots,
                 selectedDose,
                 selectedDistrictName,
-                selectedAge.toString()
+                selectedAge
             )
         }
 
@@ -141,6 +141,7 @@ class ShowSlots : BaseActivity() {
                     )
                 }
 
+                println(subItemsDates)
                 HorizontalGridSpan7Model_()
                     .id(subItemsDates.hashCode())
                     .models(subItemsDates)
@@ -215,8 +216,12 @@ class ShowSlots : BaseActivity() {
                                 if (currentSession != null) {
                                     subItems.add(
                                         ItemLayoutSlotsBindingModel_()
-                                            .id(currentSession!!.sessionId)
+                                            .id(
+                                                currentSession?.sessionId ?: Random().nextInt()
+                                                    .toString()
+                                            )
                                             .vaccineName(currentSession?.vaccine)
+                                            .ageDescription(if (showAgeDescription(currentSession?.maxAgeLimit)) currentSession?.minAgeLimit.toString() + "-" + currentSession?.maxAgeLimit + " Only" else "")
                                             .vaccineNo(
                                                 if (selectedDose == "1") currentSession?.availableCapacityDose1?.toInt()
                                                     .toString()
@@ -267,6 +272,7 @@ class ShowSlots : BaseActivity() {
                                         ItemLayoutSlotsBindingModel_()
                                             .id(session.sessionId)
                                             .vaccineName(session.vaccine)
+                                            .ageDescription(if (showAgeDescription(session.maxAgeLimit)) session.minAgeLimit.toString() + "-" + session.maxAgeLimit + " Only" else "")
                                             .vaccineNo(
                                                 if (selectedDose == "1") session.availableCapacityDose1?.toInt()
                                                     .toString()
@@ -313,7 +319,7 @@ class ShowSlots : BaseActivity() {
                 center to center.sessions?.filter { session ->
                     isValidSession(
                         session,
-                        selectedAge.toString(),
+                        selectedAge,
                         selectedDose
                     )
                 }
@@ -332,6 +338,8 @@ class ShowSlots : BaseActivity() {
         })
     }
 
+    private fun showAgeDescription(age: Int?): Boolean = (age != null)
+
     private fun setPrice(center: Center): String {
         val vaccineFee = center.vaccineFee
         return if (center.feeType.equals(
@@ -348,7 +356,28 @@ class ShowSlots : BaseActivity() {
     }
 
     private fun isValidSession(session: Session, s: String?, selectedDose: String): Boolean {
-        if (session.minAgeLimit == s?.toInt() && (if (selectedDose == "1") session.availableCapacityDose1!! > 0 else session.availableCapacityDose2!! > 0)) return true
+        when (s) {
+            "18" -> {
+                if (session.minAgeLimit ?: 45 < 45) {
+                    return if (selectedDose == "1") session.availableCapacityDose1 ?: 0.0 > 0 else session.availableCapacityDose2 ?: 0.0 > 0
+                }
+            }
+            "45" -> {
+                if (session.minAgeLimit ?: 44 >= 45 &&
+                    (if (selectedDose == "1") session.availableCapacityDose1 ?: 0.0 > 0 else session.availableCapacityDose2 ?: 0.0 > 0)
+                ) return true
+                when (session.maxAgeLimit) {
+                    null -> {
+                        when (session.allowAllAge) {
+                            true, null -> {
+                                return if (selectedDose == "1") session.availableCapacityDose1 ?: 0.0 > 0 else session.availableCapacityDose2 ?: 0.0 > 0
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return false
     }
 

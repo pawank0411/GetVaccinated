@@ -296,21 +296,19 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         homeViewModel.getInfo.observe(this, {
             activityHomeBinding.contentHome.epoxy.requestModelBuild()
             val currentVersion = BuildConfig.VERSION_CODE
-            val updatedVersion = it.data?.version?.toInt()
-            if (updatedVersion != null) {
-                if (updatedVersion > currentVersion)
-                    if (!isUpdatedFileExists()) it.data.downloadLink.let { it1 -> downloadUpdate(it1) }
-                    else {
-                        homeViewModel.showDialog.observe(this, { ev ->
-                            ev?.getContentIfNotHandled()?.let {
-                                showBottomSnack(
-                                    resources.getString(R.string.update_app),
-                                    ACTION_INSTALL
-                                )
-                            }
-                        })
-                    }
-            }
+            val updatedVersion = it.data?.version?.toInt() ?: 0
+            if (updatedVersion > currentVersion)
+                if (!isUpdatedFileExists()) it.data?.downloadLink?.let { it1 -> downloadUpdate(it1) }
+                else {
+                    homeViewModel.showDialog.observe(this, { ev ->
+                        ev?.getContentIfNotHandled()?.let {
+                            showBottomSnack(
+                                resources.getString(R.string.update_app),
+                                ACTION_INSTALL
+                            )
+                        }
+                    })
+                }
         })
 
         homeViewModel.tabSelection.observe(this, {
@@ -398,9 +396,8 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     }
 
     private fun reportForArea() {
-
         val reportAlert = ReportAlert(
-            age = selectedAge,
+            age = selectedAge?.toInt() ?: 0,
             stateID = selectedStateId.toString(),
             districtID = selectedDistrictCodeId
         )
@@ -446,7 +443,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
 
         val subscribeSlots = SubscribeSlots(
             playerID,
-            selectedAge,
+            selectedAge?.toInt() ?: 0,
             selectedStateId?.toString(),
             selectedDistrictCodeId,
             vaccineID,
@@ -467,7 +464,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         val first = mutableListOf<String>()
         storedData?.forEach { data ->
             if (data.districtID == selectedDistrictCodeId &&
-                data.age == selectedAge &&
+                data.age.toString() == selectedAge &&
                 data.doseID?.get(0) == dose?.get(0)
             ) {
                 data.vaccineID?.forEach {
@@ -486,15 +483,15 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
         return false
     }
 
-    private fun getUserSelectedAge(): Int =
+    private fun getUserSelectedAge(): String =
         when (activityHomeBinding.contentHome.ageGroup.checkedRadioButtonId) {
             R.id.age1 ->
                 activityHomeBinding.contentHome.age1.text.toString().split("[–+]".toRegex())
-                    .map { it.trim() }[0].toInt()
+                    .map { it.trim() }[0]
             R.id.age2 ->
                 activityHomeBinding.contentHome.age2.text.toString().split("[–+]".toRegex())
-                    .map { it.trim() }[0].toInt()
-            else -> 0
+                    .map { it.trim() }[0]
+            else -> ""
         }
 
 
@@ -610,7 +607,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
     }
 
     companion object {
-        var selectedAge: Int? = 0
+        var selectedAge: String? = String()
         var selectedDose: String = String()
         var selectedTab: String = String()
         var selectedPinCode: String = String()

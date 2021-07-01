@@ -8,8 +8,8 @@
     <string name="state">State</string>
     <string name="district">District</string>
     <string name="pincode">Pincode</string>
-    <string name="_18_44">18–44</string>
     <string name="_45">45+</string>
+    <string name="_18">18+</string>
     <string name="age_group">Age Group</string>
     <string name="check_availability">Check Availability</string>
     <string name="notify_me_when_slots_are_available">Notify me when slots are available</string>
