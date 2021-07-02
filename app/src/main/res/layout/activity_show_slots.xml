@@ -5,29 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroupFee"
-        android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:id="@+id/chipGroupLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:singleSelection="true">
+        app:layout_constraintTop_toTopOf="parent">
 
-    </com.google.android.material.chip.ChipGroup>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroupVaccine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/chipGroupFee"
-        app:layout_constraintTop_toTopOf="parent"
-        app:singleSelection="true">
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupFee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:singleLine="true"
+                app:singleSelection="true" />
 
-    </com.google.android.material.chip.ChipGroup>
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupVaccine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/chipGroupFee"
+                app:layout_constraintTop_toTopOf="parent"
+                app:singleLine="true"
+                app:singleSelection="true" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </HorizontalScrollView>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/heading"
@@ -43,7 +61,7 @@
         app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chipGroupFee"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupLayout"
         tools:text="Slots in Baran for age 18-44" />
 
     <com.airbnb.epoxy.EpoxyRecyclerView
