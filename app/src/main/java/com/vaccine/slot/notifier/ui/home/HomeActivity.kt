@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.method.LinkMovementMethod
@@ -298,8 +299,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
             val currentVersion = BuildConfig.VERSION_CODE
             val updatedVersion = it.data?.version?.toInt() ?: 0
             if (updatedVersion > currentVersion)
-                if (!isUpdatedFileExists()) it.data?.downloadLink?.let { it1 -> downloadUpdate(it1) }
-                else {
+                if (isUpdatedFileExists())
                     homeViewModel.showDialog.observe(this, { ev ->
                         ev?.getContentIfNotHandled()?.let {
                             showBottomSnack(
@@ -308,7 +308,7 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                             )
                         }
                     })
-                }
+                else it.data?.downloadLink?.let { it1 -> downloadUpdate(it1) }
         })
 
         homeViewModel.tabSelection.observe(this, {
@@ -549,16 +549,28 @@ class HomeActivity : BaseActivity(), OSSubscriptionObserver {
                     )
                 }
                 ACTION_INSTALL -> {
-                    val contentUri: Uri = FileProvider.getUriForFile(
-                        this@HomeActivity,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        File(fileDestination)
-                    )
-                    val openFileIntent = Intent(Intent.ACTION_VIEW)
-                    openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    openFileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    openFileIntent.data = contentUri
-                    startActivity(openFileIntent)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        // for android 7+
+                        val contentUri: Uri = FileProvider.getUriForFile(
+                            this@HomeActivity,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            File(fileDestination)
+                        )
+                        val openFileIntent = Intent(Intent.ACTION_VIEW)
+                        openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        openFileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        openFileIntent.data = contentUri
+                        startActivity(openFileIntent)
+                    } else {
+                        // for android <7
+                        val openFileIntent = Intent(Intent.ACTION_VIEW)
+                        openFileIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        openFileIntent.setDataAndType(
+                            Uri.parse("file://$fileDestination"),
+                            "application/vnd.android.package-archive"
+                        )
+                        startActivity(openFileIntent)
+                    }
                 }
             }
         } catch (e: Exception) {

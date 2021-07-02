@@ -18,16 +18,22 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun downloadUpdate(url: String) {
-
-        val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        var destination: String = this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/"
-        val fileName = UPDATED_APK_FILE_NAME
-        destination += fileName
-        val uri: Uri = Uri.parse("file://$destination")
-        val file = File(destination)
-        if (file.exists()) file.delete()
-        val request = DownloadManager.Request(Uri.parse(url))
-        request.setDestinationUri(uri)
-        dm.enqueue(request)
+        try {
+            val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            var destination: String =
+                this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/"
+            val fileName = UPDATED_APK_FILE_NAME
+            destination += fileName
+            val file = File(destination)
+            if (file.exists()) file.delete()
+            val uri: Uri = Uri.parse("file://$destination")
+            val request = DownloadManager.Request(Uri.parse(url))
+            request.setTitle("GetVaccinated")
+            request.setDescription("Downloading updates...")
+            request.setDestinationUri(uri)
+            dm.enqueue(request)
+        } catch (e: Exception) {
+            /* no op */
+        }
     }
 }
